@@ -1,0 +1,1557 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Audience Age Comparison — Visual Intelligence Lab</title>
+
+  <meta name="description" content="Create and export an audience age butterfly chart for the intelligence team.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --black: #080808;
+      --soft-black: #11110f;
+      --panel: #191917;
+      --white: #f7f7f2;
+      --grey: #b9b9b2;
+      --dark-grey: #73736e;
+      --orange: #ff3d0a;
+      --lime: #a8ff37;
+      --error: #ff7777;
+      --line: rgba(255, 255, 255, 0.16);
+      --nav-height: 72px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
+      color: var(--white);
+      background: var(--black);
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button,
+    a,
+    input {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Navigation */
+
+    .nav {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--nav-height);
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      color: var(--black);
+      background: var(--lime);
+      border-radius: 50%;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 18px;
+    }
+
+    .brand-name {
+      font-family: "Archivo Black", sans-serif;
+      font-size: 17px;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+    }
+
+    .brand-name span {
+      color: var(--grey);
+      font-family: "Inter", sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .nav-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .tool-status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--lime);
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(168, 255, 55, 0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      70% {
+        box-shadow: 0 0 0 10px rgba(168, 255, 55, 0);
+      }
+    }
+
+    .home-link {
+      min-height: 40px;
+      padding: 0 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--black);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition:
+        transform 180ms ease,
+        background 180ms ease;
+    }
+
+    .home-link:hover {
+      background: var(--lime);
+      transform: translateY(-2px);
+    }
+
+    /* Application layout */
+
+    .application {
+      height: 100vh;
+      padding-top: var(--nav-height);
+      display: grid;
+      grid-template-columns: 370px minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    /* Controls */
+
+    .controls {
+      height: calc(100vh - var(--nav-height));
+      padding: 28px 24px 36px;
+      overflow-y: auto;
+      background: var(--soft-black);
+      border-right: 1px solid var(--line);
+      scrollbar-color: var(--orange) var(--soft-black);
+      scrollbar-width: thin;
+    }
+
+    .tool-number {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--orange);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .controls h1 {
+      max-width: 310px;
+      margin: 0;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+      text-transform: uppercase;
+    }
+
+    .controls-intro {
+      margin: 18px 0 28px;
+      color: var(--grey);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .control-section {
+      margin-bottom: 12px;
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .control-section:first-of-type {
+      border-top: 3px solid var(--orange);
+    }
+
+    .control-section h2 {
+      margin: 0 0 17px;
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="color"] {
+      width: 100%;
+      height: 44px;
+      padding: 9px 11px;
+      color: var(--white);
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 0;
+      outline: none;
+      transition:
+        border-color 180ms ease,
+        background 180ms ease;
+    }
+
+    input:hover {
+      border-color: rgba(255, 255, 255, 0.45);
+    }
+
+    input:focus {
+      background: var(--black);
+      border-color: var(--lime);
+    }
+
+    input[type="color"] {
+      height: 50px;
+      padding: 5px;
+      cursor: pointer;
+    }
+
+    .colour-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .colour-grid + .colour-grid {
+      margin-top: 13px;
+    }
+
+    .colour-grid .field {
+      margin-bottom: 0;
+    }
+
+    /* Age data table */
+
+    .age-inputs-header {
+      display: grid;
+      grid-template-columns: 78px 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: var(--dark-grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .age-input-row {
+      display: grid;
+      grid-template-columns: 78px 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .age-input-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .age-input-row input[type="text"],
+    .age-input-row input[type="number"] {
+      min-width: 0;
+      height: 37px;
+      padding: 6px 7px;
+      font-size: 11px;
+    }
+
+    .age-input-row input[type="number"] {
+      text-align: right;
+    }
+
+    /* Checkboxes */
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+
+    .option-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .option-row input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      margin: 0;
+      accent-color: var(--lime);
+      cursor: pointer;
+    }
+
+    .option-row label {
+      margin: 0;
+      color: #d0d0cb;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Error state */
+
+    .error {
+      display: none;
+      margin: 13px 0 0;
+      padding: 11px;
+      color: var(--error);
+      background: rgba(255, 119, 119, 0.08);
+      border-left: 2px solid var(--error);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .error.visible {
+      display: block;
+    }
+
+    /* Export buttons */
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    button {
+      min-height: 46px;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition:
+        transform 180ms ease,
+        background 180ms ease,
+        color 180ms ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .svg-button {
+      color: var(--white);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .svg-button:hover:not(:disabled) {
+      color: var(--black);
+      background: var(--white);
+    }
+
+    .png-button {
+      color: var(--black);
+      background: var(--lime);
+      border: 1px solid var(--lime);
+    }
+
+    .png-button:hover:not(:disabled) {
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.35;
+    }
+
+    .privacy-note {
+      margin: 18px 2px 0;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    /* Preview */
+
+    .preview {
+      position: relative;
+      min-width: 0;
+      height: calc(100vh - var(--nav-height));
+      padding: 76px 42px 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+
+      background:
+        linear-gradient(45deg, #1c1c1a 25%, transparent 25%),
+        linear-gradient(-45deg, #1c1c1a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1c1c1a 75%),
+        linear-gradient(-45deg, transparent 75%, #1c1c1a 75%),
+        #242421;
+
+      background-size: 26px 26px;
+      background-position:
+        0 0,
+        0 13px,
+        13px -13px,
+        -13px 0;
+    }
+
+    .preview-header {
+      position: absolute;
+      top: 22px;
+      left: 28px;
+      right: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .transparent-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .transparent-swatch {
+      width: 13px;
+      height: 13px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background:
+        linear-gradient(45deg, #777 25%, transparent 25%),
+        linear-gradient(-45deg, #777 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #777 75%),
+        linear-gradient(-45deg, transparent 75%, #777 75%),
+        #aaa;
+      background-size: 6px 6px;
+    }
+
+    .diagram-frame {
+      width: min(100%, 1080px);
+      aspect-ratio: 16 / 9;
+    }
+
+    #butterfly-svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.22));
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .application {
+        height: auto;
+        display: block;
+        overflow: visible;
+      }
+
+      .controls {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .controls h1 {
+        max-width: none;
+      }
+
+      .preview {
+        min-height: 650px;
+        height: auto;
+      }
+    }
+
+    @media (max-width: 580px) {
+      :root {
+        --nav-height: 66px;
+      }
+
+      .nav {
+        padding: 0 16px;
+      }
+
+      .brand-name span,
+      .tool-status {
+        display: none;
+      }
+
+      .home-link {
+        min-height: 38px;
+        padding: 0 13px;
+        font-size: 9px;
+      }
+
+      .controls {
+        padding: 26px 18px 30px;
+      }
+
+      .controls h1 {
+        font-size: 29px;
+      }
+
+      .preview {
+        min-height: 470px;
+        padding: 65px 16px 20px;
+      }
+
+      .preview-header {
+        top: 20px;
+        left: 18px;
+        right: 18px;
+      }
+
+      .preview-header > span:first-child {
+        display: none;
+      }
+
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .age-inputs-header,
+      .age-input-row {
+        grid-template-columns: 68px 1fr 1fr;
+        gap: 5px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav">
+    <a class="brand" href="../../" aria-label="Return to the Visual Intelligence Lab homepage">
+      <span class="brand-mark">G</span>
+
+      <span class="brand-name">
+        goat <span>/ Visual Intelligence Lab</span>
+      </span>
+    </a>
+
+    <div class="nav-meta">
+      <span class="tool-status">
+        <span class="status-dot"></span>
+        Tool online
+      </span>
+
+      <a class="home-link" href="../../">
+        ← Back home
+      </a>
+    </div>
+  </nav>
+
+  <div class="application">
+    <aside class="controls">
+      <span class="tool-number">
+        Tool 02 / Audience comparison
+      </span>
+
+      <h1>
+        Audience age<br>
+        butterfly chart
+      </h1>
+
+      <p class="controls-intro">
+        Compare the age distribution of two audiences. Enter the percentage
+        of each account’s followers in each age group and the bars will extend
+        outwards from the centre.
+      </p>
+
+      <section class="control-section">
+        <h2>Accounts</h2>
+
+        <div class="field">
+          <label for="account-one-name">
+            Left account
+          </label>
+
+          <input id="account-one-name" type="text" value="Betfair Casino">
+        </div>
+
+        <div class="field">
+          <label for="account-two-name">
+            Right account
+          </label>
+
+          <input id="account-two-name" type="text" value="PlayOJO">
+        </div>
+      </section>
+
+      <section class="control-section">
+        <h2>Age-group percentages</h2>
+
+        <div class="age-inputs-header" aria-hidden="true">
+          <span>Age</span>
+          <span>Left %</span>
+          <span>Right %</span>
+        </div>
+
+        <div id="age-input-container">
+          <div class="age-input-row">
+            <input class="age-label-input" type="text" value="13–17" aria-label="First age group">
+
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="2.55" aria-label="Left account percentage for ages 13 to 17">
+
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="1.16" aria-label="Right account percentage for ages 13 to 17">
+          </div>
+
+          <div class="age-input-row">
+            <input class="age-label-input" type="text" value="18–24" aria-label="Second age group">
+
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="24.18" aria-label="Left account percentage for ages 18 to 24">
+
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="12.93" aria-label="Right account percentage for ages 18 to 24">
+          </div>
+
+          <div class="age-input-row">
+            <input class="age-label-input" type="text" value="25–34" aria-label="Third age group">
+
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="39.96" aria-label="Left account percentage for ages 25 to 34">
+
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="46.85" aria-label="Right account percentage for ages 25 to 34">
+          </div>
+
+          <div class="age-input-row">
+            <input class="age-label-input" type="text" value="35–44" aria-label="Fourth age group">
+
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="22.06" aria-label="Left account percentage for ages 35 to 44">
+
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="29.81" aria-label="Right account percentage for ages 35 to 44">
+          </div>
+
+          <div class="age-input-row">
+            <input class="age-label-input" type="text" value="45–64" aria-label="Fifth age group">
+
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="10.95" aria-label="Left account percentage for ages 45 to 64">
+
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="9.01" aria-label="Right account percentage for ages 45 to 64">
+          </div>
+
+          <div class="age-input-row">
+            <input class="age-label-input" type="text" value="65+" aria-label="Sixth age group">
+
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="0.30" aria-label="Left account percentage for ages 65 and over">
+
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="0.25" aria-label="Right account percentage for ages 65 and over">
+          </div>
+        </div>
+
+        <p id="value-error" class="error" role="alert">
+          Each value must be between 0% and 100%.
+        </p>
+      </section>
+
+      <section class="control-section">
+        <h2>Scale and colours</h2>
+
+        <div class="field">
+          <label for="chart-maximum">
+            Maximum axis value (%)
+          </label>
+
+          <input id="chart-maximum" type="number" min="1" max="100" step="1" value="50">
+        </div>
+
+        <div class="colour-grid">
+          <div class="field">
+            <label for="left-colour">
+              Left bars
+            </label>
+
+            <input id="left-colour" type="color" value="#ff3d0a">
+          </div>
+
+          <div class="field">
+            <label for="right-colour">
+              Right bars
+            </label>
+
+            <input id="right-colour" type="color" value="#f7f7f2">
+          </div>
+        </div>
+
+        <div class="colour-grid">
+          <div class="field">
+            <label for="outline-colour">
+              Outline
+            </label>
+
+            <input id="outline-colour" type="color" value="#080808">
+          </div>
+
+          <div class="field">
+            <label for="text-colour">
+              Text
+            </label>
+
+            <input id="text-colour" type="color" value="#080808">
+          </div>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <h2>Display options</h2>
+
+        <div class="option-row">
+          <input id="show-headings" type="checkbox" checked="">
+
+          <label for="show-headings">
+            Show account headings
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="show-values" type="checkbox" checked="">
+
+          <label for="show-values">
+            Show percentage labels
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="show-gridlines" type="checkbox" checked="">
+
+          <label for="show-gridlines">
+            Show gridlines
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="show-outlines" type="checkbox" checked="">
+
+          <label for="show-outlines">
+            Show bar outlines
+          </label>
+        </div>
+      </section>
+
+      <div class="buttons">
+        <button id="export-svg" class="svg-button" type="button">
+          Export SVG
+        </button>
+
+        <button id="export-png" class="png-button" type="button">
+          Export PNG
+        </button>
+      </div>
+
+      <p class="privacy-note">
+        All calculations and exports happen locally in your browser. Values
+        are not uploaded or stored by this page.
+      </p>
+    </aside>
+
+    <main class="preview">
+      <div class="preview-header">
+        <span>Live output / 1200 × 675</span>
+
+        <span class="transparent-label">
+          <span class="transparent-swatch"></span>
+          Transparent background
+        </span>
+      </div>
+
+      <div class="diagram-frame">
+        <svg id="butterfly-svg" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Audience age butterfly chart">
+          <g id="chart-root"></g>
+        </svg>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const SVG_WIDTH = 1200;
+    const SVG_HEIGHT = 675;
+
+    const LEFT_AXIS_X = 535;
+    const RIGHT_AXIS_X = 665;
+    const AGE_LABEL_X = 600;
+
+    const MAX_BAR_WIDTH = 410;
+    const BAR_HEIGHT = 46;
+    const FIRST_ROW_Y = 144;
+    const ROW_GAP = 82;
+
+    const SVG_NS = "http://www.w3.org/2000/svg";
+
+    const accountOneNameInput =
+      document.getElementById("account-one-name");
+
+    const accountTwoNameInput =
+      document.getElementById("account-two-name");
+
+    const chartMaximumInput =
+      document.getElementById("chart-maximum");
+
+    const leftColourInput =
+      document.getElementById("left-colour");
+
+    const rightColourInput =
+      document.getElementById("right-colour");
+
+    const outlineColourInput =
+      document.getElementById("outline-colour");
+
+    const textColourInput =
+      document.getElementById("text-colour");
+
+    const showHeadingsInput =
+      document.getElementById("show-headings");
+
+    const showValuesInput =
+      document.getElementById("show-values");
+
+    const showGridlinesInput =
+      document.getElementById("show-gridlines");
+
+    const showOutlinesInput =
+      document.getElementById("show-outlines");
+
+    const ageLabelInputs = Array.from(
+      document.querySelectorAll(".age-label-input")
+    );
+
+    const leftValueInputs = Array.from(
+      document.querySelectorAll(".left-value-input")
+    );
+
+    const rightValueInputs = Array.from(
+      document.querySelectorAll(".right-value-input")
+    );
+
+    const valueError =
+      document.getElementById("value-error");
+
+    const svg =
+      document.getElementById("butterfly-svg");
+
+    const chartRoot =
+      document.getElementById("chart-root");
+
+    const exportSvgButton =
+      document.getElementById("export-svg");
+
+    const exportPngButton =
+      document.getElementById("export-png");
+
+    function createSvgElement(elementName, attributes = {}) {
+      const element = document.createElementNS(
+        SVG_NS,
+        elementName
+      );
+
+      Object.entries(attributes).forEach(
+        ([attribute, value]) => {
+          element.setAttribute(attribute, value);
+        }
+      );
+
+      return element;
+    }
+
+    function readNumber(input) {
+      const value = Number(input.value);
+
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function formatPercentage(value) {
+      if (value === 0) {
+        return "0%";
+      }
+
+      if (Number.isInteger(value)) {
+        return `${value}%`;
+      }
+
+      return `${value.toFixed(1)}%`;
+    }
+
+    function validateData() {
+      const values = [
+        ...leftValueInputs.map(readNumber),
+        ...rightValueInputs.map(readNumber)
+      ];
+
+      const chartMaximum =
+        readNumber(chartMaximumInput);
+
+      const valuesValid = values.every(
+        value => value >= 0 && value <= 100
+      );
+
+      const maximumValid =
+        chartMaximum > 0 &&
+        chartMaximum <= 100;
+
+      const allValuesFit = values.every(
+        value => value <= chartMaximum
+      );
+
+      const valid =
+        valuesValid &&
+        maximumValid &&
+        allValuesFit;
+
+      if (!valuesValid) {
+        valueError.textContent =
+          "Each value must be between 0% and 100%.";
+      } else if (!maximumValid) {
+        valueError.textContent =
+          "The maximum axis value must be between 1% and 100%.";
+      } else if (!allValuesFit) {
+        valueError.textContent =
+          "The maximum axis value must be at least as high as the largest age-group value.";
+      }
+
+      valueError.classList.toggle(
+        "visible",
+        !valid
+      );
+
+      exportSvgButton.disabled = !valid;
+      exportPngButton.disabled = !valid;
+
+      return valid;
+    }
+
+    function addText({
+      x,
+      y,
+      text,
+      anchor = "middle",
+      size = 18,
+      weight = 700,
+      fill = "#080808",
+      opacity = 1,
+      letterSpacing = 0
+    }) {
+      const textElement = createSvgElement(
+        "text",
+        {
+          x,
+          y,
+          "text-anchor": anchor,
+          "font-family": "Arial, Helvetica, sans-serif",
+          "font-size": size,
+          "font-weight": weight,
+          fill,
+          opacity,
+          "letter-spacing": letterSpacing
+        }
+      );
+
+      textElement.textContent = text;
+      chartRoot.appendChild(textElement);
+
+      return textElement;
+    }
+
+    function updateChart() {
+      if (!validateData()) {
+        return;
+      }
+
+      chartRoot.replaceChildren();
+
+      const accountOneName =
+        accountOneNameInput.value.trim() ||
+        "Account 1";
+
+      const accountTwoName =
+        accountTwoNameInput.value.trim() ||
+        "Account 2";
+
+      const ageLabels = ageLabelInputs.map(
+        input => input.value.trim() || "Age"
+      );
+
+      const leftValues =
+        leftValueInputs.map(readNumber);
+
+      const rightValues =
+        rightValueInputs.map(readNumber);
+
+      const chartMaximum =
+        readNumber(chartMaximumInput);
+
+      const leftColour =
+        leftColourInput.value;
+
+      const rightColour =
+        rightColourInput.value;
+
+      const outlineColour =
+        outlineColourInput.value;
+
+      const textColour =
+        textColourInput.value;
+
+      const showHeadings =
+        showHeadingsInput.checked;
+
+      const showValues =
+        showValuesInput.checked;
+
+      const showGridlines =
+        showGridlinesInput.checked;
+
+      const showOutlines =
+        showOutlinesInput.checked;
+
+      const outlineWidth =
+        showOutlines ? 3 : 0;
+
+      if (showHeadings) {
+        addText({
+          x: 315,
+          y: 58,
+          text: accountOneName,
+          size: 25,
+          weight: 800,
+          fill: textColour
+        });
+
+        addText({
+          x: 885,
+          y: 58,
+          text: accountTwoName,
+          size: 25,
+          weight: 800,
+          fill: textColour
+        });
+
+        addText({
+          x: 315,
+          y: 84,
+          text: "FOLLOWERS",
+          size: 12,
+          weight: 700,
+          fill: textColour,
+          opacity: 0.62,
+          letterSpacing: 2
+        });
+
+        addText({
+          x: 885,
+          y: 84,
+          text: "FOLLOWERS",
+          size: 12,
+          weight: 700,
+          fill: textColour,
+          opacity: 0.62,
+          letterSpacing: 2
+        });
+      }
+
+      if (showGridlines) {
+        const numberOfIntervals = 5;
+
+        for (
+          let index = 0;
+          index <= numberOfIntervals;
+          index++
+        ) {
+          const ratio =
+            index / numberOfIntervals;
+
+          const distance =
+            MAX_BAR_WIDTH * ratio;
+
+          const scaleValue =
+            chartMaximum * ratio;
+
+          const leftX =
+            LEFT_AXIS_X - distance;
+
+          const rightX =
+            RIGHT_AXIS_X + distance;
+
+          const gridTop = 109;
+          const gridBottom = 608;
+
+          if (index > 0) {
+            const leftLine = createSvgElement(
+              "line",
+              {
+                x1: leftX,
+                y1: gridTop,
+                x2: leftX,
+                y2: gridBottom,
+                stroke: textColour,
+                "stroke-width": 1,
+                "stroke-opacity": 0.15,
+                "stroke-dasharray": "5 6"
+              }
+            );
+
+            const rightLine = createSvgElement(
+              "line",
+              {
+                x1: rightX,
+                y1: gridTop,
+                x2: rightX,
+                y2: gridBottom,
+                stroke: textColour,
+                "stroke-width": 1,
+                "stroke-opacity": 0.15,
+                "stroke-dasharray": "5 6"
+              }
+            );
+
+            chartRoot.appendChild(leftLine);
+            chartRoot.appendChild(rightLine);
+          }
+
+          addText({
+            x: leftX,
+            y: 632,
+            text: `${scaleValue.toFixed(0)}%`,
+            size: 11,
+            weight: 600,
+            fill: textColour,
+            opacity: 0.65
+          });
+
+          addText({
+            x: rightX,
+            y: 632,
+            text: `${scaleValue.toFixed(0)}%`,
+            size: 11,
+            weight: 600,
+            fill: textColour,
+            opacity: 0.65
+          });
+        }
+      }
+
+      const leftAxis = createSvgElement(
+        "line",
+        {
+          x1: LEFT_AXIS_X,
+          y1: 109,
+          x2: LEFT_AXIS_X,
+          y2: 608,
+          stroke: textColour,
+          "stroke-width": 2,
+          "stroke-opacity": 0.65
+        }
+      );
+
+      const rightAxis = createSvgElement(
+        "line",
+        {
+          x1: RIGHT_AXIS_X,
+          y1: 109,
+          x2: RIGHT_AXIS_X,
+          y2: 608,
+          stroke: textColour,
+          "stroke-width": 2,
+          "stroke-opacity": 0.65
+        }
+      );
+
+      chartRoot.appendChild(leftAxis);
+      chartRoot.appendChild(rightAxis);
+
+      ageLabels.forEach((ageLabel, index) => {
+        const centreY =
+          FIRST_ROW_Y +
+          index * ROW_GAP;
+
+        const leftValue =
+          leftValues[index];
+
+        const rightValue =
+          rightValues[index];
+
+        const leftWidth = Math.max(
+          0,
+          (leftValue / chartMaximum) *
+          MAX_BAR_WIDTH
+        );
+
+        const rightWidth = Math.max(
+          0,
+          (rightValue / chartMaximum) *
+          MAX_BAR_WIDTH
+        );
+
+        const leftBar = createSvgElement(
+          "rect",
+          {
+            x: LEFT_AXIS_X - leftWidth,
+            y: centreY - BAR_HEIGHT / 2,
+            width: leftWidth,
+            height: BAR_HEIGHT,
+            fill: leftColour,
+            stroke: outlineColour,
+            "stroke-width": outlineWidth
+          }
+        );
+
+        const rightBar = createSvgElement(
+          "rect",
+          {
+            x: RIGHT_AXIS_X,
+            y: centreY - BAR_HEIGHT / 2,
+            width: rightWidth,
+            height: BAR_HEIGHT,
+            fill: rightColour,
+            stroke: outlineColour,
+            "stroke-width": outlineWidth
+          }
+        );
+
+        chartRoot.appendChild(leftBar);
+        chartRoot.appendChild(rightBar);
+
+        const labelBackground =
+          createSvgElement(
+            "rect",
+            {
+              x: 544,
+              y: centreY - 23,
+              width: 112,
+              height: 46,
+              fill: "#f7f7f2",
+              "fill-opacity": 0.96,
+              stroke: outlineColour,
+              "stroke-width": 2
+            }
+          );
+
+        chartRoot.appendChild(labelBackground);
+
+        addText({
+          x: AGE_LABEL_X,
+          y: centreY + 7,
+          text: ageLabel,
+          size: 18,
+          weight: 800,
+          fill: textColour
+        });
+
+        if (showValues) {
+          const leftLabelInside =
+            leftWidth > 85;
+
+          const rightLabelInside =
+            rightWidth > 85;
+
+          const leftLabelX =
+            leftLabelInside
+              ? LEFT_AXIS_X - leftWidth + 15
+              : LEFT_AXIS_X - leftWidth - 10;
+
+          const rightLabelX =
+            rightLabelInside
+              ? RIGHT_AXIS_X + rightWidth - 15
+              : RIGHT_AXIS_X + rightWidth + 10;
+
+          addText({
+            x: leftLabelX,
+            y: centreY + 7,
+            text: formatPercentage(leftValue),
+            anchor:
+              leftLabelInside
+                ? "start"
+                : "end",
+            size: 15,
+            weight: 800,
+            fill: textColour
+          });
+
+          addText({
+            x: rightLabelX,
+            y: centreY + 7,
+            text: formatPercentage(rightValue),
+            anchor:
+              rightLabelInside
+                ? "end"
+                : "start",
+            size: 15,
+            weight: 800,
+            fill: textColour
+          });
+        }
+      });
+    }
+
+    function createStandaloneSVG() {
+      const clone = svg.cloneNode(true);
+
+      clone.setAttribute(
+        "width",
+        SVG_WIDTH
+      );
+
+      clone.setAttribute(
+        "height",
+        SVG_HEIGHT
+      );
+
+      clone.setAttribute(
+        "xmlns",
+        SVG_NS
+      );
+
+      return new XMLSerializer()
+        .serializeToString(clone);
+    }
+
+    function downloadBlob(blob, filename) {
+      const url =
+        URL.createObjectURL(blob);
+
+      const link =
+        document.createElement("a");
+
+      link.href = url;
+      link.download = filename;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
+    }
+
+    function exportSVG() {
+      const markup =
+        createStandaloneSVG();
+
+      const blob = new Blob(
+        [markup],
+        {
+          type: "image/svg+xml;charset=utf-8"
+        }
+      );
+
+      downloadBlob(
+        blob,
+        "Audience_Age_Butterfly_Chart.svg"
+      );
+    }
+
+    function exportPNG() {
+      const markup =
+        createStandaloneSVG();
+
+      const blob = new Blob(
+        [markup],
+        {
+          type: "image/svg+xml;charset=utf-8"
+        }
+      );
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const image =
+        new Image();
+
+      image.onload = () => {
+        const scale = 2;
+
+        const canvas =
+          document.createElement("canvas");
+
+        canvas.width =
+          SVG_WIDTH * scale;
+
+        canvas.height =
+          SVG_HEIGHT * scale;
+
+        const context =
+          canvas.getContext("2d");
+
+        context.clearRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        context.drawImage(
+          image,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        URL.revokeObjectURL(url);
+
+        canvas.toBlob(
+          pngBlob => {
+            if (!pngBlob) {
+              alert(
+                "The PNG could not be generated."
+              );
+
+              return;
+            }
+
+            downloadBlob(
+              pngBlob,
+              "Audience_Age_Butterfly_Chart.png"
+            );
+          },
+          "image/png"
+        );
+      };
+
+      image.onerror = () => {
+        URL.revokeObjectURL(url);
+
+        alert(
+          "The PNG could not be generated."
+        );
+      };
+
+      image.src = url;
+    }
+
+    const allInputs = [
+      accountOneNameInput,
+      accountTwoNameInput,
+      chartMaximumInput,
+      leftColourInput,
+      rightColourInput,
+      outlineColourInput,
+      textColourInput,
+      showHeadingsInput,
+      showValuesInput,
+      showGridlinesInput,
+      showOutlinesInput,
+      ...ageLabelInputs,
+      ...leftValueInputs,
+      ...rightValueInputs
+    ];
+
+    allInputs.forEach(input => {
+      input.addEventListener(
+        "input",
+        updateChart
+      );
+
+      input.addEventListener(
+        "change",
+        updateChart
+      );
+    });
+
+    exportSvgButton.addEventListener(
+      "click",
+      exportSVG
+    );
+
+    exportPngButton.addEventListener(
+      "click",
+      exportPNG
+    );
+
+    updateChart();
+  </script>
+
+</body></html>
