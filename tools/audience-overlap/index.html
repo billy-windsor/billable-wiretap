@@ -1,0 +1,1122 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Audience Overlap — Visual Intelligence Lab</title>
+
+  <meta name="description" content="Create and export a proportional audience overlap visualisation.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --black: #080808;
+      --soft-black: #11110f;
+      --panel: #191917;
+      --panel-light: #242421;
+      --white: #f7f7f2;
+      --grey: #b9b9b2;
+      --dark-grey: #73736e;
+      --orange: #ff3d0a;
+      --lime: #a8ff37;
+      --error: #ff7777;
+      --line: rgba(255, 255, 255, 0.16);
+      --navigation-height: 72px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
+      color: var(--white);
+      background: var(--black);
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Navigation */
+
+    .nav {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--navigation-height);
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      color: var(--black);
+      background: var(--lime);
+      border-radius: 50%;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 18px;
+    }
+
+    .brand-name {
+      font-family: "Archivo Black", sans-serif;
+      font-size: 17px;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+    }
+
+    .brand-name span {
+      color: var(--grey);
+      font-family: "Inter", sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .nav-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .tool-status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--lime);
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(168, 255, 55, 0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      70% {
+        box-shadow: 0 0 0 10px rgba(168, 255, 55, 0);
+      }
+    }
+
+    .home-link {
+      min-height: 40px;
+      padding: 0 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--black);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition:
+        transform 180ms ease,
+        background 180ms ease;
+    }
+
+    .home-link:hover {
+      background: var(--lime);
+      transform: translateY(-2px);
+    }
+
+    /* Application layout */
+
+    .application {
+      height: 100vh;
+      padding-top: var(--navigation-height);
+      display: grid;
+      grid-template-columns: 330px minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    /* Controls */
+
+    .controls {
+      height: calc(100vh - var(--navigation-height));
+      padding: 28px 24px 36px;
+      overflow-y: auto;
+      background: var(--soft-black);
+      border-right: 1px solid var(--line);
+      scrollbar-color: var(--orange) var(--soft-black);
+      scrollbar-width: thin;
+    }
+
+    .tool-number {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--orange);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .controls h1 {
+      max-width: 270px;
+      margin: 0;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+      text-transform: uppercase;
+    }
+
+    .introduction {
+      margin: 18px 0 28px;
+      color: var(--grey);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .control-section {
+      margin-bottom: 12px;
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .control-section:first-of-type {
+      border-top: 3px solid var(--orange);
+    }
+
+    .control-section h2 {
+      margin: 0 0 17px;
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    input {
+      width: 100%;
+      height: 44px;
+      padding: 9px 11px;
+      color: var(--white);
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 0;
+      outline: none;
+      transition:
+        border-color 180ms ease,
+        background 180ms ease;
+    }
+
+    input:hover {
+      border-color: rgba(255, 255, 255, 0.45);
+    }
+
+    input:focus {
+      background: var(--black);
+      border-color: var(--lime);
+    }
+
+    input[type="number"] {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    input[type="color"] {
+      height: 50px;
+      padding: 5px;
+      cursor: pointer;
+    }
+
+    .colour-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .colour-grid + .colour-grid {
+      margin-top: 13px;
+    }
+
+    .colour-grid .field {
+      margin: 0;
+    }
+
+    .error {
+      display: none;
+      margin: -5px 0 16px;
+      padding: 11px;
+      color: var(--error);
+      background: rgba(255, 119, 119, 0.08);
+      border-left: 2px solid var(--error);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .error.visible {
+      display: block;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    button {
+      min-height: 46px;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition:
+        transform 180ms ease,
+        background 180ms ease,
+        color 180ms ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .svg-button {
+      color: var(--white);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .svg-button:hover:not(:disabled) {
+      color: var(--black);
+      background: var(--white);
+    }
+
+    .png-button {
+      color: var(--black);
+      background: var(--lime);
+      border: 1px solid var(--lime);
+    }
+
+    .png-button:hover:not(:disabled) {
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.35;
+    }
+
+    .privacy-note {
+      margin: 18px 2px 0;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    /* Preview */
+
+    .preview {
+      position: relative;
+      min-width: 0;
+      height: calc(100vh - var(--navigation-height));
+      padding: 76px 42px 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+
+      background:
+        linear-gradient(45deg, #1c1c1a 25%, transparent 25%),
+        linear-gradient(-45deg, #1c1c1a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1c1c1a 75%),
+        linear-gradient(-45deg, transparent 75%, #1c1c1a 75%),
+        #242421;
+
+      background-size: 26px 26px;
+      background-position:
+        0 0,
+        0 13px,
+        13px -13px,
+        -13px 0;
+    }
+
+    .preview-header {
+      position: absolute;
+      top: 22px;
+      left: 28px;
+      right: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .transparent-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .transparent-swatch {
+      width: 13px;
+      height: 13px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background:
+        linear-gradient(45deg, #777 25%, transparent 25%),
+        linear-gradient(-45deg, #777 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #777 75%),
+        linear-gradient(-45deg, transparent 75%, #777 75%),
+        #aaa;
+      background-size: 6px 6px;
+    }
+
+    .diagram-frame {
+      position: relative;
+      width: min(100%, 1100px);
+      aspect-ratio: 16 / 9;
+    }
+
+    #venn-svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.22));
+    }
+
+    @media (max-width: 850px) {
+      body {
+        overflow: auto;
+      }
+
+      .application {
+        height: auto;
+        display: block;
+        overflow: visible;
+      }
+
+      .controls {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .controls h1 {
+        max-width: none;
+      }
+
+      .preview {
+        min-height: 620px;
+        height: auto;
+      }
+    }
+
+    @media (max-width: 580px) {
+      :root {
+        --navigation-height: 66px;
+      }
+
+      .nav {
+        padding: 0 16px;
+      }
+
+      .brand-name span,
+      .tool-status {
+        display: none;
+      }
+
+      .home-link {
+        min-height: 38px;
+        padding: 0 13px;
+        font-size: 9px;
+      }
+
+      .controls {
+        padding: 26px 18px 30px;
+      }
+
+      .controls h1 {
+        font-size: 29px;
+      }
+
+      .preview {
+        min-height: 470px;
+        padding: 65px 16px 20px;
+      }
+
+      .preview-header {
+        top: 20px;
+        left: 18px;
+        right: 18px;
+      }
+
+      .preview-header > span:first-child {
+        display: none;
+      }
+
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav">
+    <a class="brand" href="../../" aria-label="Return to the Visual Intelligence Lab homepage">
+      <span class="brand-mark">G</span>
+
+      <span class="brand-name">
+        goat <span>/ Visual Intelligence Lab</span>
+      </span>
+    </a>
+
+    <div class="nav-meta">
+      <span class="tool-status">
+        <span class="status-dot"></span>
+        Tool online
+      </span>
+
+      <a class="home-link" href="../../">
+        ← Back home
+      </a>
+    </div>
+  </nav>
+
+  <div class="application">
+    <aside class="controls">
+      <span class="tool-number">Tool 01 / Visualisation</span>
+
+      <h1>
+        Proportional<br>
+        audience overlap
+      </h1>
+
+      <p class="introduction">
+        Compare two audience sizes and visualise the proportion they share.
+        Circle area represents total audience size, while the highlighted
+        intersection represents the shared audience.
+      </p>
+
+      <section class="control-section">
+        <h2>Audience sizes</h2>
+
+        <div class="field">
+          <label for="size-one">Account 1 audience</label>
+
+          <input id="size-one" type="number" min="1" inputmode="numeric" value="20783">
+        </div>
+
+        <div class="field">
+          <label for="size-two">Account 2 audience</label>
+
+          <input id="size-two" type="number" min="1" inputmode="numeric" value="9586">
+        </div>
+
+        <div class="field">
+          <label for="overlap">Shared audience</label>
+
+          <input id="overlap" type="number" min="0" inputmode="numeric" value="51">
+        </div>
+
+        <div id="error" class="error" role="alert">
+          The shared audience cannot exceed either account, and both account
+          audiences must be greater than zero.
+        </div>
+      </section>
+
+      <section class="control-section">
+        <h2>Visual appearance</h2>
+
+        <div class="colour-grid">
+          <div class="field">
+            <label for="circle-one-colour">Account 1</label>
+
+            <input id="circle-one-colour" type="color" value="#ff3d0a">
+          </div>
+
+          <div class="field">
+            <label for="circle-two-colour">Account 2</label>
+
+            <input id="circle-two-colour" type="color" value="#f7f7f2">
+          </div>
+        </div>
+
+        <div class="colour-grid">
+          <div class="field">
+            <label for="overlap-colour">Overlap</label>
+
+            <input id="overlap-colour" type="color" value="#a8ff37">
+          </div>
+
+          <div class="field">
+            <label for="outline-colour">Outlines</label>
+
+            <input id="outline-colour" type="color" value="#080808">
+          </div>
+        </div>
+      </section>
+
+      <div class="buttons">
+        <button id="export-svg" class="svg-button" type="button">
+          Export SVG
+        </button>
+
+        <button id="export-png" class="png-button" type="button">
+          Export PNG
+        </button>
+      </div>
+
+      <p class="privacy-note">
+        All calculations and exports happen locally in your browser. Values are
+        not uploaded or stored by this page.
+      </p>
+    </aside>
+
+    <main class="preview">
+      <div class="preview-header">
+        <span>Live output / 1200 × 675</span>
+
+        <span class="transparent-label">
+          <span class="transparent-swatch"></span>
+          Transparent background
+        </span>
+      </div>
+
+      <div class="diagram-frame">
+        <svg id="venn-svg" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Proportional audience overlap diagram">
+          <defs>
+            <clipPath id="account-one-clip" clipPathUnits="userSpaceOnUse">
+              <circle id="clip-circle-one" cx="400" cy="337.5" r="240"></circle>
+            </clipPath>
+          </defs>
+
+          <circle id="circle-one" cx="400" cy="337.5" r="240" fill="#ff3d0a"></circle>
+
+          <circle id="circle-two" cx="800" cy="337.5" r="163" fill="#f7f7f2"></circle>
+
+          <circle id="overlap-highlight" cx="800" cy="337.5" r="163" fill="#a8ff37" clip-path="url(#account-one-clip)"></circle>
+
+          <circle id="circle-one-outline" cx="400" cy="337.5" r="240" fill="none" stroke="#080808" stroke-width="4"></circle>
+
+          <circle id="circle-two-outline" cx="800" cy="337.5" r="163" fill="none" stroke="#080808" stroke-width="4"></circle>
+        </svg>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const SVG_WIDTH = 1200;
+    const SVG_HEIGHT = 675;
+    const MAX_RADIUS = 240;
+
+    const sizeOneInput = document.getElementById("size-one");
+    const sizeTwoInput = document.getElementById("size-two");
+    const overlapInput = document.getElementById("overlap");
+
+    const circleOneColourInput =
+      document.getElementById("circle-one-colour");
+
+    const circleTwoColourInput =
+      document.getElementById("circle-two-colour");
+
+    const overlapColourInput =
+      document.getElementById("overlap-colour");
+
+    const outlineColourInput =
+      document.getElementById("outline-colour");
+
+    const error = document.getElementById("error");
+    const exportSvgButton = document.getElementById("export-svg");
+    const exportPngButton = document.getElementById("export-png");
+
+    const svg = document.getElementById("venn-svg");
+    const circleOne = document.getElementById("circle-one");
+    const circleTwo = document.getElementById("circle-two");
+    const clipCircleOne = document.getElementById("clip-circle-one");
+
+    const overlapHighlight =
+      document.getElementById("overlap-highlight");
+
+    const circleOneOutline =
+      document.getElementById("circle-one-outline");
+
+    const circleTwoOutline =
+      document.getElementById("circle-two-outline");
+
+    function readNumber(input) {
+      const value = Number(input.value);
+
+      return Number.isFinite(value) && value >= 0
+        ? value
+        : 0;
+    }
+
+    function intersectionArea(radiusOne, radiusTwo, distance) {
+      if (distance >= radiusOne + radiusTwo) {
+        return 0;
+      }
+
+      if (distance <= Math.abs(radiusOne - radiusTwo)) {
+        return (
+          Math.PI *
+          Math.pow(Math.min(radiusOne, radiusTwo), 2)
+        );
+      }
+
+      const radiusOneSquared = radiusOne * radiusOne;
+      const radiusTwoSquared = radiusTwo * radiusTwo;
+      const distanceSquared = distance * distance;
+
+      const cosineOne =
+        (
+          distanceSquared +
+          radiusOneSquared -
+          radiusTwoSquared
+        ) /
+        (2 * distance * radiusOne);
+
+      const cosineTwo =
+        (
+          distanceSquared +
+          radiusTwoSquared -
+          radiusOneSquared
+        ) /
+        (2 * distance * radiusTwo);
+
+      const clampedCosineOne =
+        Math.max(-1, Math.min(1, cosineOne));
+
+      const clampedCosineTwo =
+        Math.max(-1, Math.min(1, cosineTwo));
+
+      const angleOne =
+        2 * Math.acos(clampedCosineOne);
+
+      const angleTwo =
+        2 * Math.acos(clampedCosineTwo);
+
+      const segmentOne =
+        0.5 *
+        radiusOneSquared *
+        (angleOne - Math.sin(angleOne));
+
+      const segmentTwo =
+        0.5 *
+        radiusTwoSquared *
+        (angleTwo - Math.sin(angleTwo));
+
+      return segmentOne + segmentTwo;
+    }
+
+    function solveDistance(radiusOne, radiusTwo, targetArea) {
+      const maximumOverlap =
+        Math.PI *
+        Math.pow(Math.min(radiusOne, radiusTwo), 2);
+
+      if (targetArea <= 0) {
+        return radiusOne + radiusTwo;
+      }
+
+      if (targetArea >= maximumOverlap) {
+        return Math.abs(radiusOne - radiusTwo);
+      }
+
+      let minimumDistance =
+        Math.abs(radiusOne - radiusTwo);
+
+      let maximumDistance =
+        radiusOne + radiusTwo;
+
+      for (let index = 0; index < 80; index++) {
+        const midpoint =
+          (minimumDistance + maximumDistance) / 2;
+
+        const currentArea =
+          intersectionArea(
+            radiusOne,
+            radiusTwo,
+            midpoint
+          );
+
+        if (currentArea > targetArea) {
+          minimumDistance = midpoint;
+        } else {
+          maximumDistance = midpoint;
+        }
+      }
+
+      return (minimumDistance + maximumDistance) / 2;
+    }
+
+    function updateCircle(element, centreX, centreY, radius) {
+      element.setAttribute("cx", centreX);
+      element.setAttribute("cy", centreY);
+      element.setAttribute("r", radius);
+    }
+
+    function updateColours() {
+      circleOne.setAttribute(
+        "fill",
+        circleOneColourInput.value
+      );
+
+      circleTwo.setAttribute(
+        "fill",
+        circleTwoColourInput.value
+      );
+
+      overlapHighlight.setAttribute(
+        "fill",
+        overlapColourInput.value
+      );
+
+      circleOneOutline.setAttribute(
+        "stroke",
+        outlineColourInput.value
+      );
+
+      circleTwoOutline.setAttribute(
+        "stroke",
+        outlineColourInput.value
+      );
+    }
+
+    function updateDiagram() {
+      const sizeOne = readNumber(sizeOneInput);
+      const sizeTwo = readNumber(sizeTwoInput);
+      const shared = readNumber(overlapInput);
+
+      const valid =
+        sizeOne > 0 &&
+        sizeTwo > 0 &&
+        shared <= sizeOne &&
+        shared <= sizeTwo;
+
+      error.classList.toggle("visible", !valid);
+      exportSvgButton.disabled = !valid;
+      exportPngButton.disabled = !valid;
+
+      if (!valid) {
+        return;
+      }
+
+      const largestAudience =
+        Math.max(sizeOne, sizeTwo);
+
+      const radiusOne =
+        MAX_RADIUS *
+        Math.sqrt(sizeOne / largestAudience);
+
+      const radiusTwo =
+        MAX_RADIUS *
+        Math.sqrt(sizeTwo / largestAudience);
+
+      const areaPerPerson =
+        (
+          Math.PI *
+          radiusOne *
+          radiusOne
+        ) / sizeOne;
+
+      const targetOverlapArea =
+        shared * areaPerPerson;
+
+      const distance =
+        solveDistance(
+          radiusOne,
+          radiusTwo,
+          targetOverlapArea
+        );
+
+      const diagramWidth =
+        radiusOne +
+        distance +
+        radiusTwo;
+
+      const leftEdge =
+        (SVG_WIDTH - diagramWidth) / 2;
+
+      const centreY =
+        SVG_HEIGHT / 2;
+
+      const centreOneX =
+        leftEdge + radiusOne;
+
+      const centreTwoX =
+        centreOneX + distance;
+
+      updateCircle(
+        circleOne,
+        centreOneX,
+        centreY,
+        radiusOne
+      );
+
+      updateCircle(
+        circleTwo,
+        centreTwoX,
+        centreY,
+        radiusTwo
+      );
+
+      updateCircle(
+        clipCircleOne,
+        centreOneX,
+        centreY,
+        radiusOne
+      );
+
+      updateCircle(
+        overlapHighlight,
+        centreTwoX,
+        centreY,
+        radiusTwo
+      );
+
+      overlapHighlight.style.display =
+        shared > 0 ? "block" : "none";
+
+      updateCircle(
+        circleOneOutline,
+        centreOneX,
+        centreY,
+        radiusOne
+      );
+
+      updateCircle(
+        circleTwoOutline,
+        centreTwoX,
+        centreY,
+        radiusTwo
+      );
+
+      updateColours();
+    }
+
+    function createStandaloneSVG() {
+      const clone = svg.cloneNode(true);
+
+      clone.setAttribute("width", SVG_WIDTH);
+      clone.setAttribute("height", SVG_HEIGHT);
+
+      clone.setAttribute(
+        "xmlns",
+        "http://www.w3.org/2000/svg"
+      );
+
+      return new XMLSerializer()
+        .serializeToString(clone);
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = filename;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
+    }
+
+    function exportSVG() {
+      const markup = createStandaloneSVG();
+
+      const blob = new Blob(
+        [markup],
+        {
+          type: "image/svg+xml;charset=utf-8"
+        }
+      );
+
+      downloadBlob(
+        blob,
+        "Proportional_Audience_Overlap.svg"
+      );
+    }
+
+    function exportPNG() {
+      const markup = createStandaloneSVG();
+
+      const blob = new Blob(
+        [markup],
+        {
+          type: "image/svg+xml;charset=utf-8"
+        }
+      );
+
+      const url = URL.createObjectURL(blob);
+      const image = new Image();
+
+      image.onload = () => {
+        const scale = 2;
+        const canvas = document.createElement("canvas");
+
+        canvas.width = SVG_WIDTH * scale;
+        canvas.height = SVG_HEIGHT * scale;
+
+        const context = canvas.getContext("2d");
+
+        context.clearRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        context.drawImage(
+          image,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        URL.revokeObjectURL(url);
+
+        canvas.toBlob((pngBlob) => {
+          if (!pngBlob) {
+            alert("The PNG could not be generated.");
+            return;
+          }
+
+          downloadBlob(
+            pngBlob,
+            "Proportional_Audience_Overlap.png"
+          );
+        }, "image/png");
+      };
+
+      image.onerror = () => {
+        URL.revokeObjectURL(url);
+        alert("The PNG could not be generated.");
+      };
+
+      image.src = url;
+    }
+
+    [
+      sizeOneInput,
+      sizeTwoInput,
+      overlapInput
+    ].forEach((input) => {
+      input.addEventListener(
+        "input",
+        updateDiagram
+      );
+    });
+
+    [
+      circleOneColourInput,
+      circleTwoColourInput,
+      overlapColourInput,
+      outlineColourInput
+    ].forEach((input) => {
+      input.addEventListener(
+        "input",
+        updateColours
+      );
+    });
+
+    exportSvgButton.addEventListener(
+      "click",
+      exportSVG
+    );
+
+    exportPngButton.addEventListener(
+      "click",
+      exportPNG
+    );
+
+    updateDiagram();
+  </script>
+
+</body></html>
