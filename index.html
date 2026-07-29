@@ -1,5 +1,6 @@
 <html lang="en"><head>
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Visual Intelligence Lab</title>
@@ -7,6 +8,7 @@
   <meta name="description" content="Experimental data visualisation tools for the intelligence team.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
@@ -86,6 +88,7 @@
       height: 40px;
       display: grid;
       place-items: center;
+      flex: 0 0 auto;
       color: var(--black);
       background: var(--lime);
       border-radius: 50%;
@@ -146,7 +149,7 @@
       font-family: "Archivo Black", sans-serif;
       font-size: 14px;
       text-transform: uppercase;
-      animation: marquee 20s linear infinite;
+      animation: marquee 24s linear infinite;
     }
 
     .announcement-track span {
@@ -173,7 +176,9 @@
       min-height: calc(100vh - 115px);
       padding: 72px 28px 32px;
       display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(380px, 0.85fr);
+      grid-template-columns:
+        minmax(0, 1.15fr)
+        minmax(380px, 0.85fr);
       align-items: center;
       gap: 34px;
       overflow: hidden;
@@ -374,7 +379,9 @@
 
     .section-header {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
+      grid-template-columns:
+        minmax(0, 1fr)
+        minmax(280px, 430px);
       gap: 40px;
       align-items: end;
       margin-bottom: 54px;
@@ -551,7 +558,9 @@
 
     .tools-header {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
+      grid-template-columns:
+        minmax(0, 1fr)
+        minmax(280px, 430px);
       gap: 40px;
       align-items: end;
       margin-bottom: 54px;
@@ -582,7 +591,7 @@
 
     .tools-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
     }
 
@@ -621,6 +630,11 @@
       background: var(--lime);
     }
 
+    .matrix-tool {
+      color: var(--black);
+      background: var(--white);
+    }
+
     .tool-card-top {
       position: relative;
       z-index: 3;
@@ -645,6 +659,11 @@
     .butterfly-tool .tool-status-label {
       color: var(--white);
       background: var(--black);
+    }
+
+    .matrix-tool .tool-status-label {
+      color: var(--black);
+      background: var(--orange);
     }
 
     .tool-visual {
@@ -679,7 +698,7 @@
     .tool-card h3 {
       margin: 0;
       font-family: "Archivo Black", sans-serif;
-      font-size: clamp(35px, 4.1vw, 67px);
+      font-size: clamp(32px, 3.25vw, 58px);
       font-weight: 400;
       line-height: 0.91;
       letter-spacing: -0.055em;
@@ -694,7 +713,8 @@
       line-height: 1.55;
     }
 
-    .butterfly-tool p {
+    .butterfly-tool p,
+    .matrix-tool p {
       color: rgba(0, 0, 0, 0.68);
     }
 
@@ -727,6 +747,86 @@
       background: var(--white);
     }
 
+    .matrix-tool .open-tool {
+      color: var(--white);
+      background: var(--black);
+    }
+
+    .matrix-tool:hover .open-tool {
+      color: var(--black);
+      background: var(--orange);
+    }
+
+    /* Brand matrix illustration */
+
+    .matrix-board {
+      width: 90%;
+      max-width: 470px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #ffffff;
+      border: 3px solid var(--black);
+      box-shadow: 14px 14px 0 var(--orange);
+      transform: rotate(-2deg);
+    }
+
+    .matrix-row {
+      min-height: 49px;
+      padding: 8px 11px;
+      display: grid;
+      grid-template-columns:
+        minmax(75px, 1.3fr)
+        repeat(3, minmax(35px, 0.55fr));
+      align-items: center;
+      gap: 8px;
+      color: var(--black);
+      background: #f1f1eb;
+      border: 1px solid #d1d1ca;
+      border-left: 7px solid var(--matrix-accent);
+    }
+
+    .matrix-row:nth-child(1) {
+      --matrix-accent: #4c34a9;
+    }
+
+    .matrix-row:nth-child(2) {
+      --matrix-accent: #b3205e;
+    }
+
+    .matrix-row:nth-child(3) {
+      --matrix-accent: #2b7955;
+    }
+
+    .matrix-row:nth-child(4) {
+      --matrix-accent: #ff3d0a;
+    }
+
+    .matrix-row:nth-child(5) {
+      --matrix-accent: #6d326d;
+    }
+
+    .matrix-name {
+      overflow: hidden;
+      color: var(--matrix-accent);
+      font-size: 11px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .matrix-value {
+      font-size: 11px;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .matrix-value.featured {
+      color: var(--matrix-accent);
+      font-size: 15px;
+    }
+
     /* Footer */
 
     footer {
@@ -739,6 +839,26 @@
       font-size: 10px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
+    }
+
+    /* Medium desktop */
+
+    @media (max-width: 1250px) {
+      .tools-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .matrix-tool {
+        grid-column: 1 / -1;
+      }
+
+      .matrix-tool .matrix-board {
+        max-width: 610px;
+      }
+
+      .tool-card h3 {
+        font-size: clamp(35px, 4.2vw, 62px);
+      }
     }
 
     /* Tablet */
@@ -763,6 +883,10 @@
 
       .tools-grid {
         grid-template-columns: 1fr;
+      }
+
+      .matrix-tool {
+        grid-column: auto;
       }
 
       .tool-card {
@@ -797,6 +921,10 @@
       .nav-links {
         gap: 15px;
         font-size: 9px;
+      }
+
+      .nav-links a:first-child {
+        display: none;
       }
 
       .hero {
@@ -893,6 +1021,31 @@
         display: inline-flex;
       }
 
+      .matrix-board {
+        width: 94%;
+        padding: 10px;
+        gap: 7px;
+        box-shadow: 8px 8px 0 var(--orange);
+      }
+
+      .matrix-row {
+        min-height: 40px;
+        padding: 6px 8px;
+        grid-template-columns:
+          minmax(60px, 1.2fr)
+          repeat(3, minmax(28px, 0.5fr));
+        gap: 5px;
+      }
+
+      .matrix-name,
+      .matrix-value {
+        font-size: 8px;
+      }
+
+      .matrix-value.featured {
+        font-size: 11px;
+      }
+
       footer {
         flex-direction: column;
       }
@@ -934,11 +1087,13 @@
       <span>Visualisation tools now available</span>
       <span>Audience overlap</span>
       <span>Butterfly diagrams</span>
+      <span>Brand performance matrix</span>
       <span>Connected data, clearly understood</span>
 
       <span>Visualisation tools now available</span>
       <span>Audience overlap</span>
       <span>Butterfly diagrams</span>
+      <span>Brand performance matrix</span>
       <span>Connected data, clearly understood</span>
     </div>
   </div>
@@ -1149,11 +1304,12 @@
         <p class="tools-introduction">
           A collection of practical visualisation tools built for the
           intelligence team. Each tool runs directly in the browser and
-          produces presentation-ready SVG and PNG exports.
+          produces presentation-ready visual exports.
         </p>
       </header>
 
       <div class="tools-grid">
+        <!-- Tool 01 -->
         <a class="tool-card audience-tool" href="tools/audience-overlap/" aria-label="Open the proportional audience overlap tool">
           <div class="tool-card-top">
             <span>Tool 01 / Audience analysis</span>
@@ -1199,6 +1355,7 @@
           </div>
         </a>
 
+        <!-- Tool 02 -->
         <a class="tool-card butterfly-tool" href="tools/butterfly-diagrams/" aria-label="Open the audience age butterfly chart tool">
           <div class="tool-card-top">
             <span>Tool 02 / Audience comparison</span>
@@ -1257,6 +1414,71 @@
             </span>
           </div>
         </a>
+
+        <!-- Tool 03 -->
+        <a class="tool-card matrix-tool" href="tools/brand-performance-matrix/" aria-label="Open the brand performance matrix tool">
+          <div class="tool-card-top">
+            <span>Tool 03 / Brand intelligence</span>
+            <span class="tool-status-label">Available now</span>
+          </div>
+
+          <div class="tool-visual matrix-visual" aria-hidden="true">
+            <div class="matrix-board">
+              <div class="matrix-row">
+                <span class="matrix-name">Brand one</span>
+                <span class="matrix-value">84%</span>
+                <span class="matrix-value">45M</span>
+                <span class="matrix-value featured">86%</span>
+              </div>
+
+              <div class="matrix-row">
+                <span class="matrix-name">Brand two</span>
+                <span class="matrix-value">7.7%</span>
+                <span class="matrix-value">4.1M</span>
+                <span class="matrix-value featured">6.6%</span>
+              </div>
+
+              <div class="matrix-row">
+                <span class="matrix-name">Brand three</span>
+                <span class="matrix-value">5.6%</span>
+                <span class="matrix-value">2.9M</span>
+                <span class="matrix-value featured">5.5%</span>
+              </div>
+
+              <div class="matrix-row">
+                <span class="matrix-name">Brand four</span>
+                <span class="matrix-value">1.6%</span>
+                <span class="matrix-value">851K</span>
+                <span class="matrix-value featured">1.1%</span>
+              </div>
+
+              <div class="matrix-row">
+                <span class="matrix-name">Brand five</span>
+                <span class="matrix-value">0.3%</span>
+                <span class="matrix-value">186K</span>
+                <span class="matrix-value featured">0.5%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tool-card-bottom">
+            <div>
+              <h3>
+                Brand performance<br>
+                matrix
+              </h3>
+
+              <p>
+                Edit, rank and compare brand performance metrics, customise
+                every label and colour, and export a presentation-ready PNG.
+              </p>
+            </div>
+
+            <span class="open-tool">
+              Open tool ↗
+            </span>
+          </div>
+        </a>
       </div>
     </section>
   </main>
@@ -1264,7 +1486,7 @@
   <footer>
     <span>Visual Intelligence Lab © 2026</span>
     <span>Experimental tools for connected thinking</span>
-    <span>Two tools available</span>
+    <span>Three tools available</span>
   </footer>
 
   <script>
@@ -1274,18 +1496,78 @@
       "http://www.w3.org/2000/svg";
 
     const nodes = [
-      { x: 90, y: 160, r: 13, colour: "lime" },
-      { x: 240, y: 100, r: 21, colour: "white" },
-      { x: 420, y: 145, r: 16, colour: "orange" },
-      { x: 510, y: 260, r: 11, colour: "white" },
-      { x: 340, y: 290, r: 29, colour: "lime" },
-      { x: 160, y: 330, r: 17, colour: "white" },
-      { x: 80, y: 480, r: 9, colour: "orange" },
-      { x: 270, y: 500, r: 20, colour: "white" },
-      { x: 460, y: 470, r: 14, colour: "lime" },
-      { x: 530, y: 590, r: 22, colour: "orange" },
-      { x: 320, y: 630, r: 10, colour: "white" },
-      { x: 130, y: 610, r: 15, colour: "lime" }
+      {
+        x: 90,
+        y: 160,
+        r: 13,
+        colour: "lime"
+      },
+      {
+        x: 240,
+        y: 100,
+        r: 21,
+        colour: "white"
+      },
+      {
+        x: 420,
+        y: 145,
+        r: 16,
+        colour: "orange"
+      },
+      {
+        x: 510,
+        y: 260,
+        r: 11,
+        colour: "white"
+      },
+      {
+        x: 340,
+        y: 290,
+        r: 29,
+        colour: "lime"
+      },
+      {
+        x: 160,
+        y: 330,
+        r: 17,
+        colour: "white"
+      },
+      {
+        x: 80,
+        y: 480,
+        r: 9,
+        colour: "orange"
+      },
+      {
+        x: 270,
+        y: 500,
+        r: 20,
+        colour: "white"
+      },
+      {
+        x: 460,
+        y: 470,
+        r: 14,
+        colour: "lime"
+      },
+      {
+        x: 530,
+        y: 590,
+        r: 22,
+        colour: "orange"
+      },
+      {
+        x: 320,
+        y: 630,
+        r: 10,
+        colour: "white"
+      },
+      {
+        x: 130,
+        y: 610,
+        r: 15,
+        colour: "lime"
+      }
     ];
 
     const edges = [
@@ -1332,11 +1614,16 @@
       line.setAttribute("y1", start.y);
       line.setAttribute("x2", end.x);
       line.setAttribute("y2", end.y);
+
       line.setAttribute(
         "stroke",
         "rgba(247,247,242,.28)"
       );
-      line.setAttribute("stroke-width", "1.4");
+
+      line.setAttribute(
+        "stroke-width",
+        "1.4"
+      );
 
       svg.appendChild(line);
     });
@@ -1370,10 +1657,12 @@
       ring.setAttribute("cy", node.y);
       ring.setAttribute("r", node.r + 9);
       ring.setAttribute("fill", "none");
+
       ring.setAttribute(
         "stroke",
         colours[node.colour]
       );
+
       ring.setAttribute(
         "stroke-opacity",
         ".25"
@@ -1382,28 +1671,34 @@
       circle.setAttribute("cx", node.x);
       circle.setAttribute("cy", node.y);
       circle.setAttribute("r", node.r);
+
       circle.setAttribute(
         "fill",
         colours[node.colour]
       );
 
       label.setAttribute("x", node.x);
+
       label.setAttribute(
         "y",
         node.y + node.r + 25
       );
+
       label.setAttribute(
         "fill",
         "rgba(247,247,242,.65)"
       );
+
       label.setAttribute(
         "font-size",
         "9"
       );
+
       label.setAttribute(
         "text-anchor",
         "middle"
       );
+
       label.setAttribute(
         "font-family",
         "Inter, sans-serif"
@@ -1421,7 +1716,9 @@
 
       svg.appendChild(group);
 
-      if (typeof group.animate === "function") {
+      if (
+        typeof group.animate === "function"
+      ) {
         group.animate(
           [
             {
