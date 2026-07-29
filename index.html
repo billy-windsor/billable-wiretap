@@ -203,33 +203,6 @@
       z-index: 2;
     }
 
-    .eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      margin-bottom: 28px;
-      color: var(--lime);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-
-    .pulse {
-      width: 10px;
-      height: 10px;
-      background: var(--lime);
-      border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(168, 255, 55, 0.6);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      70% {
-        box-shadow: 0 0 0 13px rgba(168, 255, 55, 0);
-      }
-    }
-
     .hero-title {
       max-width: 940px;
       font-size: clamp(58px, 8vw, 136px);
@@ -371,7 +344,7 @@
       text-transform: uppercase;
     }
 
-    /* Shared section styles */
+    /* Shared sections */
 
     .section {
       padding: 110px 28px;
@@ -620,7 +593,7 @@
       outline-offset: 4px;
     }
 
-    .audience-tool {
+    .venn-tool {
       color: var(--white);
       background: var(--black);
     }
@@ -733,11 +706,12 @@
         background 180ms ease;
     }
 
-    .audience-tool:hover .open-tool {
+    .venn-tool:hover .open-tool {
       background: var(--lime);
     }
 
-    .butterfly-tool .open-tool {
+    .butterfly-tool .open-tool,
+    .matrix-tool .open-tool {
       color: var(--white);
       background: var(--black);
     }
@@ -747,17 +721,78 @@
       background: var(--white);
     }
 
-    .matrix-tool .open-tool {
-      color: var(--white);
-      background: var(--black);
-    }
-
     .matrix-tool:hover .open-tool {
       color: var(--black);
       background: var(--orange);
     }
 
-    /* Butterfly chart illustration */
+    /* Venn illustration */
+
+    .venn-preview {
+      width: 94%;
+      max-width: 570px;
+      overflow: visible;
+    }
+
+    .venn-preview .set-circle {
+      stroke: var(--black);
+      stroke-width: 5;
+    }
+
+    .venn-preview .set-a {
+      fill: var(--orange);
+      fill-opacity: 0.9;
+    }
+
+    .venn-preview .set-b {
+      fill: var(--lime);
+      fill-opacity: 0.9;
+    }
+
+    .venn-preview .set-c {
+      fill: var(--white);
+      fill-opacity: 0.9;
+    }
+
+    .venn-preview .set-name {
+      fill: var(--black);
+      font-family: "Inter", sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      text-anchor: middle;
+    }
+
+    .venn-preview .set-value {
+      fill: var(--black);
+      font-family: "Inter", sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      text-anchor: middle;
+      opacity: 0.67;
+    }
+
+    .venn-preview .overlap-tag {
+      fill: var(--black);
+    }
+
+    .venn-preview .overlap-text {
+      fill: var(--white);
+      font-family: "Inter", sans-serif;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-anchor: middle;
+    }
+
+    .venn-preview .relationship-line {
+      fill: none;
+      stroke: var(--white);
+      stroke-width: 2;
+      stroke-dasharray: 6 7;
+      opacity: 0.24;
+    }
+
+    /* Butterfly illustration */
 
     .butterfly-chart-preview {
       width: 92%;
@@ -782,7 +817,7 @@
       text-anchor: middle;
     }
 
-    /* Brand matrix illustration */
+    /* Matrix illustration */
 
     .matrix-board {
       width: 90%;
@@ -1110,13 +1145,13 @@
   <div class="announcement" aria-label="Visualisation tools available">
     <div class="announcement-track">
       <span>Visualisation tools now available</span>
-      <span>Audience overlap</span>
+      <span>Venn diagram maker</span>
       <span>Comparison butterfly chart</span>
       <span>Brand performance matrix</span>
       <span>Connected data, clearly understood</span>
 
       <span>Visualisation tools now available</span>
-      <span>Audience overlap</span>
+      <span>Venn diagram maker</span>
       <span>Comparison butterfly chart</span>
       <span>Brand performance matrix</span>
       <span>Connected data, clearly understood</span>
@@ -1126,11 +1161,6 @@
   <main id="top">
     <section class="hero">
       <div class="hero-content">
-        <div class="eyebrow">
-          <span class="pulse"></span>
-          Data visualisation for the intelligence team
-        </div>
-
         <h1 class="display hero-title">
           Complex data.<br>
           <span class="outline">Clearly</span><br>
@@ -1335,42 +1365,85 @@
 
       <div class="tools-grid">
         <!-- Tool 01 -->
-        <a class="tool-card audience-tool" href="tools/audience-overlap/" aria-label="Open the proportional audience overlap tool">
+        <a class="tool-card venn-tool" href="tools/audience-overlap/" aria-label="Open the Venn diagram maker">
           <div class="tool-card-top">
-            <span>Tool 01 / Audience analysis</span>
+            <span>Tool 01 / Set relationships</span>
             <span class="tool-status-label">Available now</span>
           </div>
 
-          <div class="tool-visual overlap-visual" aria-hidden="true">
-            <svg viewBox="0 0 700 400">
-              <defs>
-                <clipPath id="homepage-left-circle">
-                  <circle cx="285" cy="200" r="130"></circle>
-                </clipPath>
-              </defs>
+          <div class="tool-visual venn-visual" aria-hidden="true">
+            <svg class="venn-preview" viewBox="0 0 700 400">
+              <g class="relationship-line">
+                <path d="M245 235L455 235"></path>
+                <path d="M245 235L350 112"></path>
+                <path d="M455 235L350 112"></path>
+              </g>
 
-              <circle cx="285" cy="200" r="130" fill="#ff3d0a" stroke="#f7f7f2" stroke-width="4"></circle>
+              <circle class="set-circle set-a" cx="245" cy="235" r="130"></circle>
 
-              <circle cx="445" cy="200" r="95" fill="#f7f7f2" stroke="#080808" stroke-width="4"></circle>
+              <circle class="set-circle set-b" cx="455" cy="235" r="116"></circle>
 
-              <circle cx="445" cy="200" r="95" fill="#a8ff37" clip-path="url(#homepage-left-circle)"></circle>
+              <circle class="set-circle set-c" cx="350" cy="112" r="100"></circle>
 
-              <circle cx="285" cy="200" r="130" fill="none" stroke="#f7f7f2" stroke-width="4"></circle>
+              <g>
+                <text class="set-name" x="205" y="260">
+                  Set A
+                </text>
 
-              <circle cx="445" cy="200" r="95" fill="none" stroke="#080808" stroke-width="4"></circle>
+                <text class="set-value" x="205" y="279">
+                  100
+                </text>
+
+                <text class="set-name" x="495" y="260">
+                  Set B
+                </text>
+
+                <text class="set-value" x="495" y="279">
+                  80
+                </text>
+
+                <text class="set-name" x="350" y="85">
+                  Set C
+                </text>
+
+                <text class="set-value" x="350" y="104">
+                  70
+                </text>
+              </g>
+
+              <g>
+                <rect class="overlap-tag" x="318" y="239" width="64" height="23" rx="11.5"></rect>
+
+                <text class="overlap-text" x="350" y="254">
+                  A ∩ B · 20
+                </text>
+
+                <rect class="overlap-tag" x="251" y="154" width="72" height="23" rx="11.5"></rect>
+
+                <text class="overlap-text" x="287" y="169">
+                  A ∩ C · 15
+                </text>
+
+                <rect class="overlap-tag" x="377" y="154" width="72" height="23" rx="11.5"></rect>
+
+                <text class="overlap-text" x="413" y="169">
+                  B ∩ C · 10
+                </text>
+              </g>
             </svg>
           </div>
 
           <div class="tool-card-bottom">
             <div>
               <h3>
-                Proportional<br>
-                audience overlap
+                Venn diagram<br>
+                maker
               </h3>
 
               <p>
-                Compare two audience sizes and visualise their shared
-                audience proportionally.
+                Build a proportional Venn diagram with two or three sets.
+                Enter each set size and control the overlap between every
+                pair independently.
               </p>
             </div>
 
@@ -1399,60 +1472,34 @@
 
               <g fill="#080808">
                 <rect x="105" y="77" width="225" height="35"></rect>
-
                 <rect x="175" y="137" width="155" height="35"></rect>
-
                 <rect x="65" y="197" width="265" height="35"></rect>
-
                 <rect x="215" y="257" width="115" height="35"></rect>
-
                 <rect x="145" y="317" width="185" height="35"></rect>
               </g>
 
               <g fill="#f7f7f2">
                 <rect x="370" y="77" width="140" height="35"></rect>
-
                 <rect x="370" y="137" width="220" height="35"></rect>
-
                 <rect x="370" y="197" width="185" height="35"></rect>
-
                 <rect x="370" y="257" width="90" height="35"></rect>
-
                 <rect x="370" y="317" width="165" height="35"></rect>
               </g>
 
               <g fill="#ff3d0a" stroke="#080808" stroke-width="3">
                 <rect x="330" y="77" width="40" height="35"></rect>
-
                 <rect x="330" y="137" width="40" height="35"></rect>
-
                 <rect x="330" y="197" width="40" height="35"></rect>
-
                 <rect x="330" y="257" width="40" height="35"></rect>
-
                 <rect x="330" y="317" width="40" height="35"></rect>
               </g>
 
               <g class="butterfly-category">
-                <text x="350" y="99">
-                  Awareness
-                </text>
-
-                <text x="350" y="159">
-                  Consideration
-                </text>
-
-                <text x="350" y="219">
-                  Preference
-                </text>
-
-                <text x="350" y="279">
-                  Intent
-                </text>
-
-                <text x="350" y="339">
-                  Loyalty
-                </text>
+                <text x="350" y="99">Awareness</text>
+                <text x="350" y="159">Consideration</text>
+                <text x="350" y="219">Preference</text>
+                <text x="350" y="279">Intent</text>
+                <text x="350" y="339">Loyalty</text>
               </g>
             </svg>
           </div>
@@ -1559,78 +1606,18 @@
       "http://www.w3.org/2000/svg";
 
     const nodes = [
-      {
-        x: 90,
-        y: 160,
-        r: 13,
-        colour: "lime"
-      },
-      {
-        x: 240,
-        y: 100,
-        r: 21,
-        colour: "white"
-      },
-      {
-        x: 420,
-        y: 145,
-        r: 16,
-        colour: "orange"
-      },
-      {
-        x: 510,
-        y: 260,
-        r: 11,
-        colour: "white"
-      },
-      {
-        x: 340,
-        y: 290,
-        r: 29,
-        colour: "lime"
-      },
-      {
-        x: 160,
-        y: 330,
-        r: 17,
-        colour: "white"
-      },
-      {
-        x: 80,
-        y: 480,
-        r: 9,
-        colour: "orange"
-      },
-      {
-        x: 270,
-        y: 500,
-        r: 20,
-        colour: "white"
-      },
-      {
-        x: 460,
-        y: 470,
-        r: 14,
-        colour: "lime"
-      },
-      {
-        x: 530,
-        y: 590,
-        r: 22,
-        colour: "orange"
-      },
-      {
-        x: 320,
-        y: 630,
-        r: 10,
-        colour: "white"
-      },
-      {
-        x: 130,
-        y: 610,
-        r: 15,
-        colour: "lime"
-      }
+      { x: 90, y: 160, r: 13, colour: "lime" },
+      { x: 240, y: 100, r: 21, colour: "white" },
+      { x: 420, y: 145, r: 16, colour: "orange" },
+      { x: 510, y: 260, r: 11, colour: "white" },
+      { x: 340, y: 290, r: 29, colour: "lime" },
+      { x: 160, y: 330, r: 17, colour: "white" },
+      { x: 80, y: 480, r: 9, colour: "orange" },
+      { x: 270, y: 500, r: 20, colour: "white" },
+      { x: 460, y: 470, r: 14, colour: "lime" },
+      { x: 530, y: 590, r: 22, colour: "orange" },
+      { x: 320, y: 630, r: 10, colour: "white" },
+      { x: 130, y: 610, r: 15, colour: "lime" }
     ];
 
     const edges = [
