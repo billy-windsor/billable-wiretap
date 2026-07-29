@@ -180,7 +180,7 @@
       transform: translateY(-2px);
     }
 
-    /* Application layout */
+    /* Application */
 
     .application {
       height: 100vh;
@@ -281,7 +281,9 @@
 
     .field-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
       gap: 10px;
       margin-bottom: 14px;
     }
@@ -496,6 +498,60 @@
       font-size: 11px;
       line-height: 1.6;
       text-align: center;
+    }
+
+    /* Brand management */
+
+    .brand-management {
+      margin-top: 18px;
+      padding: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .brand-management-header {
+      margin-bottom: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--dark-grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .add-brand-button {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 16px;
+      color: var(--black);
+      background: var(--orange);
+      border: 1px solid var(--orange);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      transition:
+        transform 180ms ease,
+        color 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease;
+    }
+
+    .add-brand-button:hover:not(:disabled) {
+      background: var(--lime);
+      border-color: var(--lime);
+      transform: translateY(-2px);
+    }
+
+    .brand-limit-note {
+      margin: 10px 2px 0;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.45;
     }
 
     /* Main buttons */
@@ -777,15 +833,20 @@
     }
 
     .sov-value {
+      overflow: hidden;
+      max-width: 125px;
       color: var(--number-colour);
       font-size: 24px;
       font-weight: 800;
       line-height: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .sov-label {
       max-width: 125px;
       margin-top: 7px;
+      overflow-wrap: anywhere;
       color: var(--label-colour);
       font-size: 8.5px;
       font-weight: 800;
@@ -803,6 +864,82 @@
       border: 2px dashed rgba(127, 127, 127, 0.3);
       font-size: 18px;
       font-weight: 700;
+    }
+
+    /* Compact output for additional brands */
+
+    .dashboard.compact .dashboard-rows {
+      gap: 8px;
+    }
+
+    .dashboard.compact .metric-card {
+      border-radius: 9px;
+    }
+
+    .dashboard.compact .card-brand-name {
+      font-size: 14px;
+    }
+
+    .dashboard.compact .card-badge {
+      font-size: 9.5px;
+    }
+
+    .dashboard.compact .metric-value {
+      font-size: 14px;
+    }
+
+    .dashboard.compact .metric-label {
+      margin-top: 2px;
+      font-size: 9px;
+    }
+
+    .dashboard.compact .sov-value {
+      font-size: 21px;
+    }
+
+    .dashboard.compact .sov-label {
+      margin-top: 5px;
+      font-size: 7.5px;
+    }
+
+    .dashboard.very-compact {
+      padding-top: 28px;
+      padding-bottom: 28px;
+    }
+
+    .dashboard.very-compact .dashboard-rows {
+      gap: 6px;
+    }
+
+    .dashboard.very-compact .metric-card {
+      border-radius: 7px;
+    }
+
+    .dashboard.very-compact .card-brand-name {
+      font-size: 13px;
+    }
+
+    .dashboard.very-compact .card-badge {
+      margin-top: 1px;
+      font-size: 8.5px;
+    }
+
+    .dashboard.very-compact .metric-value {
+      font-size: 13px;
+    }
+
+    .dashboard.very-compact .metric-label {
+      font-size: 8px;
+      line-height: 1.05;
+    }
+
+    .dashboard.very-compact .sov-value {
+      font-size: 19px;
+    }
+
+    .dashboard.very-compact .sov-label {
+      margin-top: 4px;
+      font-size: 7px;
     }
 
     /* Off-screen export */
@@ -964,7 +1101,7 @@
   <div class="application">
     <aside class="controls">
       <span class="tool-number">
-        Tool 02 / Visualisation
+        Tool 03 / Visualisation
       </span>
 
       <h1>
@@ -973,12 +1110,12 @@
       </h1>
 
       <p class="introduction">
-        Edit every metric, label and visual colour. Reorder brands, highlight
-        priority rows and export the completed matrix as a presentation-ready
-        PNG.
+        Edit every metric, label and visual colour. Add or reorder brands,
+        highlight priority rows and export the completed matrix as a
+        presentation-ready PNG.
       </p>
 
-      <!-- Global metric-name controls -->
+      <!-- Global metric names -->
       <section class="control-section first-section">
         <h2>Metric names</h2>
 
@@ -1041,7 +1178,7 @@
         </div>
       </section>
 
-      <!-- Global colour controls -->
+      <!-- Global colours -->
       <section class="control-section">
         <h2>Matrix appearance</h2>
 
@@ -1086,8 +1223,25 @@
         </div>
       </section>
 
-      <!-- Brand editors are generated here -->
+      <!-- Brand editors -->
       <div id="brand-editors"></div>
+
+      <!-- Add brand -->
+      <div class="brand-management">
+        <div class="brand-management-header">
+          <span>Brand rows</span>
+          <span id="brand-count">6 / 12</span>
+        </div>
+
+        <button id="add-brand-button" class="add-brand-button" type="button">
+          + Add another brand
+        </button>
+
+        <p class="brand-limit-note">
+          Add up to 12 brands. The exported matrix automatically becomes more
+          compact as additional rows are added.
+        </p>
+      </div>
 
       <div class="buttons">
         <button id="reset-button" class="action-button reset-button" type="button">
@@ -1131,6 +1285,22 @@
   <script>
     const SLIDE_WIDTH = 992;
     const SLIDE_HEIGHT = 678;
+    const MAX_BRANDS = 12;
+
+    const brandColourPalette = [
+      "#4C34A9",
+      "#B3205E",
+      "#2B7955",
+      "#5C7B99",
+      "#B66D49",
+      "#6D326D",
+      "#FF3D0A",
+      "#008B8B",
+      "#C78B00",
+      "#4455AA",
+      "#B23A48",
+      "#547A28"
+    ];
 
     const initialSettings = {
       shareImpressionsLabel: "share of impressions",
@@ -1139,7 +1309,6 @@
       contentLabel: "content pieces",
       erLabel: "avg. engagement rate",
       sovLabel: "Combined SOV",
-
       canvasBackground: "#ffffff",
       cardBackground: "#ffffff",
       numberColor: "#111827",
@@ -1230,10 +1399,10 @@
     let settings = cloneInitialSettings();
     let brands = cloneInitialBrands();
     let isExporting = false;
+    let brandSequence = 0;
 
-    const settingsInputs = document.querySelectorAll(
-      "[data-setting]"
-    );
+    const settingsInputs =
+      document.querySelectorAll("[data-setting]");
 
     const editorsElement =
       document.getElementById("brand-editors");
@@ -1259,6 +1428,12 @@
     const exportButton =
       document.getElementById("export-button");
 
+    const addBrandButton =
+      document.getElementById("add-brand-button");
+
+    const brandCountElement =
+      document.getElementById("brand-count");
+
     const canvasSwatch =
       document.getElementById("canvas-swatch");
 
@@ -1272,6 +1447,42 @@
       return initialBrands.map((brand) => ({
         ...brand
       }));
+    }
+
+    function createBrandId() {
+      brandSequence += 1;
+
+      if (
+        window.crypto &&
+        typeof window.crypto.randomUUID === "function"
+      ) {
+        return `brand-${window.crypto.randomUUID()}`;
+      }
+
+      return `brand-${Date.now()}-${brandSequence}`;
+    }
+
+    function createEmptyBrand() {
+      const brandNumber = brands.length + 1;
+
+      const colour =
+        brandColourPalette[
+          brands.length % brandColourPalette.length
+        ];
+
+      return {
+        id: createBrandId(),
+        name: `New Brand ${brandNumber}`,
+        color: colour,
+        shareImpressions: "0%",
+        shareEngagements: "0%",
+        totalImpressions: "0",
+        content: "0",
+        er: "0%",
+        sov: "0%",
+        badgeText: "",
+        highlight: false
+      };
     }
 
     function escapeHTML(value) {
@@ -1345,12 +1556,29 @@
       );
     }
 
+    function updateBrandManagement() {
+      brandCountElement.textContent =
+        `${brands.length} / ${MAX_BRANDS}`;
+
+      const limitReached =
+        brands.length >= MAX_BRANDS;
+
+      addBrandButton.disabled = limitReached;
+
+      addBrandButton.textContent = limitReached
+        ? "Maximum brands reached"
+        : "+ Add another brand";
+    }
+
     function renderEditors() {
+      updateBrandManagement();
+
       if (brands.length === 0) {
         editorsElement.innerHTML = `
           <div class="empty-state">
-            All brand rows have been deleted.<br>
-            Select “Reset all” to restore the original matrix.
+            There are currently no brand rows.<br>
+            Select “Add another brand” to create one, or select
+            “Reset all” to restore the original matrix.
           </div>
         `;
 
@@ -1358,7 +1586,9 @@
         return;
       }
 
-      exportButton.disabled = false;
+      if (!isExporting) {
+        exportButton.disabled = false;
+      }
 
       editorsElement.innerHTML = brands
         .map((brand, index) => {
@@ -1526,6 +1756,16 @@
     function renderDashboard() {
       applyAppearance();
 
+      dashboardElement.classList.toggle(
+        "compact",
+        brands.length > 6
+      );
+
+      dashboardElement.classList.toggle(
+        "very-compact",
+        brands.length > 9
+      );
+
       if (brands.length === 0) {
         dashboardRowsElement.innerHTML = `
           <div class="dashboard-empty">
@@ -1652,6 +1892,48 @@
       };
 
       renderDashboard();
+    }
+
+    function addBrand() {
+      if (brands.length >= MAX_BRANDS) {
+        alert(
+          `This layout supports up to ${MAX_BRANDS} brands.`
+        );
+
+        return;
+      }
+
+      brands.push(createEmptyBrand());
+
+      renderEditors();
+      renderDashboard();
+
+      requestAnimationFrame(() => {
+        const editors =
+          editorsElement.querySelectorAll(".brand-editor");
+
+        const newestEditor =
+          editors[editors.length - 1];
+
+        if (!newestEditor) {
+          return;
+        }
+
+        newestEditor.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+
+        const nameInput =
+          newestEditor.querySelector(
+            '[data-field="name"]'
+          );
+
+        if (nameInput) {
+          nameInput.focus();
+          nameInput.select();
+        }
+      });
     }
 
     function moveBrand(index, direction) {
@@ -1789,6 +2071,7 @@
         }
 
         isExporting = false;
+
         exportButton.disabled =
           brands.length === 0;
 
@@ -1809,17 +2092,13 @@
 
         renderDashboard();
 
-        /*
-         * Regenerate editor labels when one of the
-         * six metric names changes.
-         */
         if (property.endsWith("Label")) {
           renderEditors();
         }
       });
     });
 
-    /* Brand field events */
+    /* Brand editor events */
 
     editorsElement.addEventListener(
       "input",
@@ -1851,7 +2130,7 @@
           const editor =
             input.closest(".brand-editor");
 
-          if (!editor) {
+          if (!editor || !brands[index]) {
             return;
           }
 
@@ -1941,6 +2220,11 @@
           deleteBrand(index);
         }
       }
+    );
+
+    addBrandButton.addEventListener(
+      "click",
+      addBrand
     );
 
     resetButton.addEventListener(
