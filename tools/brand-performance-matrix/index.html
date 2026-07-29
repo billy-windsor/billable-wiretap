@@ -1,0 +1,1976 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Brand Performance Matrix — Visual Intelligence Lab</title>
+
+  <meta name="description" content="Create, edit and export a custom brand performance matrix.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer=""></script>
+
+  <style>
+    :root {
+      --black: #080808;
+      --soft-black: #11110f;
+      --panel: #191917;
+      --panel-light: #242421;
+      --white: #f7f7f2;
+      --grey: #b9b9b2;
+      --dark-grey: #73736e;
+      --orange: #ff3d0a;
+      --lime: #a8ff37;
+      --error: #ff7777;
+      --line: rgba(255, 255, 255, 0.16);
+      --navigation-height: 72px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
+      color: var(--white);
+      background: var(--black);
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.35;
+    }
+
+    /* Navigation */
+
+    .nav {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--navigation-height);
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: var(--black);
+      background: var(--lime);
+      border-radius: 50%;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 18px;
+    }
+
+    .brand-name {
+      font-family: "Archivo Black", sans-serif;
+      font-size: 17px;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+    }
+
+    .brand-name span {
+      color: var(--grey);
+      font-family: "Inter", sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .nav-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .tool-status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--lime);
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(168, 255, 55, 0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      70% {
+        box-shadow: 0 0 0 10px rgba(168, 255, 55, 0);
+      }
+    }
+
+    .home-link {
+      min-height: 40px;
+      padding: 0 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--black);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition:
+        transform 180ms ease,
+        background 180ms ease;
+    }
+
+    .home-link:hover {
+      background: var(--lime);
+      transform: translateY(-2px);
+    }
+
+    /* Application layout */
+
+    .application {
+      height: 100vh;
+      padding-top: var(--navigation-height);
+      display: grid;
+      grid-template-columns: 400px minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    /* Controls */
+
+    .controls {
+      height: calc(100vh - var(--navigation-height));
+      padding: 28px 24px 36px;
+      overflow-y: auto;
+      background: var(--soft-black);
+      border-right: 1px solid var(--line);
+      scrollbar-color: var(--orange) var(--soft-black);
+      scrollbar-width: thin;
+    }
+
+    .controls::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .controls::-webkit-scrollbar-track {
+      background: var(--soft-black);
+    }
+
+    .controls::-webkit-scrollbar-thumb {
+      background: var(--orange);
+    }
+
+    .tool-number {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--orange);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .controls > h1 {
+      max-width: 340px;
+      margin: 0;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+      text-transform: uppercase;
+    }
+
+    .introduction {
+      margin: 18px 0 28px;
+      color: var(--grey);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .control-section {
+      margin-bottom: 12px;
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .control-section.first-section {
+      border-top: 3px solid var(--orange);
+    }
+
+    .control-section h2,
+    .control-section-title {
+      margin: 0 0 17px;
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .section-description {
+      margin: -8px 0 17px;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .field {
+      min-width: 0;
+      margin-bottom: 14px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .field-row.name-colour {
+      grid-template-columns: minmax(0, 1fr) 76px;
+    }
+
+    .field-row .field {
+      margin: 0;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      height: 42px;
+      min-width: 0;
+      padding: 9px 11px;
+      color: var(--white);
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 0;
+      outline: none;
+      font-size: 12px;
+      transition:
+        border-color 180ms ease,
+        background 180ms ease;
+    }
+
+    input[type="text"]:hover {
+      border-color: rgba(255, 255, 255, 0.45);
+    }
+
+    input[type="text"]:focus {
+      background: var(--black);
+      border-color: var(--lime);
+    }
+
+    input[type="color"] {
+      width: 100%;
+      height: 42px;
+      padding: 4px;
+      cursor: pointer;
+      color: var(--white);
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 0;
+      outline: none;
+    }
+
+    input[type="color"]:focus {
+      border-color: var(--lime);
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+      border: 0;
+    }
+
+    input[type="color"]::-moz-color-swatch {
+      border: 0;
+    }
+
+    /* Brand editors */
+
+    .brand-editor {
+      position: relative;
+    }
+
+    .brand-editor.is-highlighted {
+      border-color: var(--brand-color);
+      box-shadow: inset 3px 0 0 var(--brand-color);
+    }
+
+    .editor-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+
+    .editor-heading .control-section-title {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .editor-rank {
+      flex: 0 0 auto;
+      color: var(--dark-grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .editor-footer {
+      margin-top: 16px;
+      padding-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .highlight-toggle {
+      position: relative;
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 9px;
+      cursor: pointer;
+      color: var(--grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .highlight-toggle input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .toggle-box {
+      width: 17px;
+      height: 17px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .highlight-toggle input:checked + .toggle-box {
+      background: var(--lime);
+      border-color: var(--lime);
+    }
+
+    .highlight-toggle input:checked + .toggle-box::after {
+      content: "";
+      width: 7px;
+      height: 4px;
+      margin-top: -2px;
+      border-left: 2px solid var(--black);
+      border-bottom: 2px solid var(--black);
+      transform: rotate(-45deg);
+    }
+
+    .row-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .icon-button {
+      width: 31px;
+      min-height: 31px;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+      color: var(--grey);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 0;
+      font-size: 11px;
+      font-weight: 800;
+      transition:
+        color 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease;
+    }
+
+    .icon-button:hover:not(:disabled) {
+      color: var(--black);
+      background: var(--white);
+      border-color: var(--white);
+    }
+
+    .icon-button.delete:hover:not(:disabled) {
+      color: var(--black);
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+
+    .empty-state {
+      padding: 28px 18px;
+      color: var(--grey);
+      background: var(--panel);
+      border: 1px dashed rgba(255, 255, 255, 0.25);
+      font-size: 11px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    /* Main buttons */
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .action-button {
+      min-height: 46px;
+      padding: 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition:
+        transform 180ms ease,
+        background 180ms ease,
+        color 180ms ease,
+        border-color 180ms ease;
+    }
+
+    .action-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .reset-button {
+      color: var(--white);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .reset-button:hover:not(:disabled) {
+      color: var(--black);
+      background: var(--white);
+    }
+
+    .png-button {
+      color: var(--black);
+      background: var(--lime);
+      border: 1px solid var(--lime);
+    }
+
+    .png-button:hover:not(:disabled) {
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+
+    .privacy-note {
+      margin: 18px 2px 0;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    /* Preview */
+
+    .preview {
+      position: relative;
+      min-width: 0;
+      height: calc(100vh - var(--navigation-height));
+      padding: 68px 32px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+
+      background:
+        linear-gradient(45deg, #1c1c1a 25%, transparent 25%),
+        linear-gradient(-45deg, #1c1c1a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1c1c1a 75%),
+        linear-gradient(-45deg, transparent 75%, #1c1c1a 75%),
+        #242421;
+
+      background-size: 26px 26px;
+      background-position:
+        0 0,
+        0 13px,
+        13px -13px,
+        -13px 0;
+    }
+
+    .preview-header {
+      position: absolute;
+      z-index: 2;
+      top: 22px;
+      left: 28px;
+      right: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .canvas-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .canvas-swatch {
+      width: 13px;
+      height: 13px;
+      background: var(--swatch-colour, #ffffff);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+    }
+
+    .preview-viewport {
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .scaled-frame {
+      position: relative;
+      flex: 0 0 auto;
+      opacity: 0;
+      transition: opacity 120ms ease;
+    }
+
+    .scaled-frame.ready {
+      opacity: 1;
+    }
+
+    .scaled-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 992px;
+      height: 678px;
+      transform-origin: top left;
+    }
+
+    /* Export dashboard */
+
+    .dashboard {
+      --canvas-background: #ffffff;
+      --card-background: #ffffff;
+      --number-colour: #111827;
+      --label-colour: #6b7280;
+
+      width: 992px;
+      height: 678px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      color: var(--number-colour);
+      background: var(--canvas-background);
+      font-family: "Inter", Arial, sans-serif;
+      box-shadow: 0 26px 55px rgba(0, 0, 0, 0.3);
+    }
+
+    .dashboard-rows {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .metric-card {
+      min-height: 0;
+      flex: 1 1 0;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background: var(--card-background);
+      border: 1px solid rgba(127, 127, 127, 0.25);
+      border-left: 4px solid var(--card-color);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.025);
+    }
+
+    .metric-card.highlighted {
+      border: 2px solid var(--card-color);
+      border-left: 6px solid var(--card-color);
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-rank {
+      width: 32px;
+      flex: 0 0 auto;
+      color: var(--label-colour);
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0.65;
+    }
+
+    .card-brand {
+      width: 210px;
+      min-width: 0;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .card-brand-name {
+      overflow: hidden;
+      color: var(--card-color);
+      font-size: 15px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-badge {
+      margin-top: 2px;
+      overflow: hidden;
+      color: var(--card-color);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .metrics {
+      min-width: 0;
+      padding: 0 8px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .metric {
+      width: 92px;
+      min-width: 0;
+      padding-right: 4px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .metric-value {
+      overflow: hidden;
+      color: var(--number-colour);
+      font-size: 15px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .metric-label {
+      max-width: 88px;
+      margin-top: 3px;
+      overflow-wrap: anywhere;
+      color: var(--label-colour);
+      font-size: 10px;
+      font-weight: 500;
+      line-height: 1.15;
+    }
+
+    .sov-metric {
+      width: 140px;
+      height: 70%;
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      border-left: 1px solid rgba(127, 127, 127, 0.18);
+    }
+
+    .sov-value {
+      color: var(--number-colour);
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .sov-label {
+      max-width: 125px;
+      margin-top: 7px;
+      color: var(--label-colour);
+      font-size: 8.5px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: 0.12em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .dashboard-empty {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      color: var(--label-colour);
+      border: 2px dashed rgba(127, 127, 127, 0.3);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* Off-screen export */
+
+    .export-host {
+      position: fixed;
+      z-index: -1;
+      top: 0;
+      left: -10000px;
+      width: 992px;
+      height: 678px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .export-host .dashboard {
+      box-shadow: none;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 1050px) {
+      .application {
+        grid-template-columns: 350px minmax(0, 1fr);
+      }
+
+      .controls {
+        padding-right: 20px;
+        padding-left: 20px;
+      }
+
+      .preview {
+        padding-right: 20px;
+        padding-left: 20px;
+      }
+    }
+
+    @media (max-width: 850px) {
+      body {
+        overflow: auto;
+      }
+
+      .application {
+        height: auto;
+        display: block;
+        overflow: visible;
+      }
+
+      .controls {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .controls > h1 {
+        max-width: none;
+      }
+
+      .preview {
+        height: 720px;
+        min-height: 720px;
+      }
+    }
+
+    @media (max-width: 580px) {
+      :root {
+        --navigation-height: 66px;
+      }
+
+      .nav {
+        padding: 0 16px;
+      }
+
+      .brand-name span,
+      .tool-status {
+        display: none;
+      }
+
+      .home-link {
+        min-height: 38px;
+        padding: 0 13px;
+        font-size: 9px;
+      }
+
+      .controls {
+        padding: 26px 18px 30px;
+      }
+
+      .controls > h1 {
+        font-size: 29px;
+      }
+
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+
+      .field-row.name-colour {
+        grid-template-columns: minmax(0, 1fr) 70px;
+      }
+
+      .preview {
+        height: 500px;
+        min-height: 500px;
+        padding: 60px 14px 18px;
+      }
+
+      .preview-header {
+        top: 20px;
+        left: 18px;
+        right: 18px;
+      }
+
+      .preview-header > span:first-child {
+        display: none;
+      }
+
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav">
+    <a class="brand" href="../../" aria-label="Return to the Visual Intelligence Lab homepage">
+      <span class="brand-mark">G</span>
+
+      <span class="brand-name">
+        goat <span>/ Visual Intelligence Lab</span>
+      </span>
+    </a>
+
+    <div class="nav-meta">
+      <span class="tool-status">
+        <span class="status-dot"></span>
+        Tool online
+      </span>
+
+      <a class="home-link" href="../../">
+        ← Back home
+      </a>
+    </div>
+  </nav>
+
+  <div class="application">
+    <aside class="controls">
+      <span class="tool-number">
+        Tool 02 / Visualisation
+      </span>
+
+      <h1>
+        Brand performance<br>
+        matrix
+      </h1>
+
+      <p class="introduction">
+        Edit every metric, label and visual colour. Reorder brands, highlight
+        priority rows and export the completed matrix as a presentation-ready
+        PNG.
+      </p>
+
+      <!-- Global metric-name controls -->
+      <section class="control-section first-section">
+        <h2>Metric names</h2>
+
+        <p class="section-description">
+          These names are applied to every brand row in the exported matrix.
+        </p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="label-share-impressions">
+              Metric 1
+            </label>
+
+            <input id="label-share-impressions" type="text" data-setting="shareImpressionsLabel" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="label-share-engagements">
+              Metric 2
+            </label>
+
+            <input id="label-share-engagements" type="text" data-setting="shareEngagementsLabel" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="label-total-impressions">
+              Metric 3
+            </label>
+
+            <input id="label-total-impressions" type="text" data-setting="totalImpressionsLabel" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="label-content">
+              Metric 4
+            </label>
+
+            <input id="label-content" type="text" data-setting="contentLabel" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="label-er">
+              Metric 5
+            </label>
+
+            <input id="label-er" type="text" data-setting="erLabel" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="label-sov">
+              Featured metric
+            </label>
+
+            <input id="label-sov" type="text" data-setting="sovLabel" autocomplete="off">
+          </div>
+        </div>
+      </section>
+
+      <!-- Global colour controls -->
+      <section class="control-section">
+        <h2>Matrix appearance</h2>
+
+        <p class="section-description">
+          Customise the colours used inside the preview and exported PNG.
+        </p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="canvas-background">
+              Canvas background
+            </label>
+
+            <input id="canvas-background" type="color" data-setting="canvasBackground">
+          </div>
+
+          <div class="field">
+            <label for="card-background">
+              Row background
+            </label>
+
+            <input id="card-background" type="color" data-setting="cardBackground">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="number-colour">
+              Number colour
+            </label>
+
+            <input id="number-colour" type="color" data-setting="numberColor">
+          </div>
+
+          <div class="field">
+            <label for="label-colour">
+              Metric label colour
+            </label>
+
+            <input id="label-colour" type="color" data-setting="labelColor">
+          </div>
+        </div>
+      </section>
+
+      <!-- Brand editors are generated here -->
+      <div id="brand-editors"></div>
+
+      <div class="buttons">
+        <button id="reset-button" class="action-button reset-button" type="button">
+          Reset all
+        </button>
+
+        <button id="export-button" class="action-button png-button" type="button">
+          Export PNG
+        </button>
+      </div>
+
+      <p class="privacy-note">
+        All editing and image generation happens locally in your browser.
+        Values are not uploaded or stored by this page.
+      </p>
+    </aside>
+
+    <main class="preview">
+      <div class="preview-header">
+        <span>Live output / 992 × 678</span>
+
+        <span class="canvas-label">
+          <span id="canvas-swatch" class="canvas-swatch"></span>
+
+          Export canvas
+        </span>
+      </div>
+
+      <div id="preview-viewport" class="preview-viewport">
+        <div id="scaled-frame" class="scaled-frame">
+          <div id="scaled-content" class="scaled-content">
+            <div id="dashboard" class="dashboard" role="img" aria-label="Brand performance matrix">
+              <div id="dashboard-rows" class="dashboard-rows"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const SLIDE_WIDTH = 992;
+    const SLIDE_HEIGHT = 678;
+
+    const initialSettings = {
+      shareImpressionsLabel: "share of impressions",
+      shareEngagementsLabel: "share of engagements",
+      totalImpressionsLabel: "total impressions",
+      contentLabel: "content pieces",
+      erLabel: "avg. engagement rate",
+      sovLabel: "Combined SOV",
+
+      canvasBackground: "#ffffff",
+      cardBackground: "#ffffff",
+      numberColor: "#111827",
+      labelColor: "#6b7280"
+    };
+
+    const initialBrands = [
+      {
+        id: "cerave",
+        name: "CeraVe",
+        color: "#4C34A9",
+        shareImpressions: "84%",
+        shareEngagements: "88%",
+        totalImpressions: "45.0M",
+        content: "203",
+        er: "3.9%",
+        sov: "86%",
+        badgeText: "Ultimate Share of Voice Leader",
+        highlight: false
+      },
+      {
+        id: "eucerin",
+        name: "Eucerin",
+        color: "#B3205E",
+        shareImpressions: "5.6%",
+        shareEngagements: "7.7%",
+        totalImpressions: "2.98M",
+        content: "58",
+        er: "5.2%",
+        sov: "6.6%",
+        badgeText: "Strong Engagement Outperformer",
+        highlight: true
+      },
+      {
+        id: "laroche",
+        name: "La Roche-Posay",
+        color: "#2B7955",
+        shareImpressions: "7.7%",
+        shareEngagements: "3.4%",
+        totalImpressions: "4.10M",
+        content: "179",
+        er: "1.7%",
+        sov: "5.5%",
+        badgeText: "High-Reach, Low-Engagement",
+        highlight: false
+      },
+      {
+        id: "vichy",
+        name: "Vichy",
+        color: "#5C7B99",
+        shareImpressions: "1.6%",
+        shareEngagements: "0.6%",
+        totalImpressions: "851K",
+        content: "33",
+        er: "1.4%",
+        sov: "1.1%",
+        badgeText: "Emerging Low-Tier Challenger",
+        highlight: false
+      },
+      {
+        id: "avene",
+        name: "Avène",
+        color: "#B66D49",
+        shareImpressions: "0.9%",
+        shareEngagements: "0.1%",
+        totalImpressions: "495K",
+        content: "11",
+        er: "0.5%",
+        sov: "0.5%",
+        badgeText: "Low-Activity Tail",
+        highlight: false
+      },
+      {
+        id: "bioderma",
+        name: "Bioderma",
+        color: "#6D326D",
+        shareImpressions: "0.3%",
+        shareEngagements: "0.6%",
+        totalImpressions: "186K",
+        content: "7",
+        er: "6.1%",
+        sov: "0.5%",
+        badgeText: "Niche Engagement Efficiency Leader",
+        highlight: false
+      }
+    ];
+
+    let settings = cloneInitialSettings();
+    let brands = cloneInitialBrands();
+    let isExporting = false;
+
+    const settingsInputs = document.querySelectorAll(
+      "[data-setting]"
+    );
+
+    const editorsElement =
+      document.getElementById("brand-editors");
+
+    const dashboardElement =
+      document.getElementById("dashboard");
+
+    const dashboardRowsElement =
+      document.getElementById("dashboard-rows");
+
+    const previewViewport =
+      document.getElementById("preview-viewport");
+
+    const scaledFrame =
+      document.getElementById("scaled-frame");
+
+    const scaledContent =
+      document.getElementById("scaled-content");
+
+    const resetButton =
+      document.getElementById("reset-button");
+
+    const exportButton =
+      document.getElementById("export-button");
+
+    const canvasSwatch =
+      document.getElementById("canvas-swatch");
+
+    function cloneInitialSettings() {
+      return {
+        ...initialSettings
+      };
+    }
+
+    function cloneInitialBrands() {
+      return initialBrands.map((brand) => ({
+        ...brand
+      }));
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function editorField(
+      index,
+      field,
+      label,
+      value,
+      type = "text"
+    ) {
+      return `
+        <div class="field">
+          <label for="${field}-${index}">
+            ${escapeHTML(label)}
+          </label>
+
+          <input
+            id="${field}-${index}"
+            type="${type}"
+            data-index="${index}"
+            data-field="${field}"
+            value="${escapeHTML(value)}"
+            autocomplete="off"
+          >
+        </div>
+      `;
+    }
+
+    function renderSettingsInputs() {
+      settingsInputs.forEach((input) => {
+        const property = input.dataset.setting;
+
+        if (property in settings) {
+          input.value = settings[property];
+        }
+      });
+    }
+
+    function applyAppearance() {
+      dashboardElement.style.setProperty(
+        "--canvas-background",
+        settings.canvasBackground
+      );
+
+      dashboardElement.style.setProperty(
+        "--card-background",
+        settings.cardBackground
+      );
+
+      dashboardElement.style.setProperty(
+        "--number-colour",
+        settings.numberColor
+      );
+
+      dashboardElement.style.setProperty(
+        "--label-colour",
+        settings.labelColor
+      );
+
+      canvasSwatch.style.setProperty(
+        "--swatch-colour",
+        settings.canvasBackground
+      );
+    }
+
+    function renderEditors() {
+      if (brands.length === 0) {
+        editorsElement.innerHTML = `
+          <div class="empty-state">
+            All brand rows have been deleted.<br>
+            Select “Reset all” to restore the original matrix.
+          </div>
+        `;
+
+        exportButton.disabled = true;
+        return;
+      }
+
+      exportButton.disabled = false;
+
+      editorsElement.innerHTML = brands
+        .map((brand, index) => {
+          const highlightedClass = brand.highlight
+            ? "is-highlighted"
+            : "";
+
+          return `
+            <section
+              class="control-section brand-editor ${highlightedClass}"
+              style="--brand-color: ${escapeHTML(brand.color)}"
+            >
+              <div class="editor-heading">
+                <h2 class="control-section-title">
+                  ${escapeHTML(brand.name || "Unnamed brand")}
+                </h2>
+
+                <span class="editor-rank">
+                  Rank ${index + 1}
+                </span>
+              </div>
+
+              <div class="field-row name-colour">
+                ${editorField(
+                  index,
+                  "name",
+                  "Brand name",
+                  brand.name
+                )}
+
+                ${editorField(
+                  index,
+                  "color",
+                  "Accent",
+                  brand.color,
+                  "color"
+                )}
+              </div>
+
+              <div class="field-row">
+                ${editorField(
+                  index,
+                  "shareImpressions",
+                  settings.shareImpressionsLabel,
+                  brand.shareImpressions
+                )}
+
+                ${editorField(
+                  index,
+                  "shareEngagements",
+                  settings.shareEngagementsLabel,
+                  brand.shareEngagements
+                )}
+              </div>
+
+              <div class="field-row">
+                ${editorField(
+                  index,
+                  "totalImpressions",
+                  settings.totalImpressionsLabel,
+                  brand.totalImpressions
+                )}
+
+                ${editorField(
+                  index,
+                  "content",
+                  settings.contentLabel,
+                  brand.content
+                )}
+              </div>
+
+              <div class="field-row">
+                ${editorField(
+                  index,
+                  "er",
+                  settings.erLabel,
+                  brand.er
+                )}
+
+                ${editorField(
+                  index,
+                  "sov",
+                  settings.sovLabel,
+                  brand.sov
+                )}
+              </div>
+
+              ${editorField(
+                index,
+                "badgeText",
+                "Badge text",
+                brand.badgeText
+              )}
+
+              <div class="editor-footer">
+                <label class="highlight-toggle">
+                  <input
+                    type="checkbox"
+                    data-index="${index}"
+                    data-field="highlight"
+                    ${brand.highlight ? "checked" : ""}
+                  >
+
+                  <span class="toggle-box"></span>
+                  Highlight
+                </label>
+
+                <div class="row-actions">
+                  <button
+                    class="icon-button"
+                    type="button"
+                    data-action="up"
+                    data-index="${index}"
+                    aria-label="Move ${escapeHTML(brand.name)} up"
+                    title="Move up"
+                    ${index === 0 ? "disabled" : ""}
+                  >
+                    ↑
+                  </button>
+
+                  <button
+                    class="icon-button"
+                    type="button"
+                    data-action="down"
+                    data-index="${index}"
+                    aria-label="Move ${escapeHTML(brand.name)} down"
+                    title="Move down"
+                    ${index === brands.length - 1 ? "disabled" : ""}
+                  >
+                    ↓
+                  </button>
+
+                  <button
+                    class="icon-button delete"
+                    type="button"
+                    data-action="delete"
+                    data-index="${index}"
+                    aria-label="Delete ${escapeHTML(brand.name)}"
+                    title="Delete row"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            </section>
+          `;
+        })
+        .join("");
+    }
+
+    function metricMarkup(value, label) {
+      return `
+        <div class="metric">
+          <div class="metric-value">
+            ${escapeHTML(value)}
+          </div>
+
+          <div class="metric-label">
+            ${escapeHTML(label)}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDashboard() {
+      applyAppearance();
+
+      if (brands.length === 0) {
+        dashboardRowsElement.innerHTML = `
+          <div class="dashboard-empty">
+            No brand rows
+          </div>
+        `;
+
+        return;
+      }
+
+      dashboardRowsElement.innerHTML = brands
+        .map((brand, index) => {
+          const highlightedClass = brand.highlight
+            ? "highlighted"
+            : "";
+
+          const badgeMarkup = brand.badgeText
+            ? `
+              <div class="card-badge">
+                ${escapeHTML(brand.badgeText)}
+              </div>
+            `
+            : "";
+
+          return `
+            <article
+              class="metric-card ${highlightedClass}"
+              style="--card-color: ${escapeHTML(brand.color)}"
+            >
+              <div class="card-rank">
+                #${index + 1}
+              </div>
+
+              <div class="card-brand">
+                <div class="card-brand-name">
+                  ${escapeHTML(brand.name)}
+                </div>
+
+                ${badgeMarkup}
+              </div>
+
+              <div class="metrics">
+                ${metricMarkup(
+                  brand.shareImpressions,
+                  settings.shareImpressionsLabel
+                )}
+
+                ${metricMarkup(
+                  brand.shareEngagements,
+                  settings.shareEngagementsLabel
+                )}
+
+                ${metricMarkup(
+                  brand.totalImpressions,
+                  settings.totalImpressionsLabel
+                )}
+
+                ${metricMarkup(
+                  brand.content,
+                  settings.contentLabel
+                )}
+
+                ${metricMarkup(
+                  brand.er,
+                  settings.erLabel
+                )}
+              </div>
+
+              <div class="sov-metric">
+                <div class="sov-value">
+                  ${escapeHTML(brand.sov)}
+                </div>
+
+                <div class="sov-label">
+                  ${escapeHTML(settings.sovLabel)}
+                </div>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    function fitPreview() {
+      const bounds =
+        previewViewport.getBoundingClientRect();
+
+      if (!bounds.width || !bounds.height) {
+        return;
+      }
+
+      const availableWidth =
+        Math.max(bounds.width - 4, 1);
+
+      const availableHeight =
+        Math.max(bounds.height - 4, 1);
+
+      const scale = Math.min(
+        availableWidth / SLIDE_WIDTH,
+        availableHeight / SLIDE_HEIGHT,
+        1
+      );
+
+      scaledFrame.style.width =
+        `${SLIDE_WIDTH * scale}px`;
+
+      scaledFrame.style.height =
+        `${SLIDE_HEIGHT * scale}px`;
+
+      scaledContent.style.transform =
+        `scale(${scale})`;
+
+      scaledFrame.classList.add("ready");
+    }
+
+    function updateBrand(index, field, value) {
+      if (!brands[index]) {
+        return;
+      }
+
+      brands[index] = {
+        ...brands[index],
+        [field]: value
+      };
+
+      renderDashboard();
+    }
+
+    function moveBrand(index, direction) {
+      const targetIndex =
+        direction === "up"
+          ? index - 1
+          : index + 1;
+
+      if (
+        targetIndex < 0 ||
+        targetIndex >= brands.length
+      ) {
+        return;
+      }
+
+      [
+        brands[index],
+        brands[targetIndex]
+      ] = [
+        brands[targetIndex],
+        brands[index]
+      ];
+
+      renderEditors();
+      renderDashboard();
+    }
+
+    function deleteBrand(index) {
+      if (!brands[index]) {
+        return;
+      }
+
+      brands.splice(index, 1);
+
+      renderEditors();
+      renderDashboard();
+    }
+
+    function resetAll() {
+      settings = cloneInitialSettings();
+      brands = cloneInitialBrands();
+
+      renderSettingsInputs();
+      renderEditors();
+      renderDashboard();
+    }
+
+    function downloadDataURL(dataURL, filename) {
+      const link = document.createElement("a");
+
+      link.href = dataURL;
+      link.download = filename;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+    async function exportPNG() {
+      if (
+        isExporting ||
+        brands.length === 0
+      ) {
+        return;
+      }
+
+      if (!window.html2canvas) {
+        alert(
+          "The PNG export library has not loaded. Refresh the page and try again."
+        );
+
+        return;
+      }
+
+      isExporting = true;
+      exportButton.disabled = true;
+      exportButton.textContent = "Exporting…";
+
+      let exportHost = null;
+
+      try {
+        if (
+          document.fonts &&
+          document.fonts.ready
+        ) {
+          await document.fonts.ready;
+        }
+
+        exportHost =
+          document.createElement("div");
+
+        exportHost.className = "export-host";
+
+        const clone =
+          dashboardElement.cloneNode(true);
+
+        clone.removeAttribute("id");
+        clone.style.transform = "none";
+
+        exportHost.appendChild(clone);
+        document.body.appendChild(exportHost);
+
+        await new Promise((resolve) => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(resolve);
+          });
+        });
+
+        const canvas =
+          await window.html2canvas(clone, {
+            width: SLIDE_WIDTH,
+            height: SLIDE_HEIGHT,
+            scale: 2,
+            backgroundColor: settings.canvasBackground,
+            logging: false,
+            useCORS: true
+          });
+
+        downloadDataURL(
+          canvas.toDataURL("image/png", 1),
+          "Brand_Performance_Matrix.png"
+        );
+      } catch (error) {
+        console.error(
+          "PNG export failed:",
+          error
+        );
+
+        alert(
+          "The PNG could not be generated. Check the browser console for details."
+        );
+      } finally {
+        if (exportHost) {
+          exportHost.remove();
+        }
+
+        isExporting = false;
+        exportButton.disabled =
+          brands.length === 0;
+
+        exportButton.textContent =
+          "Export PNG";
+      }
+    }
+
+    /* Global setting events */
+
+    settingsInputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        const property =
+          input.dataset.setting;
+
+        settings[property] =
+          input.value;
+
+        renderDashboard();
+
+        /*
+         * Regenerate editor labels when one of the
+         * six metric names changes.
+         */
+        if (property.endsWith("Label")) {
+          renderEditors();
+        }
+      });
+    });
+
+    /* Brand field events */
+
+    editorsElement.addEventListener(
+      "input",
+      (event) => {
+        const input = event.target;
+
+        if (!input.matches("[data-field]")) {
+          return;
+        }
+
+        const index =
+          Number(input.dataset.index);
+
+        const field =
+          input.dataset.field;
+
+        const value =
+          input.type === "checkbox"
+            ? input.checked
+            : input.value;
+
+        updateBrand(index, field, value);
+
+        if (
+          field === "name" ||
+          field === "color" ||
+          field === "highlight"
+        ) {
+          const editor =
+            input.closest(".brand-editor");
+
+          if (!editor) {
+            return;
+          }
+
+          editor.style.setProperty(
+            "--brand-color",
+            brands[index].color
+          );
+
+          editor.classList.toggle(
+            "is-highlighted",
+            Boolean(brands[index].highlight)
+          );
+
+          if (field === "name") {
+            const heading =
+              editor.querySelector(
+                ".control-section-title"
+              );
+
+            if (heading) {
+              heading.textContent =
+                value || "Unnamed brand";
+            }
+          }
+        }
+      }
+    );
+
+    editorsElement.addEventListener(
+      "change",
+      (event) => {
+        const input = event.target;
+
+        if (
+          input.type !== "checkbox" ||
+          !input.matches("[data-field]")
+        ) {
+          return;
+        }
+
+        const index =
+          Number(input.dataset.index);
+
+        updateBrand(
+          index,
+          input.dataset.field,
+          input.checked
+        );
+
+        const editor =
+          input.closest(".brand-editor");
+
+        if (editor) {
+          editor.classList.toggle(
+            "is-highlighted",
+            input.checked
+          );
+        }
+      }
+    );
+
+    editorsElement.addEventListener(
+      "click",
+      (event) => {
+        const button =
+          event.target.closest("[data-action]");
+
+        if (!button) {
+          return;
+        }
+
+        const index =
+          Number(button.dataset.index);
+
+        const action =
+          button.dataset.action;
+
+        if (action === "up") {
+          moveBrand(index, "up");
+        }
+
+        if (action === "down") {
+          moveBrand(index, "down");
+        }
+
+        if (action === "delete") {
+          deleteBrand(index);
+        }
+      }
+    );
+
+    resetButton.addEventListener(
+      "click",
+      resetAll
+    );
+
+    exportButton.addEventListener(
+      "click",
+      exportPNG
+    );
+
+    if ("ResizeObserver" in window) {
+      const resizeObserver =
+        new ResizeObserver(fitPreview);
+
+      resizeObserver.observe(
+        previewViewport
+      );
+    }
+
+    window.addEventListener(
+      "resize",
+      fitPreview
+    );
+
+    renderSettingsInputs();
+    renderEditors();
+    renderDashboard();
+    fitPreview();
+  </script>
+
+</body></html>
