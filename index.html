@@ -149,7 +149,7 @@
       font-family: "Archivo Black", sans-serif;
       font-size: 14px;
       text-transform: uppercase;
-      animation: marquee 24s linear infinite;
+      animation: marquee 28s linear infinite;
     }
 
     .announcement-track span {
@@ -564,7 +564,7 @@
 
     .tools-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
     }
 
@@ -608,6 +608,11 @@
       background: var(--white);
     }
 
+    .scatter-tool {
+      color: var(--white);
+      background: #242421;
+    }
+
     .tool-card-top {
       position: relative;
       z-index: 3;
@@ -637,6 +642,11 @@
     .matrix-tool .tool-status-label {
       color: var(--black);
       background: var(--orange);
+    }
+
+    .scatter-tool .tool-status-label {
+      color: var(--black);
+      background: var(--lime);
     }
 
     .tool-visual {
@@ -671,7 +681,7 @@
     .tool-card h3 {
       margin: 0;
       font-family: "Archivo Black", sans-serif;
-      font-size: clamp(32px, 3.25vw, 58px);
+      font-size: clamp(34px, 4vw, 66px);
       font-weight: 400;
       line-height: 0.91;
       letter-spacing: -0.055em;
@@ -689,6 +699,10 @@
     .butterfly-tool p,
     .matrix-tool p {
       color: rgba(0, 0, 0, 0.68);
+    }
+
+    .scatter-tool p {
+      color: var(--grey);
     }
 
     .open-tool {
@@ -723,6 +737,15 @@
 
     .matrix-tool:hover .open-tool {
       color: var(--black);
+      background: var(--orange);
+    }
+
+    .scatter-tool .open-tool {
+      color: var(--black);
+      background: var(--lime);
+    }
+
+    .scatter-tool:hover .open-tool {
       background: var(--orange);
     }
 
@@ -821,7 +844,7 @@
 
     .matrix-board {
       width: 90%;
-      max-width: 470px;
+      max-width: 540px;
       padding: 18px;
       display: flex;
       flex-direction: column;
@@ -887,6 +910,89 @@
       font-size: 15px;
     }
 
+    /* Scatter illustration */
+
+    .scatter-preview {
+      width: 92%;
+      max-width: 590px;
+      overflow: visible;
+    }
+
+    .scatter-preview .plot-background {
+      fill: var(--white);
+    }
+
+    .scatter-preview .quadrant-fill-one {
+      fill: var(--lime);
+      fill-opacity: 0.28;
+    }
+
+    .scatter-preview .quadrant-fill-two {
+      fill: var(--orange);
+      fill-opacity: 0.26;
+    }
+
+    .scatter-preview .quadrant-fill-three {
+      fill: var(--white);
+      fill-opacity: 0.1;
+    }
+
+    .scatter-preview .quadrant-fill-four {
+      fill: var(--lime);
+      fill-opacity: 0.1;
+    }
+
+    .scatter-preview .plot-border {
+      fill: none;
+      stroke: var(--white);
+      stroke-width: 4;
+    }
+
+    .scatter-preview .grid-line {
+      stroke: var(--black);
+      stroke-width: 1.5;
+      stroke-dasharray: 5 6;
+      opacity: 0.22;
+    }
+
+    .scatter-preview .split-line {
+      stroke: var(--black);
+      stroke-width: 4;
+      stroke-dasharray: 10 8;
+    }
+
+    .scatter-preview .point {
+      stroke: none;
+    }
+
+    .scatter-preview .point-label {
+      fill: var(--black);
+      font-family: "Inter", sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      text-anchor: middle;
+    }
+
+    .scatter-preview .axis-label {
+      fill: var(--white);
+      font-family: "Inter", sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-anchor: middle;
+      text-transform: uppercase;
+    }
+
+    .scatter-preview .quadrant-name {
+      fill: var(--black);
+      font-family: "Inter", sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-anchor: middle;
+      opacity: 0.68;
+    }
+
     /* Footer */
 
     footer {
@@ -899,26 +1005,6 @@
       font-size: 10px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-    }
-
-    /* Medium desktop */
-
-    @media (max-width: 1250px) {
-      .tools-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .matrix-tool {
-        grid-column: 1 / -1;
-      }
-
-      .matrix-tool .matrix-board {
-        max-width: 610px;
-      }
-
-      .tool-card h3 {
-        font-size: clamp(35px, 4.2vw, 62px);
-      }
     }
 
     /* Tablet */
@@ -945,12 +1031,12 @@
         grid-template-columns: 1fr;
       }
 
-      .matrix-tool {
-        grid-column: auto;
-      }
-
       .tool-card {
         min-height: 600px;
+      }
+
+      .tool-card h3 {
+        font-size: clamp(35px, 7vw, 65px);
       }
     }
 
@@ -1148,12 +1234,14 @@
       <span>Venn diagram maker</span>
       <span>Comparison butterfly chart</span>
       <span>Brand performance matrix</span>
+      <span>Scatter plot &amp; quadrant maker</span>
       <span>Connected data, clearly understood</span>
 
       <span>Visualisation tools now available</span>
       <span>Venn diagram maker</span>
       <span>Comparison butterfly chart</span>
       <span>Brand performance matrix</span>
+      <span>Scatter plot &amp; quadrant maker</span>
       <span>Connected data, clearly understood</span>
     </div>
   </div>
@@ -1364,7 +1452,7 @@
       </header>
 
       <div class="tools-grid">
-        <!-- Tool 01 -->
+        <!-- Tool 01: Venn Diagram Maker -->
         <a class="tool-card venn-tool" href="tools/audience-overlap/" aria-label="Open the Venn diagram maker">
           <div class="tool-card-top">
             <span>Tool 01 / Set relationships</span>
@@ -1453,7 +1541,7 @@
           </div>
         </a>
 
-        <!-- Tool 02 -->
+        <!-- Tool 02: Butterfly Chart -->
         <a class="tool-card butterfly-tool" href="tools/butterfly-diagrams/" aria-label="Open the comparison butterfly chart tool">
           <div class="tool-card-top">
             <span>Tool 02 / Comparison</span>
@@ -1523,7 +1611,7 @@
           </div>
         </a>
 
-        <!-- Tool 03 -->
+        <!-- Tool 03: Brand Performance Matrix -->
         <a class="tool-card matrix-tool" href="tools/brand-performance-matrix/" aria-label="Open the brand performance matrix tool">
           <div class="tool-card-top">
             <span>Tool 03 / Brand intelligence</span>
@@ -1588,6 +1676,141 @@
             </span>
           </div>
         </a>
+
+        <!-- Tool 04: Scatter Plot & Quadrant Maker -->
+        <a class="tool-card scatter-tool" href="tools/scatter-plot/" aria-label="Open the scatter plot and quadrant maker">
+          <div class="tool-card-top">
+            <span>Tool 04 / Positioning analysis</span>
+            <span class="tool-status-label">Available now</span>
+          </div>
+
+          <div class="tool-visual scatter-visual" aria-hidden="true">
+            <svg class="scatter-preview" viewBox="0 0 700 400">
+              <!-- Plot background -->
+              <rect class="plot-background" x="75" y="38" width="550" height="300"></rect>
+
+              <!-- Optional quadrant areas -->
+              <rect class="quadrant-fill-three" x="75" y="38" width="275" height="150"></rect>
+
+              <rect class="quadrant-fill-one" x="350" y="38" width="275" height="150"></rect>
+
+              <rect class="quadrant-fill-four" x="75" y="188" width="275" height="150"></rect>
+
+              <rect class="quadrant-fill-two" x="350" y="188" width="275" height="150"></rect>
+
+              <!-- Grid -->
+              <g>
+                <line class="grid-line" x1="185" y1="38" x2="185" y2="338"></line>
+
+                <line class="grid-line" x1="295" y1="38" x2="295" y2="338"></line>
+
+                <line class="grid-line" x1="405" y1="38" x2="405" y2="338"></line>
+
+                <line class="grid-line" x1="515" y1="38" x2="515" y2="338"></line>
+
+                <line class="grid-line" x1="75" y1="98" x2="625" y2="98"></line>
+
+                <line class="grid-line" x1="75" y1="158" x2="625" y2="158"></line>
+
+                <line class="grid-line" x1="75" y1="218" x2="625" y2="218"></line>
+
+                <line class="grid-line" x1="75" y1="278" x2="625" y2="278"></line>
+              </g>
+
+              <!-- X and Y splits -->
+              <line class="split-line" x1="350" y1="38" x2="350" y2="338"></line>
+
+              <line class="split-line" x1="75" y1="188" x2="625" y2="188"></line>
+
+              <!-- Quadrant labels -->
+              <g>
+                <text class="quadrant-name" x="212" y="62">
+                  BUILD RELEVANCE
+                </text>
+
+                <text class="quadrant-name" x="488" y="62">
+                  PRIORITY
+                </text>
+
+                <text class="quadrant-name" x="212" y="324">
+                  MONITOR
+                </text>
+
+                <text class="quadrant-name" x="488" y="324">
+                  EMERGING
+                </text>
+              </g>
+
+              <!-- Simple scatter points -->
+              <g>
+                <circle class="point" cx="528" cy="95" r="13" fill="#ff3d0a"></circle>
+
+                <text class="point-label" x="528" y="75">
+                  Brand A
+                </text>
+
+                <circle class="point" cx="445" cy="138" r="11" fill="#080808"></circle>
+
+                <text class="point-label" x="445" y="120">
+                  Brand B
+                </text>
+
+                <circle class="point" cx="265" cy="112" r="12" fill="#ff3d0a"></circle>
+
+                <text class="point-label" x="265" y="93">
+                  Brand C
+                </text>
+
+                <circle class="point" cx="490" cy="248" r="10" fill="#080808"></circle>
+
+                <text class="point-label" x="490" y="231">
+                  Brand D
+                </text>
+
+                <circle class="point" cx="178" cy="270" r="9" fill="#ff3d0a"></circle>
+
+                <text class="point-label" x="178" y="253">
+                  Brand E
+                </text>
+
+                <circle class="point" cx="330" cy="205" r="8" fill="#080808"></circle>
+
+                <circle class="point" cx="565" cy="175" r="8" fill="#ff3d0a"></circle>
+              </g>
+
+              <!-- Border -->
+              <rect class="plot-border" x="75" y="38" width="550" height="300"></rect>
+
+              <!-- Axis labels -->
+              <text class="axis-label" x="350" y="375">
+                MARKET RELEVANCE
+              </text>
+
+              <text class="axis-label" x="28" y="188" transform="rotate(-90 28 188)">
+                BRAND STRENGTH
+              </text>
+            </svg>
+          </div>
+
+          <div class="tool-card-bottom">
+            <div>
+              <h3>
+                Scatter plot &amp;<br>
+                quadrant maker
+              </h3>
+
+              <p>
+                Plot and compare items across two measures. Add an X split,
+                a Y split, both or neither, then optionally divide the chart
+                into four editable quadrants.
+              </p>
+            </div>
+
+            <span class="open-tool">
+              Open tool ↗
+            </span>
+          </div>
+        </a>
       </div>
     </section>
   </main>
@@ -1595,7 +1818,7 @@
   <footer>
     <span>Visual Intelligence Lab © 2026</span>
     <span>Experimental tools for connected thinking</span>
-    <span>Three tools available</span>
+    <span>Four tools available</span>
   </footer>
 
   <script>
@@ -1606,18 +1829,78 @@
       "http://www.w3.org/2000/svg";
 
     const nodes = [
-      { x: 90, y: 160, r: 13, colour: "lime" },
-      { x: 240, y: 100, r: 21, colour: "white" },
-      { x: 420, y: 145, r: 16, colour: "orange" },
-      { x: 510, y: 260, r: 11, colour: "white" },
-      { x: 340, y: 290, r: 29, colour: "lime" },
-      { x: 160, y: 330, r: 17, colour: "white" },
-      { x: 80, y: 480, r: 9, colour: "orange" },
-      { x: 270, y: 500, r: 20, colour: "white" },
-      { x: 460, y: 470, r: 14, colour: "lime" },
-      { x: 530, y: 590, r: 22, colour: "orange" },
-      { x: 320, y: 630, r: 10, colour: "white" },
-      { x: 130, y: 610, r: 15, colour: "lime" }
+      {
+        x: 90,
+        y: 160,
+        r: 13,
+        colour: "lime"
+      },
+      {
+        x: 240,
+        y: 100,
+        r: 21,
+        colour: "white"
+      },
+      {
+        x: 420,
+        y: 145,
+        r: 16,
+        colour: "orange"
+      },
+      {
+        x: 510,
+        y: 260,
+        r: 11,
+        colour: "white"
+      },
+      {
+        x: 340,
+        y: 290,
+        r: 29,
+        colour: "lime"
+      },
+      {
+        x: 160,
+        y: 330,
+        r: 17,
+        colour: "white"
+      },
+      {
+        x: 80,
+        y: 480,
+        r: 9,
+        colour: "orange"
+      },
+      {
+        x: 270,
+        y: 500,
+        r: 20,
+        colour: "white"
+      },
+      {
+        x: 460,
+        y: 470,
+        r: 14,
+        colour: "lime"
+      },
+      {
+        x: 530,
+        y: 590,
+        r: 22,
+        colour: "orange"
+      },
+      {
+        x: 320,
+        y: 630,
+        r: 10,
+        colour: "white"
+      },
+      {
+        x: 130,
+        y: 610,
+        r: 15,
+        colour: "lime"
+      }
     ];
 
     const edges = [
