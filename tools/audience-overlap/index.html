@@ -1,12 +1,14 @@
 <html lang="en"><head>
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Audience Overlap — Visual Intelligence Lab</title>
+  <title>Venn Diagram Maker — Visual Intelligence Lab</title>
 
-  <meta name="description" content="Create and export a proportional audience overlap visualisation.">
+  <meta name="description" content="Create and export a proportional Venn diagram with two or three sets and independent pairwise overlaps.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
@@ -55,8 +57,18 @@
     }
 
     button,
-    a {
+    a,
+    input {
       -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.35;
     }
 
     /* Navigation */
@@ -88,6 +100,7 @@
       height: 40px;
       display: grid;
       place-items: center;
+      flex: 0 0 auto;
       color: var(--black);
       background: var(--lime);
       border-radius: 50%;
@@ -166,13 +179,13 @@
       transform: translateY(-2px);
     }
 
-    /* Application layout */
+    /* Application */
 
     .application {
       height: 100vh;
       padding-top: var(--navigation-height);
       display: grid;
-      grid-template-columns: 330px minmax(0, 1fr);
+      grid-template-columns: 390px minmax(0, 1fr);
       overflow: hidden;
     }
 
@@ -188,6 +201,18 @@
       scrollbar-width: thin;
     }
 
+    .controls::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .controls::-webkit-scrollbar-track {
+      background: var(--soft-black);
+    }
+
+    .controls::-webkit-scrollbar-thumb {
+      background: var(--orange);
+    }
+
     .tool-number {
       display: block;
       margin-bottom: 14px;
@@ -199,7 +224,7 @@
     }
 
     .controls h1 {
-      max-width: 270px;
+      max-width: 330px;
       margin: 0;
       font-family: "Archivo Black", sans-serif;
       font-size: 32px;
@@ -236,7 +261,15 @@
       text-transform: uppercase;
     }
 
+    .section-description {
+      margin: -8px 0 17px;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
     .field {
+      min-width: 0;
       margin-bottom: 17px;
     }
 
@@ -248,6 +281,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
       margin-bottom: 7px;
       color: var(--grey);
       font-size: 10px;
@@ -255,9 +289,11 @@
       letter-spacing: 0.03em;
     }
 
-    input {
+    input[type="text"],
+    input[type="number"] {
       width: 100%;
       height: 44px;
+      min-width: 0;
       padding: 9px 11px;
       color: var(--white);
       background: var(--soft-black);
@@ -269,11 +305,13 @@
         background 180ms ease;
     }
 
-    input:hover {
+    input[type="text"]:hover,
+    input[type="number"]:hover {
       border-color: rgba(255, 255, 255, 0.45);
     }
 
-    input:focus {
+    input[type="text"]:focus,
+    input[type="number"]:focus {
       background: var(--black);
       border-color: var(--lime);
     }
@@ -284,9 +322,52 @@
     }
 
     input[type="color"] {
+      width: 100%;
       height: 50px;
       padding: 5px;
       cursor: pointer;
+      color: var(--white);
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 0;
+      outline: none;
+    }
+
+    input[type="color"]:focus {
+      border-color: var(--lime);
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+      border: 0;
+    }
+
+    input[type="color"]::-moz-color-swatch {
+      border: 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 22px;
+      margin: 0;
+      padding: 0;
+      cursor: pointer;
+      accent-color: var(--lime);
+      background: transparent;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 110px;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .field-grid .field {
+      margin: 0;
     }
 
     .colour-grid {
@@ -303,9 +384,144 @@
       margin: 0;
     }
 
+    /* Diagram mode */
+
+    .mode-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .mode-option {
+      position: relative;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .mode-option input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .mode-option span {
+      min-height: 44px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--grey);
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition:
+        color 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease;
+    }
+
+    .mode-option input:checked + span {
+      color: var(--black);
+      background: var(--lime);
+      border-color: var(--lime);
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    /* Pairwise overlaps */
+
+    .overlap-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .overlap-grid .field {
+      margin: 0;
+    }
+
+    .overlap-grid + .overlap-grid {
+      margin-top: 14px;
+    }
+
+    .overlap-symbol {
+      color: var(--lime);
+      font-weight: 800;
+    }
+
+    .overlap-note {
+      margin: 14px 0 0;
+      padding: 11px;
+      color: var(--grey);
+      background: rgba(168, 255, 55, 0.05);
+      border-left: 2px solid var(--lime);
+      font-size: 9px;
+      line-height: 1.55;
+    }
+
+    /* Range */
+
+    .range-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 8px;
+    }
+
+    .range-heading label {
+      margin: 0;
+    }
+
+    .range-value {
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    /* Checkboxes */
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+
+    .option-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .option-row input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      margin: 0;
+      accent-color: var(--lime);
+      cursor: pointer;
+    }
+
+    .option-row label {
+      margin: 0;
+      color: #d0d0cb;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Errors */
+
     .error {
       display: none;
-      margin: -5px 0 16px;
+      margin: 13px 0 0;
       padding: 11px;
       color: var(--error);
       background: rgba(255, 119, 119, 0.08);
@@ -319,6 +535,8 @@
       display: block;
     }
 
+    /* Buttons */
+
     .buttons {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -329,7 +547,6 @@
     button {
       min-height: 46px;
       padding: 10px;
-      cursor: pointer;
       border-radius: 999px;
       font-size: 10px;
       font-weight: 800;
@@ -338,7 +555,8 @@
       transition:
         transform 180ms ease,
         background 180ms ease,
-        color 180ms ease;
+        color 180ms ease,
+        border-color 180ms ease;
     }
 
     button:hover:not(:disabled) {
@@ -365,11 +583,6 @@
     .png-button:hover:not(:disabled) {
       background: var(--orange);
       border-color: var(--orange);
-    }
-
-    button:disabled {
-      cursor: not-allowed;
-      opacity: 0.35;
     }
 
     .privacy-note {
@@ -454,7 +667,9 @@
       filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.22));
     }
 
-    @media (max-width: 850px) {
+    /* Responsive */
+
+    @media (max-width: 900px) {
       body {
         overflow: auto;
       }
@@ -509,6 +724,10 @@
 
       .controls h1 {
         font-size: 29px;
+      }
+
+      .field-grid {
+        grid-template-columns: minmax(0, 1fr) 96px;
       }
 
       .preview {
@@ -567,44 +786,153 @@
 
   <div class="application">
     <aside class="controls">
-      <span class="tool-number">Tool 01 / Visualisation</span>
+      <span class="tool-number">
+        Tool 01 / Visualisation
+      </span>
 
       <h1>
-        Proportional<br>
-        audience overlap
+        Venn diagram<br>
+        maker
       </h1>
 
       <p class="introduction">
-        Compare two audience sizes and visualise the proportion they share.
-        Circle area represents total audience size, while the highlighted
-        intersection represents the shared audience.
+        Create a proportional Venn diagram using two or three sets. Enter the
+        size of each set and the overlap between every pair. The circles are
+        positioned and scaled automatically.
       </p>
 
       <section class="control-section">
-        <h2>Audience sizes</h2>
+        <h2>Diagram structure</h2>
 
-        <div class="field">
-          <label for="size-one">Account 1 audience</label>
+        <p class="section-description">
+          Choose whether the diagram contains two or three circles.
+        </p>
 
-          <input id="size-one" type="number" min="1" inputmode="numeric" value="20783">
+        <div class="mode-selector">
+          <label class="mode-option">
+            <input type="radio" name="circle-count" value="2" checked="">
+
+            <span>2 circles</span>
+          </label>
+
+          <label class="mode-option">
+            <input type="radio" name="circle-count" value="3">
+
+            <span>3 circles</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <h2>Set names and sizes</h2>
+
+        <p class="section-description">
+          Circle area is proportional to each set’s value.
+        </p>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="set-one-name">
+              Set 1 name
+            </label>
+
+            <input id="set-one-name" type="text" value="Set A" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="set-one-value">
+              Size
+            </label>
+
+            <input id="set-one-value" type="number" min="1" step="any" value="100" inputmode="decimal">
+          </div>
         </div>
 
-        <div class="field">
-          <label for="size-two">Account 2 audience</label>
+        <div class="field-grid">
+          <div class="field">
+            <label for="set-two-name">
+              Set 2 name
+            </label>
 
-          <input id="size-two" type="number" min="1" inputmode="numeric" value="9586">
+            <input id="set-two-name" type="text" value="Set B" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="set-two-value">
+              Size
+            </label>
+
+            <input id="set-two-value" type="number" min="1" step="any" value="80" inputmode="decimal">
+          </div>
         </div>
 
-        <div class="field">
-          <label for="overlap">Shared audience</label>
+        <div id="third-set-row" class="field-grid" hidden="">
+          <div class="field">
+            <label for="set-three-name">
+              Set 3 name
+            </label>
 
-          <input id="overlap" type="number" min="0" inputmode="numeric" value="51">
+            <input id="set-three-name" type="text" value="Set C" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="set-three-value">
+              Size
+            </label>
+
+            <input id="set-three-value" type="number" min="1" step="any" value="70" inputmode="decimal">
+          </div>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <h2>Pairwise overlaps</h2>
+
+        <p class="section-description">
+          Enter the number of items shared by each pair of sets.
+        </p>
+
+        <div class="overlap-grid">
+          <div class="field">
+            <label for="overlap-ab">
+              <span id="overlap-ab-label">
+                Set A <span class="overlap-symbol">∩</span> Set B
+              </span>
+            </label>
+
+            <input id="overlap-ab" type="number" min="0" step="any" value="20" inputmode="decimal">
+          </div>
+
+          <div id="overlap-ac-field" class="field" hidden="">
+            <label for="overlap-ac">
+              <span id="overlap-ac-label">
+                Set A <span class="overlap-symbol">∩</span> Set C
+              </span>
+            </label>
+
+            <input id="overlap-ac" type="number" min="0" step="any" value="15" inputmode="decimal">
+          </div>
         </div>
 
-        <div id="error" class="error" role="alert">
-          The shared audience cannot exceed either account, and both account
-          audiences must be greater than zero.
+        <div id="overlap-bc-row" class="overlap-grid" hidden="">
+          <div class="field">
+            <label for="overlap-bc">
+              <span id="overlap-bc-label">
+                Set B <span class="overlap-symbol">∩</span> Set C
+              </span>
+            </label>
+
+            <input id="overlap-bc" type="number" min="0" step="any" value="10" inputmode="decimal">
+          </div>
         </div>
+
+        <p id="three-overlap-note" class="overlap-note" hidden="">
+          Pairwise overlap values include anything that may also appear in
+          all three sets. The central three-way intersection is produced by
+          the geometry of the three pairwise relationships.
+        </p>
+
+        <div id="error" class="error" role="alert"></div>
       </section>
 
       <section class="control-section">
@@ -612,30 +940,90 @@
 
         <div class="colour-grid">
           <div class="field">
-            <label for="circle-one-colour">Account 1</label>
+            <label for="circle-one-colour">
+              Set 1
+            </label>
 
             <input id="circle-one-colour" type="color" value="#ff3d0a">
           </div>
 
           <div class="field">
-            <label for="circle-two-colour">Account 2</label>
+            <label for="circle-two-colour">
+              Set 2
+            </label>
 
-            <input id="circle-two-colour" type="color" value="#f7f7f2">
+            <input id="circle-two-colour" type="color" value="#a8ff37">
+          </div>
+        </div>
+
+        <div class="colour-grid">
+          <div id="circle-three-colour-field" class="field" hidden="">
+            <label for="circle-three-colour">
+              Set 3
+            </label>
+
+            <input id="circle-three-colour" type="color" value="#6d5dfc">
+          </div>
+
+          <div class="field">
+            <label for="outline-colour">
+              Outlines
+            </label>
+
+            <input id="outline-colour" type="color" value="#080808">
           </div>
         </div>
 
         <div class="colour-grid">
           <div class="field">
-            <label for="overlap-colour">Overlap</label>
+            <label for="text-colour">
+              Text
+            </label>
 
-            <input id="overlap-colour" type="color" value="#a8ff37">
+            <input id="text-colour" type="color" value="#080808">
           </div>
 
           <div class="field">
-            <label for="outline-colour">Outlines</label>
+            <div class="range-heading">
+              <label for="fill-opacity">
+                Fill opacity
+              </label>
 
-            <input id="outline-colour" type="color" value="#080808">
+              <span id="opacity-value" class="range-value">
+                72%
+              </span>
+            </div>
+
+            <input id="fill-opacity" type="range" min="10" max="100" step="1" value="72">
           </div>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <h2>Display options</h2>
+
+        <div class="option-row">
+          <input id="show-set-names" type="checkbox" checked="">
+
+          <label for="show-set-names">
+            Show set names
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="show-set-values" type="checkbox" checked="">
+
+          <label for="show-set-values">
+            Show set sizes
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="show-outlines" type="checkbox" checked="">
+
+          <label for="show-outlines">
+            Show circle outlines
+          </label>
         </div>
       </section>
 
@@ -650,8 +1038,8 @@
       </div>
 
       <p class="privacy-note">
-        All calculations and exports happen locally in your browser. Values are
-        not uploaded or stored by this page.
+        All calculations and exports happen locally in your browser. Values
+        are not uploaded or stored by this page.
       </p>
     </aside>
 
@@ -666,22 +1054,8 @@
       </div>
 
       <div class="diagram-frame">
-        <svg id="venn-svg" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Proportional audience overlap diagram">
-          <defs>
-            <clipPath id="account-one-clip" clipPathUnits="userSpaceOnUse">
-              <circle id="clip-circle-one" cx="400" cy="337.5" r="240"></circle>
-            </clipPath>
-          </defs>
-
-          <circle id="circle-one" cx="400" cy="337.5" r="240" fill="#ff3d0a"></circle>
-
-          <circle id="circle-two" cx="800" cy="337.5" r="163" fill="#f7f7f2"></circle>
-
-          <circle id="overlap-highlight" cx="800" cy="337.5" r="163" fill="#a8ff37" clip-path="url(#account-one-clip)"></circle>
-
-          <circle id="circle-one-outline" cx="400" cy="337.5" r="240" fill="none" stroke="#080808" stroke-width="4"></circle>
-
-          <circle id="circle-two-outline" cx="800" cy="337.5" r="163" fill="none" stroke="#080808" stroke-width="4"></circle>
+        <svg id="venn-svg" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Custom proportional Venn diagram">
+          <g id="diagram-root"></g>
         </svg>
       </div>
     </main>
@@ -690,65 +1064,283 @@
   <script>
     const SVG_WIDTH = 1200;
     const SVG_HEIGHT = 675;
-    const MAX_RADIUS = 240;
+    const SVG_NS = "http://www.w3.org/2000/svg";
 
-    const sizeOneInput = document.getElementById("size-one");
-    const sizeTwoInput = document.getElementById("size-two");
-    const overlapInput = document.getElementById("overlap");
+    /*
+     * This margin is reserved on every edge of the export.
+     * It prevents outlines or circles from being cropped.
+     */
+    const EXPORT_MARGIN = 62;
+    const BASE_MAXIMUM_RADIUS = 230;
+
+    const circleCountInputs =
+      Array.from(
+        document.querySelectorAll(
+          'input[name="circle-count"]'
+        )
+      );
+
+    const setOneNameInput =
+      document.getElementById("set-one-name");
+
+    const setTwoNameInput =
+      document.getElementById("set-two-name");
+
+    const setThreeNameInput =
+      document.getElementById("set-three-name");
+
+    const setOneValueInput =
+      document.getElementById("set-one-value");
+
+    const setTwoValueInput =
+      document.getElementById("set-two-value");
+
+    const setThreeValueInput =
+      document.getElementById("set-three-value");
+
+    const overlapABInput =
+      document.getElementById("overlap-ab");
+
+    const overlapACInput =
+      document.getElementById("overlap-ac");
+
+    const overlapBCInput =
+      document.getElementById("overlap-bc");
+
+    const overlapABLabel =
+      document.getElementById("overlap-ab-label");
+
+    const overlapACLabel =
+      document.getElementById("overlap-ac-label");
+
+    const overlapBCLabel =
+      document.getElementById("overlap-bc-label");
+
+    const thirdSetRow =
+      document.getElementById("third-set-row");
+
+    const overlapACField =
+      document.getElementById("overlap-ac-field");
+
+    const overlapBCRow =
+      document.getElementById("overlap-bc-row");
+
+    const threeOverlapNote =
+      document.getElementById("three-overlap-note");
+
+    const circleThreeColourField =
+      document.getElementById(
+        "circle-three-colour-field"
+      );
 
     const circleOneColourInput =
-      document.getElementById("circle-one-colour");
+      document.getElementById(
+        "circle-one-colour"
+      );
 
     const circleTwoColourInput =
-      document.getElementById("circle-two-colour");
+      document.getElementById(
+        "circle-two-colour"
+      );
 
-    const overlapColourInput =
-      document.getElementById("overlap-colour");
+    const circleThreeColourInput =
+      document.getElementById(
+        "circle-three-colour"
+      );
 
     const outlineColourInput =
-      document.getElementById("outline-colour");
+      document.getElementById(
+        "outline-colour"
+      );
 
-    const error = document.getElementById("error");
-    const exportSvgButton = document.getElementById("export-svg");
-    const exportPngButton = document.getElementById("export-png");
+    const textColourInput =
+      document.getElementById(
+        "text-colour"
+      );
 
-    const svg = document.getElementById("venn-svg");
-    const circleOne = document.getElementById("circle-one");
-    const circleTwo = document.getElementById("circle-two");
-    const clipCircleOne = document.getElementById("clip-circle-one");
+    const fillOpacityInput =
+      document.getElementById(
+        "fill-opacity"
+      );
 
-    const overlapHighlight =
-      document.getElementById("overlap-highlight");
+    const opacityValue =
+      document.getElementById(
+        "opacity-value"
+      );
 
-    const circleOneOutline =
-      document.getElementById("circle-one-outline");
+    const showSetNamesInput =
+      document.getElementById(
+        "show-set-names"
+      );
 
-    const circleTwoOutline =
-      document.getElementById("circle-two-outline");
+    const showSetValuesInput =
+      document.getElementById(
+        "show-set-values"
+      );
+
+    const showOutlinesInput =
+      document.getElementById(
+        "show-outlines"
+      );
+
+    const errorElement =
+      document.getElementById("error");
+
+    const svg =
+      document.getElementById("venn-svg");
+
+    const diagramRoot =
+      document.getElementById("diagram-root");
+
+    const exportSvgButton =
+      document.getElementById("export-svg");
+
+    const exportPngButton =
+      document.getElementById("export-png");
+
+    function getCircleCount() {
+      const selected =
+        circleCountInputs.find(
+          input => input.checked
+        );
+
+      return selected
+        ? Number(selected.value)
+        : 2;
+    }
 
     function readNumber(input) {
-      const value = Number(input.value);
+      const value =
+        Number(input.value);
 
-      return Number.isFinite(value) && value >= 0
+      return Number.isFinite(value)
         ? value
         : 0;
     }
 
-    function intersectionArea(radiusOne, radiusTwo, distance) {
-      if (distance >= radiusOne + radiusTwo) {
+    function getSetName(
+      input,
+      fallback
+    ) {
+      return (
+        input.value.trim() ||
+        fallback
+      );
+    }
+
+    function formatNumber(value) {
+      return new Intl.NumberFormat(
+        "en-GB",
+        {
+          maximumFractionDigits: 2
+        }
+      ).format(value);
+    }
+
+    function createSvgElement(
+      elementName,
+      attributes = {}
+    ) {
+      const element =
+        document.createElementNS(
+          SVG_NS,
+          elementName
+        );
+
+      Object.entries(attributes).forEach(
+        ([attribute, value]) => {
+          element.setAttribute(
+            attribute,
+            value
+          );
+        }
+      );
+
+      return element;
+    }
+
+    function addText({
+      parent,
+      x,
+      y,
+      text,
+      size,
+      weight,
+      fill,
+      opacity = 1
+    }) {
+      const textElement =
+        createSvgElement(
+          "text",
+          {
+            x,
+            y,
+            fill,
+            opacity,
+            "text-anchor": "middle",
+            "font-family":
+              "Arial, Helvetica, sans-serif",
+            "font-size": size,
+            "font-weight": weight,
+            "paint-order": "stroke",
+            stroke:
+              "rgba(255,255,255,0.24)",
+            "stroke-width": 1
+          }
+        );
+
+      textElement.textContent =
+        text;
+
+      parent.appendChild(
+        textElement
+      );
+
+      return textElement;
+    }
+
+    /*
+     * Returns the exact area shared by two circles
+     * for a particular distance between their centres.
+     */
+    function intersectionArea(
+      radiusOne,
+      radiusTwo,
+      distance
+    ) {
+      if (
+        distance >=
+        radiusOne + radiusTwo
+      ) {
         return 0;
       }
 
-      if (distance <= Math.abs(radiusOne - radiusTwo)) {
+      if (
+        distance <=
+        Math.abs(
+          radiusOne - radiusTwo
+        )
+      ) {
         return (
           Math.PI *
-          Math.pow(Math.min(radiusOne, radiusTwo), 2)
+          Math.pow(
+            Math.min(
+              radiusOne,
+              radiusTwo
+            ),
+            2
+          )
         );
       }
 
-      const radiusOneSquared = radiusOne * radiusOne;
-      const radiusTwoSquared = radiusTwo * radiusTwo;
-      const distanceSquared = distance * distance;
+      const radiusOneSquared =
+        radiusOne * radiusOne;
+
+      const radiusTwoSquared =
+        radiusTwo * radiusTwo;
+
+      const distanceSquared =
+        distance * distance;
 
       const cosineOne =
         (
@@ -756,7 +1348,11 @@
           radiusOneSquared -
           radiusTwoSquared
         ) /
-        (2 * distance * radiusOne);
+        (
+          2 *
+          distance *
+          radiusOne
+        );
 
       const cosineTwo =
         (
@@ -764,55 +1360,111 @@
           radiusTwoSquared -
           radiusOneSquared
         ) /
-        (2 * distance * radiusTwo);
+        (
+          2 *
+          distance *
+          radiusTwo
+        );
 
       const clampedCosineOne =
-        Math.max(-1, Math.min(1, cosineOne));
+        Math.max(
+          -1,
+          Math.min(1, cosineOne)
+        );
 
       const clampedCosineTwo =
-        Math.max(-1, Math.min(1, cosineTwo));
+        Math.max(
+          -1,
+          Math.min(1, cosineTwo)
+        );
 
       const angleOne =
-        2 * Math.acos(clampedCosineOne);
+        2 *
+        Math.acos(
+          clampedCosineOne
+        );
 
       const angleTwo =
-        2 * Math.acos(clampedCosineTwo);
+        2 *
+        Math.acos(
+          clampedCosineTwo
+        );
 
       const segmentOne =
         0.5 *
         radiusOneSquared *
-        (angleOne - Math.sin(angleOne));
+        (
+          angleOne -
+          Math.sin(angleOne)
+        );
 
       const segmentTwo =
         0.5 *
         radiusTwoSquared *
-        (angleTwo - Math.sin(angleTwo));
+        (
+          angleTwo -
+          Math.sin(angleTwo)
+        );
 
-      return segmentOne + segmentTwo;
+      return (
+        segmentOne +
+        segmentTwo
+      );
     }
 
-    function solveDistance(radiusOne, radiusTwo, targetArea) {
-      const maximumOverlap =
+    /*
+     * Finds the distance required to produce
+     * the requested overlap area.
+     */
+    function solveDistance(
+      radiusOne,
+      radiusTwo,
+      targetArea
+    ) {
+      const maximumArea =
         Math.PI *
-        Math.pow(Math.min(radiusOne, radiusTwo), 2);
+        Math.pow(
+          Math.min(
+            radiusOne,
+            radiusTwo
+          ),
+          2
+        );
 
       if (targetArea <= 0) {
-        return radiusOne + radiusTwo;
+        return (
+          radiusOne +
+          radiusTwo
+        );
       }
 
-      if (targetArea >= maximumOverlap) {
-        return Math.abs(radiusOne - radiusTwo);
+      if (targetArea >= maximumArea) {
+        return Math.abs(
+          radiusOne -
+          radiusTwo
+        );
       }
 
       let minimumDistance =
-        Math.abs(radiusOne - radiusTwo);
+        Math.abs(
+          radiusOne -
+          radiusTwo
+        );
 
       let maximumDistance =
-        radiusOne + radiusTwo;
+        radiusOne +
+        radiusTwo;
 
-      for (let index = 0; index < 80; index++) {
+      for (
+        let index = 0;
+        index < 90;
+        index++
+      ) {
         const midpoint =
-          (minimumDistance + maximumDistance) / 2;
+          (
+            minimumDistance +
+            maximumDistance
+          ) / 2;
 
         const currentArea =
           intersectionArea(
@@ -821,184 +1473,943 @@
             midpoint
           );
 
-        if (currentArea > targetArea) {
-          minimumDistance = midpoint;
+        if (
+          currentArea >
+          targetArea
+        ) {
+          minimumDistance =
+            midpoint;
         } else {
-          maximumDistance = midpoint;
+          maximumDistance =
+            midpoint;
         }
       }
 
-      return (minimumDistance + maximumDistance) / 2;
+      return (
+        minimumDistance +
+        maximumDistance
+      ) / 2;
     }
 
-    function updateCircle(element, centreX, centreY, radius) {
-      element.setAttribute("cx", centreX);
-      element.setAttribute("cy", centreY);
-      element.setAttribute("r", radius);
-    }
+    function getDiagramData() {
+      const count =
+        getCircleCount();
 
-    function updateColours() {
-      circleOne.setAttribute(
-        "fill",
-        circleOneColourInput.value
-      );
+      const sets = [
+        {
+          key: "A",
+          name: getSetName(
+            setOneNameInput,
+            "Set A"
+          ),
+          value:
+            readNumber(
+              setOneValueInput
+            ),
+          colour:
+            circleOneColourInput.value
+        },
+        {
+          key: "B",
+          name: getSetName(
+            setTwoNameInput,
+            "Set B"
+          ),
+          value:
+            readNumber(
+              setTwoValueInput
+            ),
+          colour:
+            circleTwoColourInput.value
+        }
+      ];
 
-      circleTwo.setAttribute(
-        "fill",
-        circleTwoColourInput.value
-      );
-
-      overlapHighlight.setAttribute(
-        "fill",
-        overlapColourInput.value
-      );
-
-      circleOneOutline.setAttribute(
-        "stroke",
-        outlineColourInput.value
-      );
-
-      circleTwoOutline.setAttribute(
-        "stroke",
-        outlineColourInput.value
-      );
-    }
-
-    function updateDiagram() {
-      const sizeOne = readNumber(sizeOneInput);
-      const sizeTwo = readNumber(sizeTwoInput);
-      const shared = readNumber(overlapInput);
-
-      const valid =
-        sizeOne > 0 &&
-        sizeTwo > 0 &&
-        shared <= sizeOne &&
-        shared <= sizeTwo;
-
-      error.classList.toggle("visible", !valid);
-      exportSvgButton.disabled = !valid;
-      exportPngButton.disabled = !valid;
-
-      if (!valid) {
-        return;
+      if (count === 3) {
+        sets.push({
+          key: "C",
+          name: getSetName(
+            setThreeNameInput,
+            "Set C"
+          ),
+          value:
+            readNumber(
+              setThreeValueInput
+            ),
+          colour:
+            circleThreeColourInput.value
+        });
       }
 
-      const largestAudience =
-        Math.max(sizeOne, sizeTwo);
+      return {
+        count,
+        sets,
+        overlaps: {
+          AB:
+            readNumber(
+              overlapABInput
+            ),
+          AC:
+            readNumber(
+              overlapACInput
+            ),
+          BC:
+            readNumber(
+              overlapBCInput
+            )
+        }
+      };
+    }
 
-      const radiusOne =
-        MAX_RADIUS *
-        Math.sqrt(sizeOne / largestAudience);
+    function updateInterface() {
+      const count =
+        getCircleCount();
 
-      const radiusTwo =
-        MAX_RADIUS *
-        Math.sqrt(sizeTwo / largestAudience);
+      const threeCircles =
+        count === 3;
 
-      const areaPerPerson =
-        (
-          Math.PI *
-          radiusOne *
-          radiusOne
-        ) / sizeOne;
+      thirdSetRow.hidden =
+        !threeCircles;
 
-      const targetOverlapArea =
-        shared * areaPerPerson;
+      overlapACField.hidden =
+        !threeCircles;
 
-      const distance =
+      overlapBCRow.hidden =
+        !threeCircles;
+
+      threeOverlapNote.hidden =
+        !threeCircles;
+
+      circleThreeColourField.hidden =
+        !threeCircles;
+
+      const nameA =
+        getSetName(
+          setOneNameInput,
+          "Set A"
+        );
+
+      const nameB =
+        getSetName(
+          setTwoNameInput,
+          "Set B"
+        );
+
+      const nameC =
+        getSetName(
+          setThreeNameInput,
+          "Set C"
+        );
+
+      overlapABLabel.textContent =
+        `${nameA} ∩ ${nameB}`;
+
+      overlapACLabel.textContent =
+        `${nameA} ∩ ${nameC}`;
+
+      overlapBCLabel.textContent =
+        `${nameB} ∩ ${nameC}`;
+
+      opacityValue.textContent =
+        `${fillOpacityInput.value}%`;
+
+      svg.setAttribute(
+        "aria-label",
+        threeCircles
+          ? "Custom proportional three-set Venn diagram"
+          : "Custom proportional two-set Venn diagram"
+      );
+    }
+
+    function showError(message) {
+      errorElement.textContent =
+        message;
+
+      errorElement.classList.add(
+        "visible"
+      );
+
+      exportSvgButton.disabled =
+        true;
+
+      exportPngButton.disabled =
+        true;
+    }
+
+    function clearError() {
+      errorElement.textContent = "";
+
+      errorElement.classList.remove(
+        "visible"
+      );
+
+      exportSvgButton.disabled =
+        false;
+
+      exportPngButton.disabled =
+        false;
+    }
+
+    function validateBasicData(data) {
+      const invalidSet =
+        data.sets.some(
+          set =>
+            !Number.isFinite(
+              set.value
+            ) ||
+            set.value <= 0
+        );
+
+      if (invalidSet) {
+        showError(
+          "Every visible set must have a size greater than zero."
+        );
+
+        return false;
+      }
+
+      const overlapValues = [
+        data.overlaps.AB
+      ];
+
+      if (data.count === 3) {
+        overlapValues.push(
+          data.overlaps.AC,
+          data.overlaps.BC
+        );
+      }
+
+      if (
+        overlapValues.some(
+          value =>
+            !Number.isFinite(value) ||
+            value < 0
+        )
+      ) {
+        showError(
+          "Overlap values cannot be negative."
+        );
+
+        return false;
+      }
+
+      const valueA =
+        data.sets[0].value;
+
+      const valueB =
+        data.sets[1].value;
+
+      if (
+        data.overlaps.AB >
+        Math.min(valueA, valueB)
+      ) {
+        showError(
+          `${data.sets[0].name} ∩ ${data.sets[1].name} cannot exceed the size of either set.`
+        );
+
+        return false;
+      }
+
+      if (data.count === 3) {
+        const valueC =
+          data.sets[2].value;
+
+        if (
+          data.overlaps.AC >
+          Math.min(valueA, valueC)
+        ) {
+          showError(
+            `${data.sets[0].name} ∩ ${data.sets[2].name} cannot exceed the size of either set.`
+          );
+
+          return false;
+        }
+
+        if (
+          data.overlaps.BC >
+          Math.min(valueB, valueC)
+        ) {
+          showError(
+            `${data.sets[1].name} ∩ ${data.sets[2].name} cannot exceed the size of either set.`
+          );
+
+          return false;
+        }
+      }
+
+      clearError();
+      return true;
+    }
+
+    function createRadii(sets) {
+      const largestValue =
+        Math.max(
+          ...sets.map(
+            set => set.value
+          )
+        );
+
+      return sets.map(
+        set =>
+          BASE_MAXIMUM_RADIUS *
+          Math.sqrt(
+            set.value /
+            largestValue
+          )
+      );
+    }
+
+    function calculateAreaPerUnit(
+      largestValue
+    ) {
+      return (
+        Math.PI *
+        BASE_MAXIMUM_RADIUS *
+        BASE_MAXIMUM_RADIUS
+      ) / largestValue;
+    }
+
+    function createTwoCircleLayout(
+      data,
+      radii,
+      areaPerUnit
+    ) {
+      const distanceAB =
         solveDistance(
-          radiusOne,
-          radiusTwo,
-          targetOverlapArea
+          radii[0],
+          radii[1],
+          data.overlaps.AB *
+          areaPerUnit
+        );
+
+      return [
+        {
+          ...data.sets[0],
+          radius: radii[0],
+          x: 0,
+          y: 0
+        },
+        {
+          ...data.sets[1],
+          radius: radii[1],
+          x: distanceAB,
+          y: 0
+        }
+      ];
+    }
+
+    function createThreeCircleLayout(
+      data,
+      radii,
+      areaPerUnit
+    ) {
+      const distanceAB =
+        solveDistance(
+          radii[0],
+          radii[1],
+          data.overlaps.AB *
+          areaPerUnit
+        );
+
+      const distanceAC =
+        solveDistance(
+          radii[0],
+          radii[2],
+          data.overlaps.AC *
+          areaPerUnit
+        );
+
+      const distanceBC =
+        solveDistance(
+          radii[1],
+          radii[2],
+          data.overlaps.BC *
+          areaPerUnit
+        );
+
+      const tolerance = 0.5;
+
+      const triangleValid =
+        distanceAB +
+        distanceAC >=
+          distanceBC -
+          tolerance &&
+        distanceAB +
+        distanceBC >=
+          distanceAC -
+          tolerance &&
+        distanceAC +
+        distanceBC >=
+          distanceAB -
+          tolerance;
+
+      if (!triangleValid) {
+        return {
+          valid: false,
+          message:
+            "These three pairwise overlaps cannot be arranged simultaneously. Try increasing one of the smaller overlaps or reducing the largest overlap."
+        };
+      }
+
+      /*
+       * A and B are placed on the horizontal axis.
+       * C is calculated using trilateration.
+       */
+      if (distanceAB < 0.0001) {
+        const distancesMatch =
+          Math.abs(
+            distanceAC -
+            distanceBC
+          ) < 0.5;
+
+        if (!distancesMatch) {
+          return {
+            valid: false,
+            message:
+              "Sets A and B completely coincide, so their overlaps with Set C must be equal."
+          };
+        }
+
+        return {
+          valid: true,
+          layout: [
+            {
+              ...data.sets[0],
+              radius: radii[0],
+              x: 0,
+              y: 0
+            },
+            {
+              ...data.sets[1],
+              radius: radii[1],
+              x: 0,
+              y: 0
+            },
+            {
+              ...data.sets[2],
+              radius: radii[2],
+              x: 0,
+              y: -distanceAC
+            }
+          ]
+        };
+      }
+
+      const centreCX =
+        (
+          distanceAC *
+          distanceAC +
+          distanceAB *
+          distanceAB -
+          distanceBC *
+          distanceBC
+        ) /
+        (
+          2 *
+          distanceAB
+        );
+
+      const heightSquared =
+        Math.max(
+          0,
+          distanceAC *
+          distanceAC -
+          centreCX *
+          centreCX
+        );
+
+      const centreCY =
+        -Math.sqrt(
+          heightSquared
+        );
+
+      return {
+        valid: true,
+        layout: [
+          {
+            ...data.sets[0],
+            radius: radii[0],
+            x: 0,
+            y: 0
+          },
+          {
+            ...data.sets[1],
+            radius: radii[1],
+            x: distanceAB,
+            y: 0
+          },
+          {
+            ...data.sets[2],
+            radius: radii[2],
+            x: centreCX,
+            y: centreCY
+          }
+        ]
+      };
+    }
+
+    /*
+     * Fits every circle and outline inside the export canvas.
+     * This fixes the previously cropped top circle.
+     */
+    function fitLayoutToCanvas(layout) {
+      const minimumX =
+        Math.min(
+          ...layout.map(
+            circle =>
+              circle.x -
+              circle.radius
+          )
+        );
+
+      const maximumX =
+        Math.max(
+          ...layout.map(
+            circle =>
+              circle.x +
+              circle.radius
+          )
+        );
+
+      const minimumY =
+        Math.min(
+          ...layout.map(
+            circle =>
+              circle.y -
+              circle.radius
+          )
+        );
+
+      const maximumY =
+        Math.max(
+          ...layout.map(
+            circle =>
+              circle.y +
+              circle.radius
+          )
         );
 
       const diagramWidth =
-        radiusOne +
-        distance +
-        radiusTwo;
+        Math.max(
+          maximumX -
+          minimumX,
+          1
+        );
 
-      const leftEdge =
-        (SVG_WIDTH - diagramWidth) / 2;
+      const diagramHeight =
+        Math.max(
+          maximumY -
+          minimumY,
+          1
+        );
 
-      const centreY =
-        SVG_HEIGHT / 2;
+      const availableWidth =
+        SVG_WIDTH -
+        EXPORT_MARGIN * 2;
 
-      const centreOneX =
-        leftEdge + radiusOne;
+      const availableHeight =
+        SVG_HEIGHT -
+        EXPORT_MARGIN * 2;
 
-      const centreTwoX =
-        centreOneX + distance;
+      const scale =
+        Math.min(
+          availableWidth /
+          diagramWidth,
+          availableHeight /
+          diagramHeight,
+          1
+        );
 
-      updateCircle(
-        circleOne,
-        centreOneX,
-        centreY,
-        radiusOne
+      const rawCentreX =
+        (
+          minimumX +
+          maximumX
+        ) / 2;
+
+      const rawCentreY =
+        (
+          minimumY +
+          maximumY
+        ) / 2;
+
+      return layout.map(
+        circle => ({
+          ...circle,
+          x:
+            SVG_WIDTH / 2 +
+            (
+              circle.x -
+              rawCentreX
+            ) *
+            scale,
+          y:
+            SVG_HEIGHT / 2 +
+            (
+              circle.y -
+              rawCentreY
+            ) *
+            scale,
+          radius:
+            circle.radius *
+            scale
+        })
+      );
+    }
+
+    function createCircleElement(
+      circleData
+    ) {
+      const opacity =
+        Number(
+          fillOpacityInput.value
+        ) / 100;
+
+      return createSvgElement(
+        "circle",
+        {
+          cx: circleData.x,
+          cy: circleData.y,
+          r: circleData.radius,
+          fill: circleData.colour,
+          "fill-opacity": opacity,
+          stroke:
+            outlineColourInput.value,
+          "stroke-width":
+            showOutlinesInput.checked
+              ? 4
+              : 0
+        }
+      );
+    }
+
+    function calculateLabelPosition(
+      circle,
+      index,
+      layout
+    ) {
+      const centroidX =
+        layout.reduce(
+          (sum, item) =>
+            sum + item.x,
+          0
+        ) / layout.length;
+
+      const centroidY =
+        layout.reduce(
+          (sum, item) =>
+            sum + item.y,
+          0
+        ) / layout.length;
+
+      let vectorX =
+        circle.x -
+        centroidX;
+
+      let vectorY =
+        circle.y -
+        centroidY;
+
+      let length =
+        Math.hypot(
+          vectorX,
+          vectorY
+        );
+
+      if (length < 0.001) {
+        const fallbackAngles =
+          layout.length === 3
+            ? [
+                Math.PI * 0.75,
+                Math.PI * 0.25,
+                -Math.PI / 2
+              ]
+            : [
+                Math.PI,
+                0
+              ];
+
+        const angle =
+          fallbackAngles[index] || 0;
+
+        vectorX =
+          Math.cos(angle);
+
+        vectorY =
+          Math.sin(angle);
+
+        length = 1;
+      }
+
+      const offset =
+        circle.radius * 0.27;
+
+      return {
+        x:
+          circle.x +
+          (
+            vectorX /
+            length
+          ) *
+          offset,
+        y:
+          circle.y +
+          (
+            vectorY /
+            length
+          ) *
+          offset
+      };
+    }
+
+    function addCircleLabel(
+      labelLayer,
+      circle,
+      index,
+      layout
+    ) {
+      const showName =
+        showSetNamesInput.checked;
+
+      const showValue =
+        showSetValuesInput.checked;
+
+      if (
+        !showName &&
+        !showValue
+      ) {
+        return;
+      }
+
+      const position =
+        calculateLabelPosition(
+          circle,
+          index,
+          layout
+        );
+
+      const textColour =
+        textColourInput.value;
+
+      const nameSize =
+        Math.max(
+          15,
+          Math.min(
+            24,
+            circle.radius * 0.115
+          )
+        );
+
+      if (
+        showName &&
+        showValue
+      ) {
+        addText({
+          parent: labelLayer,
+          x: position.x,
+          y: position.y - 7,
+          text: circle.name,
+          size: nameSize,
+          weight: 800,
+          fill: textColour
+        });
+
+        addText({
+          parent: labelLayer,
+          x: position.x,
+          y: position.y + 20,
+          text:
+            formatNumber(
+              circle.value
+            ),
+          size: Math.max(
+            12,
+            nameSize * 0.62
+          ),
+          weight: 700,
+          fill: textColour,
+          opacity: 0.72
+        });
+
+        return;
+      }
+
+      if (showName) {
+        addText({
+          parent: labelLayer,
+          x: position.x,
+          y: position.y + 7,
+          text: circle.name,
+          size: nameSize,
+          weight: 800,
+          fill: textColour
+        });
+      }
+
+      if (showValue) {
+        addText({
+          parent: labelLayer,
+          x: position.x,
+          y: position.y + 7,
+          text:
+            formatNumber(
+              circle.value
+            ),
+          size: Math.max(
+            14,
+            nameSize * 0.76
+          ),
+          weight: 800,
+          fill: textColour
+        });
+      }
+    }
+
+    function updateDiagram() {
+      updateInterface();
+
+      const data =
+        getDiagramData();
+
+      if (!validateBasicData(data)) {
+        return;
+      }
+
+      const largestValue =
+        Math.max(
+          ...data.sets.map(
+            set => set.value
+          )
+        );
+
+      const radii =
+        createRadii(
+          data.sets
+        );
+
+      const areaPerUnit =
+        calculateAreaPerUnit(
+          largestValue
+        );
+
+      let rawLayout;
+
+      if (data.count === 2) {
+        rawLayout =
+          createTwoCircleLayout(
+            data,
+            radii,
+            areaPerUnit
+          );
+      } else {
+        const result =
+          createThreeCircleLayout(
+            data,
+            radii,
+            areaPerUnit
+          );
+
+        if (!result.valid) {
+          showError(
+            result.message
+          );
+
+          return;
+        }
+
+        rawLayout =
+          result.layout;
+      }
+
+      clearError();
+
+      const fittedLayout =
+        fitLayoutToCanvas(
+          rawLayout
+        );
+
+      diagramRoot.replaceChildren();
+
+      const circleLayer =
+        createSvgElement("g");
+
+      const labelLayer =
+        createSvgElement("g");
+
+      fittedLayout.forEach(
+        circle => {
+          circleLayer.appendChild(
+            createCircleElement(
+              circle
+            )
+          );
+        }
       );
 
-      updateCircle(
-        circleTwo,
-        centreTwoX,
-        centreY,
-        radiusTwo
+      fittedLayout.forEach(
+        (circle, index) => {
+          addCircleLabel(
+            labelLayer,
+            circle,
+            index,
+            fittedLayout
+          );
+        }
       );
 
-      updateCircle(
-        clipCircleOne,
-        centreOneX,
-        centreY,
-        radiusOne
+      diagramRoot.append(
+        circleLayer,
+        labelLayer
       );
-
-      updateCircle(
-        overlapHighlight,
-        centreTwoX,
-        centreY,
-        radiusTwo
-      );
-
-      overlapHighlight.style.display =
-        shared > 0 ? "block" : "none";
-
-      updateCircle(
-        circleOneOutline,
-        centreOneX,
-        centreY,
-        radiusOne
-      );
-
-      updateCircle(
-        circleTwoOutline,
-        centreTwoX,
-        centreY,
-        radiusTwo
-      );
-
-      updateColours();
     }
 
     function createStandaloneSVG() {
-      const clone = svg.cloneNode(true);
+      const clone =
+        svg.cloneNode(true);
 
-      clone.setAttribute("width", SVG_WIDTH);
-      clone.setAttribute("height", SVG_HEIGHT);
+      clone.setAttribute(
+        "width",
+        SVG_WIDTH
+      );
+
+      clone.setAttribute(
+        "height",
+        SVG_HEIGHT
+      );
+
+      clone.setAttribute(
+        "viewBox",
+        `0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`
+      );
 
       clone.setAttribute(
         "xmlns",
-        "http://www.w3.org/2000/svg"
+        SVG_NS
+      );
+
+      clone.removeAttribute(
+        "style"
       );
 
       return new XMLSerializer()
         .serializeToString(clone);
     }
 
-    function downloadBlob(blob, filename) {
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
+    function downloadBlob(
+      blob,
+      filename
+    ) {
+      const url =
+        URL.createObjectURL(blob);
+
+      const link =
+        document.createElement("a");
 
       link.href = url;
       link.download = filename;
 
-      document.body.appendChild(link);
+      document.body.appendChild(
+        link
+      );
+
       link.click();
       link.remove();
 
@@ -1008,42 +2419,75 @@
     }
 
     function exportSVG() {
-      const markup = createStandaloneSVG();
+      updateDiagram();
 
-      const blob = new Blob(
-        [markup],
-        {
-          type: "image/svg+xml;charset=utf-8"
-        }
-      );
+      if (
+        exportSvgButton.disabled
+      ) {
+        return;
+      }
+
+      const markup =
+        createStandaloneSVG();
+
+      const blob =
+        new Blob(
+          [markup],
+          {
+            type:
+              "image/svg+xml;charset=utf-8"
+          }
+        );
 
       downloadBlob(
         blob,
-        "Proportional_Audience_Overlap.svg"
+        "Venn_Diagram.svg"
       );
     }
 
     function exportPNG() {
-      const markup = createStandaloneSVG();
+      updateDiagram();
 
-      const blob = new Blob(
-        [markup],
-        {
-          type: "image/svg+xml;charset=utf-8"
-        }
-      );
+      if (
+        exportPngButton.disabled
+      ) {
+        return;
+      }
 
-      const url = URL.createObjectURL(blob);
-      const image = new Image();
+      const markup =
+        createStandaloneSVG();
+
+      const blob =
+        new Blob(
+          [markup],
+          {
+            type:
+              "image/svg+xml;charset=utf-8"
+          }
+        );
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const image =
+        new Image();
 
       image.onload = () => {
         const scale = 2;
-        const canvas = document.createElement("canvas");
 
-        canvas.width = SVG_WIDTH * scale;
-        canvas.height = SVG_HEIGHT * scale;
+        const canvas =
+          document.createElement(
+            "canvas"
+          );
 
-        const context = canvas.getContext("2d");
+        canvas.width =
+          SVG_WIDTH * scale;
+
+        canvas.height =
+          SVG_HEIGHT * scale;
+
+        const context =
+          canvas.getContext("2d");
 
         context.clearRect(
           0,
@@ -1062,47 +2506,67 @@
 
         URL.revokeObjectURL(url);
 
-        canvas.toBlob((pngBlob) => {
-          if (!pngBlob) {
-            alert("The PNG could not be generated.");
-            return;
-          }
+        canvas.toBlob(
+          pngBlob => {
+            if (!pngBlob) {
+              alert(
+                "The PNG could not be generated."
+              );
 
-          downloadBlob(
-            pngBlob,
-            "Proportional_Audience_Overlap.png"
-          );
-        }, "image/png");
+              return;
+            }
+
+            downloadBlob(
+              pngBlob,
+              "Venn_Diagram.png"
+            );
+          },
+          "image/png"
+        );
       };
 
       image.onerror = () => {
         URL.revokeObjectURL(url);
-        alert("The PNG could not be generated.");
+
+        alert(
+          "The PNG could not be generated."
+        );
       };
 
       image.src = url;
     }
 
-    [
-      sizeOneInput,
-      sizeTwoInput,
-      overlapInput
-    ].forEach((input) => {
+    const allInputs = [
+      ...circleCountInputs,
+      setOneNameInput,
+      setTwoNameInput,
+      setThreeNameInput,
+      setOneValueInput,
+      setTwoValueInput,
+      setThreeValueInput,
+      overlapABInput,
+      overlapACInput,
+      overlapBCInput,
+      circleOneColourInput,
+      circleTwoColourInput,
+      circleThreeColourInput,
+      outlineColourInput,
+      textColourInput,
+      fillOpacityInput,
+      showSetNamesInput,
+      showSetValuesInput,
+      showOutlinesInput
+    ];
+
+    allInputs.forEach(input => {
       input.addEventListener(
         "input",
         updateDiagram
       );
-    });
 
-    [
-      circleOneColourInput,
-      circleTwoColourInput,
-      overlapColourInput,
-      outlineColourInput
-    ].forEach((input) => {
       input.addEventListener(
-        "input",
-        updateColours
+        "change",
+        updateDiagram
       );
     });
 
