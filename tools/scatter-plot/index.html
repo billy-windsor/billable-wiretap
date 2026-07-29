@@ -1,0 +1,3154 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Scatter Plot &amp; Quadrant Maker — Visual Intelligence Lab</title>
+
+  <meta name="description" content="Create and export a custom scatter plot with optional split lines and quadrants.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --black: #080808;
+      --soft-black: #11110f;
+      --panel: #191917;
+      --panel-light: #242421;
+      --white: #f7f7f2;
+      --grey: #b9b9b2;
+      --dark-grey: #73736e;
+      --orange: #ff3d0a;
+      --lime: #a8ff37;
+      --error: #ff7777;
+      --line: rgba(255, 255, 255, 0.16);
+      --navigation-height: 72px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
+      color: var(--white);
+      background: var(--black);
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button,
+    a,
+    input {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled,
+    input:disabled {
+      cursor: not-allowed;
+      opacity: 0.35;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    /* Navigation */
+
+    .nav {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--navigation-height);
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: var(--black);
+      background: var(--lime);
+      border-radius: 50%;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 18px;
+    }
+
+    .brand-name {
+      font-family: "Archivo Black", sans-serif;
+      font-size: 17px;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+    }
+
+    .brand-name span {
+      color: var(--grey);
+      font-family: "Inter", sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .nav-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .tool-status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--lime);
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(168, 255, 55, 0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      70% {
+        box-shadow: 0 0 0 10px rgba(168, 255, 55, 0);
+      }
+    }
+
+    .home-link {
+      min-height: 40px;
+      padding: 0 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--black);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition:
+        transform 180ms ease,
+        background 180ms ease;
+    }
+
+    .home-link:hover {
+      background: var(--lime);
+      transform: translateY(-2px);
+    }
+
+    /* Application */
+
+    .application {
+      height: 100vh;
+      padding-top: var(--navigation-height);
+      display: grid;
+      grid-template-columns: 410px minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    /* Controls */
+
+    .controls {
+      height: calc(100vh - var(--navigation-height));
+      padding: 28px 24px 36px;
+      overflow-y: auto;
+      background: var(--soft-black);
+      border-right: 1px solid var(--line);
+      scrollbar-color: var(--orange) var(--soft-black);
+      scrollbar-width: thin;
+    }
+
+    .controls::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .controls::-webkit-scrollbar-track {
+      background: var(--soft-black);
+    }
+
+    .controls::-webkit-scrollbar-thumb {
+      background: var(--orange);
+    }
+
+    .tool-number {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--orange);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .controls > h1 {
+      max-width: 360px;
+      margin: 0;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+      text-transform: uppercase;
+    }
+
+    .introduction {
+      margin: 18px 0 28px;
+      color: var(--grey);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .control-section {
+      margin-bottom: 12px;
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .control-section:first-of-type {
+      border-top: 3px solid var(--orange);
+    }
+
+    .control-section h2,
+    .control-section-title {
+      margin: 0 0 17px;
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .section-description {
+      margin: -8px 0 17px;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .field {
+      min-width: 0;
+      margin-bottom: 15px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .field-row.three-columns {
+      grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+    }
+
+    .field-row .field {
+      margin: 0;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      height: 42px;
+      min-width: 0;
+      padding: 9px 11px;
+      color: var(--white);
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 0;
+      outline: none;
+      font-size: 12px;
+      transition:
+        border-color 180ms ease,
+        background 180ms ease;
+    }
+
+    input[type="text"]:hover,
+    input[type="number"]:hover {
+      border-color: rgba(255, 255, 255, 0.45);
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      background: var(--black);
+      border-color: var(--lime);
+    }
+
+    input[type="number"] {
+      font-weight: 700;
+    }
+
+    input[type="color"] {
+      width: 100%;
+      height: 42px;
+      padding: 4px;
+      cursor: pointer;
+      color: var(--white);
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 0;
+      outline: none;
+    }
+
+    input[type="color"]:focus {
+      border-color: var(--lime);
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+      border: 0;
+    }
+
+    input[type="color"]::-moz-color-swatch {
+      border: 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 22px;
+      margin: 0;
+      padding: 0;
+      cursor: pointer;
+      accent-color: var(--lime);
+      background: transparent;
+    }
+
+    .range-heading {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .range-heading label {
+      margin: 0;
+    }
+
+    .range-value {
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    /* Split controls */
+
+    .split-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .split-toggle {
+      position: relative;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .split-toggle input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .split-toggle span {
+      min-height: 44px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--grey);
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition:
+        color 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease;
+    }
+
+    .split-toggle input:checked + span {
+      color: var(--black);
+      background: var(--lime);
+      border-color: var(--lime);
+    }
+
+    .split-value-controls {
+      padding-top: 15px;
+      border-top: 1px solid var(--line);
+    }
+
+    .split-control-card {
+      margin-bottom: 10px;
+      padding: 12px;
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .split-control-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .split-control-card.disabled {
+      opacity: 0.38;
+    }
+
+    .split-control-card .field {
+      margin: 0;
+    }
+
+    .quadrant-availability {
+      margin: 13px 0 0;
+      padding: 10px;
+      color: var(--dark-grey);
+      background: rgba(168, 255, 55, 0.04);
+      border-left: 2px solid var(--lime);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    /* Quadrants */
+
+    .quadrant-editor {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 66px;
+      gap: 9px;
+      margin-bottom: 10px;
+    }
+
+    .quadrant-editor:last-child {
+      margin-bottom: 0;
+    }
+
+    .quadrant-editor input[type="color"] {
+      height: 42px;
+    }
+
+    /* Options */
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+
+    .option-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .option-row input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      margin: 0;
+      accent-color: var(--lime);
+      cursor: pointer;
+    }
+
+    .option-row label {
+      margin: 0;
+      color: #d0d0cb;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Point editors */
+
+    .point-editor {
+      position: relative;
+    }
+
+    .point-editor-heading {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .point-editor-heading .control-section-title {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .point-index {
+      flex: 0 0 auto;
+      color: var(--dark-grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .point-name-colour {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 68px;
+      gap: 9px;
+      margin-bottom: 14px;
+    }
+
+    .point-name-colour .field {
+      margin: 0;
+    }
+
+    .point-actions {
+      margin-top: 14px;
+      padding-top: 13px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 5px;
+      border-top: 1px solid var(--line);
+    }
+
+    .icon-button {
+      width: 31px;
+      min-height: 31px;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+      color: var(--grey);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 0;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .icon-button:hover:not(:disabled) {
+      color: var(--black);
+      background: var(--white);
+      border-color: var(--white);
+      transform: none;
+    }
+
+    .icon-button.delete:hover:not(:disabled) {
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+
+    /* Point management */
+
+    .point-management {
+      margin-top: 18px;
+      padding: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .point-management-header {
+      margin-bottom: 11px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--dark-grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .add-point-button {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 16px;
+      color: var(--black);
+      background: var(--orange);
+      border: 1px solid var(--orange);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      transition:
+        transform 180ms ease,
+        background 180ms ease;
+    }
+
+    .add-point-button:hover:not(:disabled) {
+      background: var(--lime);
+      border-color: var(--lime);
+      transform: translateY(-2px);
+    }
+
+    .point-limit-note {
+      margin: 10px 2px 0;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.45;
+    }
+
+    /* Errors */
+
+    .error {
+      display: none;
+      margin: 13px 0 0;
+      padding: 11px;
+      color: var(--error);
+      background: rgba(255, 119, 119, 0.08);
+      border-left: 2px solid var(--error);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .error.visible {
+      display: block;
+    }
+
+    .empty-state {
+      padding: 24px 18px;
+      color: var(--grey);
+      background: var(--panel);
+      border: 1px dashed rgba(255, 255, 255, 0.25);
+      font-size: 10px;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    /* Buttons */
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    button {
+      min-height: 46px;
+      padding: 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition:
+        transform 180ms ease,
+        background 180ms ease,
+        color 180ms ease,
+        border-color 180ms ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .svg-button {
+      color: var(--white);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .svg-button:hover:not(:disabled) {
+      color: var(--black);
+      background: var(--white);
+    }
+
+    .png-button {
+      color: var(--black);
+      background: var(--lime);
+      border: 1px solid var(--lime);
+    }
+
+    .png-button:hover:not(:disabled) {
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+
+    .privacy-note {
+      margin: 18px 2px 0;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    /* Preview */
+
+    .preview {
+      position: relative;
+      min-width: 0;
+      height: calc(100vh - var(--navigation-height));
+      padding: 76px 42px 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+
+      background:
+        linear-gradient(45deg, #1c1c1a 25%, transparent 25%),
+        linear-gradient(-45deg, #1c1c1a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1c1c1a 75%),
+        linear-gradient(-45deg, transparent 75%, #1c1c1a 75%),
+        #242421;
+
+      background-size: 26px 26px;
+      background-position:
+        0 0,
+        0 13px,
+        13px -13px,
+        -13px 0;
+    }
+
+    .preview-header {
+      position: absolute;
+      top: 22px;
+      left: 28px;
+      right: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .background-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .background-swatch {
+      width: 13px;
+      height: 13px;
+      background: var(--preview-background, #f7f7f2);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .diagram-frame {
+      width: min(100%, 1100px);
+      aspect-ratio: 16 / 9;
+    }
+
+    #scatter-svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.22));
+    }
+
+    /* Responsive */
+
+    @media (max-width: 1000px) {
+      .application {
+        grid-template-columns: 360px minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .application {
+        height: auto;
+        display: block;
+        overflow: visible;
+      }
+
+      .controls {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .controls > h1 {
+        max-width: none;
+      }
+
+      .preview {
+        min-height: 650px;
+        height: auto;
+      }
+    }
+
+    @media (max-width: 580px) {
+      :root {
+        --navigation-height: 66px;
+      }
+
+      .nav {
+        padding: 0 16px;
+      }
+
+      .brand-name span,
+      .tool-status {
+        display: none;
+      }
+
+      .home-link {
+        min-height: 38px;
+        padding: 0 13px;
+        font-size: 9px;
+      }
+
+      .controls {
+        padding: 26px 18px 30px;
+      }
+
+      .controls > h1 {
+        font-size: 29px;
+      }
+
+      .field-row,
+      .field-row.three-columns {
+        grid-template-columns: 1fr;
+      }
+
+      .point-name-colour {
+        grid-template-columns: minmax(0, 1fr) 66px;
+      }
+
+      .preview {
+        min-height: 470px;
+        padding: 65px 16px 20px;
+      }
+
+      .preview-header {
+        top: 20px;
+        left: 18px;
+        right: 18px;
+      }
+
+      .preview-header > span:first-child {
+        display: none;
+      }
+
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav">
+    <a class="brand" href="../../" aria-label="Return to the Visual Intelligence Lab homepage">
+      <span class="brand-mark">G</span>
+
+      <span class="brand-name">
+        goat <span>/ Visual Intelligence Lab</span>
+      </span>
+    </a>
+
+    <div class="nav-meta">
+      <span class="tool-status">
+        <span class="status-dot"></span>
+        Tool online
+      </span>
+
+      <a class="home-link" href="../../">
+        ← Back home
+      </a>
+    </div>
+  </nav>
+
+  <div class="application">
+    <aside class="controls">
+      <span class="tool-number">
+        Tool 04 / Visualisation
+      </span>
+
+      <h1>
+        Scatter plot &amp;<br>
+        quadrant maker
+      </h1>
+
+      <p class="introduction">
+        Plot items across two measures. Add an X split, a Y split, both split
+        lines, or no splits at all. Four-quadrant backgrounds and names are
+        optional when both splits are active.
+      </p>
+
+      <section class="control-section">
+        <h2>Chart labels</h2>
+
+        <div class="field">
+          <label for="chart-title">
+            Chart title
+          </label>
+
+          <input id="chart-title" type="text" value="Brand Opportunity Map" autocomplete="off">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="x-axis-label">
+              X axis
+            </label>
+
+            <input id="x-axis-label" type="text" value="Market relevance" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="y-axis-label">
+              Y axis
+            </label>
+
+            <input id="y-axis-label" type="text" value="Brand strength" autocomplete="off">
+          </div>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <h2>Axis ranges</h2>
+
+        <p class="section-description">
+          Set the minimum and maximum value for each chart axis.
+        </p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="x-min">
+              X minimum
+            </label>
+
+            <input id="x-min" type="number" step="any" value="0">
+          </div>
+
+          <div class="field">
+            <label for="x-max">
+              X maximum
+            </label>
+
+            <input id="x-max" type="number" step="any" value="100">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="y-min">
+              Y minimum
+            </label>
+
+            <input id="y-min" type="number" step="any" value="0">
+          </div>
+
+          <div class="field">
+            <label for="y-max">
+              Y maximum
+            </label>
+
+            <input id="y-max" type="number" step="any" value="100">
+          </div>
+        </div>
+
+        <div id="validation-error" class="error" role="alert"></div>
+      </section>
+
+      <section class="control-section">
+        <h2>Split lines</h2>
+
+        <p class="section-description">
+          Enable either split independently, enable both, or disable both.
+        </p>
+
+        <div class="split-options">
+          <label class="split-toggle">
+            <input id="enable-x-split" type="checkbox" checked="">
+
+            <span>Show X split</span>
+          </label>
+
+          <label class="split-toggle">
+            <input id="enable-y-split" type="checkbox" checked="">
+
+            <span>Show Y split</span>
+          </label>
+        </div>
+
+        <div class="split-value-controls">
+          <div id="x-split-control" class="split-control-card">
+            <div class="field">
+              <label for="x-split">
+                X split value
+              </label>
+
+              <input id="x-split" type="number" step="any" value="50">
+            </div>
+          </div>
+
+          <div id="y-split-control" class="split-control-card">
+            <div class="field">
+              <label for="y-split">
+                Y split value
+              </label>
+
+              <input id="y-split" type="number" step="any" value="50">
+            </div>
+          </div>
+        </div>
+
+        <div id="include-quadrants-row" class="option-row" style="margin-top: 16px;">
+          <input id="include-quadrants" type="checkbox" checked="">
+
+          <label for="include-quadrants">
+            Include four quadrants
+          </label>
+        </div>
+
+        <p id="quadrant-availability" class="quadrant-availability">
+          Four quadrants require both the X and Y split lines.
+        </p>
+      </section>
+
+      <section id="quadrant-section" class="control-section">
+        <h2>Quadrants</h2>
+
+        <p class="section-description">
+          Edit each quadrant name or leave any name blank to hide it.
+        </p>
+
+        <div class="quadrant-editor">
+          <input id="quadrant-top-left" type="text" value="Build relevance" placeholder="Leave blank to hide" aria-label="Top-left quadrant name">
+
+          <input id="quadrant-top-left-colour" type="color" value="#f7f7f2" aria-label="Top-left quadrant colour">
+        </div>
+
+        <div class="quadrant-editor">
+          <input id="quadrant-top-right" type="text" value="Priority opportunities" placeholder="Leave blank to hide" aria-label="Top-right quadrant name">
+
+          <input id="quadrant-top-right-colour" type="color" value="#a8ff37" aria-label="Top-right quadrant colour">
+        </div>
+
+        <div class="quadrant-editor">
+          <input id="quadrant-bottom-left" type="text" value="Monitor" placeholder="Leave blank to hide" aria-label="Bottom-left quadrant name">
+
+          <input id="quadrant-bottom-left-colour" type="color" value="#deded7" aria-label="Bottom-left quadrant colour">
+        </div>
+
+        <div class="quadrant-editor">
+          <input id="quadrant-bottom-right" type="text" value="Emerging potential" placeholder="Leave blank to hide" aria-label="Bottom-right quadrant name">
+
+          <input id="quadrant-bottom-right-colour" type="color" value="#ff3d0a" aria-label="Bottom-right quadrant colour">
+        </div>
+
+        <div class="field" style="margin-top: 16px;">
+          <div class="range-heading">
+            <label for="quadrant-opacity">
+              Quadrant opacity
+            </label>
+
+            <span id="quadrant-opacity-value" class="range-value">
+              22%
+            </span>
+          </div>
+
+          <input id="quadrant-opacity" type="range" min="0" max="100" step="1" value="22">
+        </div>
+      </section>
+
+      <section class="control-section">
+        <h2>Chart appearance</h2>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="background-colour">
+              Background
+            </label>
+
+            <input id="background-colour" type="color" value="#f7f7f2">
+          </div>
+
+          <div class="field">
+            <label for="text-colour">
+              Text
+            </label>
+
+            <input id="text-colour" type="color" value="#080808">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="grid-colour">
+              Grid
+            </label>
+
+            <input id="grid-colour" type="color" value="#73736e">
+          </div>
+
+          <div class="field">
+            <label for="split-colour">
+              Split lines
+            </label>
+
+            <input id="split-colour" type="color" value="#080808">
+          </div>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <h2>Display options</h2>
+
+        <div class="option-row">
+          <input id="show-title" type="checkbox" checked="">
+
+          <label for="show-title">
+            Show chart title
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="show-gridlines" type="checkbox" checked="">
+
+          <label for="show-gridlines">
+            Show gridlines
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="show-split-labels" type="checkbox" checked="">
+
+          <label for="show-split-labels">
+            Show split values
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="show-quadrant-fills" type="checkbox" checked="">
+
+          <label for="show-quadrant-fills">
+            Show quadrant backgrounds
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="show-quadrant-labels" type="checkbox" checked="">
+
+          <label for="show-quadrant-labels">
+            Show quadrant names
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="show-point-labels" type="checkbox" checked="">
+
+          <label for="show-point-labels">
+            Show point names
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="show-point-values" type="checkbox">
+
+          <label for="show-point-values">
+            Show X and Y values
+          </label>
+        </div>
+
+        <div class="option-row">
+          <input id="transparent-background" type="checkbox">
+
+          <label for="transparent-background">
+            Transparent export background
+          </label>
+        </div>
+      </section>
+
+      <div id="point-editors"></div>
+
+      <div class="point-management">
+        <div class="point-management-header">
+          <span>Data points</span>
+          <span id="point-count">8 / 30</span>
+        </div>
+
+        <button id="add-point" class="add-point-button" type="button">
+          + Add another point
+        </button>
+
+        <p class="point-limit-note">
+          Add up to 30 points. Point size can represent a third measure or be
+          kept consistent across the chart.
+        </p>
+      </div>
+
+      <div class="buttons">
+        <button id="export-svg" class="svg-button" type="button">
+          Export SVG
+        </button>
+
+        <button id="export-png" class="png-button" type="button">
+          Export PNG
+        </button>
+      </div>
+
+      <p class="privacy-note">
+        All chart generation and exports happen locally in your browser.
+        Values are not uploaded or stored by this page.
+      </p>
+    </aside>
+
+    <main class="preview">
+      <div class="preview-header">
+        <span>Live output / 1200 × 675</span>
+
+        <span class="background-label">
+          <span id="background-swatch" class="background-swatch"></span>
+
+          Export background
+        </span>
+      </div>
+
+      <div class="diagram-frame">
+        <svg id="scatter-svg" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Custom scatter plot with optional split lines and quadrants">
+          <g id="chart-root"></g>
+        </svg>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const SVG_WIDTH = 1200;
+    const SVG_HEIGHT = 675;
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const MAX_POINTS = 30;
+
+    const PLOT_LEFT = 120;
+    const PLOT_RIGHT = 1135;
+    const PLOT_TOP_WITH_TITLE = 100;
+    const PLOT_TOP_WITHOUT_TITLE = 55;
+    const PLOT_BOTTOM = 585;
+    const TICK_COUNT = 5;
+
+    const pointPalette = [
+      "#ff3d0a",
+      "#080808",
+      "#4c34a9",
+      "#2b7955",
+      "#b3205e",
+      "#5c7b99",
+      "#b66d49",
+      "#6d326d",
+      "#008b8b",
+      "#c78b00"
+    ];
+
+    const initialPoints = [
+      {
+        id: "point-1",
+        name: "Brand A",
+        x: 82,
+        y: 78,
+        size: 16,
+        colour: "#ff3d0a"
+      },
+      {
+        id: "point-2",
+        name: "Brand B",
+        x: 68,
+        y: 64,
+        size: 13,
+        colour: "#080808"
+      },
+      {
+        id: "point-3",
+        name: "Brand C",
+        x: 38,
+        y: 72,
+        size: 14,
+        colour: "#4c34a9"
+      },
+      {
+        id: "point-4",
+        name: "Brand D",
+        x: 74,
+        y: 34,
+        size: 12,
+        colour: "#2b7955"
+      },
+      {
+        id: "point-5",
+        name: "Brand E",
+        x: 24,
+        y: 28,
+        size: 10,
+        colour: "#b3205e"
+      },
+      {
+        id: "point-6",
+        name: "Brand F",
+        x: 47,
+        y: 45,
+        size: 11,
+        colour: "#5c7b99"
+      },
+      {
+        id: "point-7",
+        name: "Brand G",
+        x: 57,
+        y: 84,
+        size: 9,
+        colour: "#b66d49"
+      },
+      {
+        id: "point-8",
+        name: "Brand H",
+        x: 88,
+        y: 52,
+        size: 15,
+        colour: "#6d326d"
+      }
+    ];
+
+    let points =
+      initialPoints.map(
+        point => ({ ...point })
+      );
+
+    let pointSequence =
+      points.length;
+
+    const chartTitleInput =
+      document.getElementById("chart-title");
+
+    const xAxisLabelInput =
+      document.getElementById("x-axis-label");
+
+    const yAxisLabelInput =
+      document.getElementById("y-axis-label");
+
+    const xMinInput =
+      document.getElementById("x-min");
+
+    const xMaxInput =
+      document.getElementById("x-max");
+
+    const yMinInput =
+      document.getElementById("y-min");
+
+    const yMaxInput =
+      document.getElementById("y-max");
+
+    const enableXSplitInput =
+      document.getElementById("enable-x-split");
+
+    const enableYSplitInput =
+      document.getElementById("enable-y-split");
+
+    const xSplitInput =
+      document.getElementById("x-split");
+
+    const ySplitInput =
+      document.getElementById("y-split");
+
+    const xSplitControl =
+      document.getElementById("x-split-control");
+
+    const ySplitControl =
+      document.getElementById("y-split-control");
+
+    const includeQuadrantsInput =
+      document.getElementById("include-quadrants");
+
+    const includeQuadrantsRow =
+      document.getElementById(
+        "include-quadrants-row"
+      );
+
+    const quadrantAvailability =
+      document.getElementById(
+        "quadrant-availability"
+      );
+
+    const quadrantSection =
+      document.getElementById("quadrant-section");
+
+    const quadrantTopLeftInput =
+      document.getElementById("quadrant-top-left");
+
+    const quadrantTopRightInput =
+      document.getElementById("quadrant-top-right");
+
+    const quadrantBottomLeftInput =
+      document.getElementById(
+        "quadrant-bottom-left"
+      );
+
+    const quadrantBottomRightInput =
+      document.getElementById(
+        "quadrant-bottom-right"
+      );
+
+    const quadrantTopLeftColourInput =
+      document.getElementById(
+        "quadrant-top-left-colour"
+      );
+
+    const quadrantTopRightColourInput =
+      document.getElementById(
+        "quadrant-top-right-colour"
+      );
+
+    const quadrantBottomLeftColourInput =
+      document.getElementById(
+        "quadrant-bottom-left-colour"
+      );
+
+    const quadrantBottomRightColourInput =
+      document.getElementById(
+        "quadrant-bottom-right-colour"
+      );
+
+    const quadrantOpacityInput =
+      document.getElementById("quadrant-opacity");
+
+    const quadrantOpacityValue =
+      document.getElementById(
+        "quadrant-opacity-value"
+      );
+
+    const backgroundColourInput =
+      document.getElementById("background-colour");
+
+    const textColourInput =
+      document.getElementById("text-colour");
+
+    const gridColourInput =
+      document.getElementById("grid-colour");
+
+    const splitColourInput =
+      document.getElementById("split-colour");
+
+    const showTitleInput =
+      document.getElementById("show-title");
+
+    const showGridlinesInput =
+      document.getElementById("show-gridlines");
+
+    const showSplitLabelsInput =
+      document.getElementById("show-split-labels");
+
+    const showQuadrantFillsInput =
+      document.getElementById("show-quadrant-fills");
+
+    const showQuadrantLabelsInput =
+      document.getElementById("show-quadrant-labels");
+
+    const showPointLabelsInput =
+      document.getElementById("show-point-labels");
+
+    const showPointValuesInput =
+      document.getElementById("show-point-values");
+
+    const transparentBackgroundInput =
+      document.getElementById(
+        "transparent-background"
+      );
+
+    const validationError =
+      document.getElementById("validation-error");
+
+    const pointEditors =
+      document.getElementById("point-editors");
+
+    const pointCount =
+      document.getElementById("point-count");
+
+    const addPointButton =
+      document.getElementById("add-point");
+
+    const exportSvgButton =
+      document.getElementById("export-svg");
+
+    const exportPngButton =
+      document.getElementById("export-png");
+
+    const backgroundSwatch =
+      document.getElementById("background-swatch");
+
+    const svg =
+      document.getElementById("scatter-svg");
+
+    const chartRoot =
+      document.getElementById("chart-root");
+
+    function readNumber(input) {
+      const value = Number(input.value);
+
+      return Number.isFinite(value)
+        ? value
+        : 0;
+    }
+
+    function formatNumber(value) {
+      return new Intl.NumberFormat(
+        "en-GB",
+        {
+          maximumFractionDigits: 2
+        }
+      ).format(value);
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function createSvgElement(
+      elementName,
+      attributes = {}
+    ) {
+      const element =
+        document.createElementNS(
+          SVG_NS,
+          elementName
+        );
+
+      Object.entries(attributes).forEach(
+        ([attribute, value]) => {
+          element.setAttribute(
+            attribute,
+            value
+          );
+        }
+      );
+
+      return element;
+    }
+
+    function appendText(
+      parent,
+      {
+        x,
+        y,
+        text,
+        anchor = "middle",
+        size = 14,
+        weight = 700,
+        fill = "#080808",
+        opacity = 1,
+        transform = null,
+        letterSpacing = 0
+      }
+    ) {
+      const element =
+        createSvgElement(
+          "text",
+          {
+            x,
+            y,
+            "text-anchor": anchor,
+            "font-family":
+              "Arial, Helvetica, sans-serif",
+            "font-size": size,
+            "font-weight": weight,
+            fill,
+            opacity,
+            "letter-spacing": letterSpacing
+          }
+        );
+
+      if (transform) {
+        element.setAttribute(
+          "transform",
+          transform
+        );
+      }
+
+      element.textContent = text;
+
+      parent.appendChild(element);
+
+      return element;
+    }
+
+    function createPointId() {
+      pointSequence += 1;
+
+      if (
+        window.crypto &&
+        typeof window.crypto.randomUUID === "function"
+      ) {
+        return `point-${window.crypto.randomUUID()}`;
+      }
+
+      return `point-${Date.now()}-${pointSequence}`;
+    }
+
+    function createEmptyPoint() {
+      const index = points.length;
+
+      return {
+        id: createPointId(),
+        name: `Point ${index + 1}`,
+        x: 50,
+        y: 50,
+        size: 12,
+        colour:
+          pointPalette[
+            index % pointPalette.length
+          ]
+      };
+    }
+
+    function updateSplitInterface() {
+      const xEnabled =
+        enableXSplitInput.checked;
+
+      const yEnabled =
+        enableYSplitInput.checked;
+
+      const bothEnabled =
+        xEnabled && yEnabled;
+
+      xSplitInput.disabled =
+        !xEnabled;
+
+      ySplitInput.disabled =
+        !yEnabled;
+
+      xSplitControl.classList.toggle(
+        "disabled",
+        !xEnabled
+      );
+
+      ySplitControl.classList.toggle(
+        "disabled",
+        !yEnabled
+      );
+
+      includeQuadrantsInput.disabled =
+        !bothEnabled;
+
+      includeQuadrantsRow.style.opacity =
+        bothEnabled ? "1" : "0.38";
+
+      const quadrantsIncluded =
+        bothEnabled &&
+        includeQuadrantsInput.checked;
+
+      quadrantSection.hidden =
+        !quadrantsIncluded;
+
+      showQuadrantFillsInput.disabled =
+        !quadrantsIncluded;
+
+      showQuadrantLabelsInput.disabled =
+        !quadrantsIncluded;
+
+      if (!xEnabled && !yEnabled) {
+        quadrantAvailability.textContent =
+          "No split lines are active. The chart will display as a standard scatter plot.";
+      } else if (!bothEnabled) {
+        quadrantAvailability.textContent =
+          "One split line is active. Enable both X and Y splits to make four quadrants available.";
+      } else if (!includeQuadrantsInput.checked) {
+        quadrantAvailability.textContent =
+          "Both split lines are active, but quadrant backgrounds and names are not included.";
+      } else {
+        quadrantAvailability.textContent =
+          "Both split lines and all four quadrants are active.";
+      }
+    }
+
+    function renderPointEditors() {
+      pointCount.textContent =
+        `${points.length} / ${MAX_POINTS}`;
+
+      const limitReached =
+        points.length >= MAX_POINTS;
+
+      addPointButton.disabled =
+        limitReached;
+
+      addPointButton.textContent =
+        limitReached
+          ? "Maximum points reached"
+          : "+ Add another point";
+
+      if (points.length === 0) {
+        pointEditors.innerHTML = `
+          <div class="empty-state">
+            No data points have been added.<br>
+            Select “Add another point” to create one.
+          </div>
+        `;
+
+        return;
+      }
+
+      pointEditors.innerHTML =
+        points
+          .map((point, index) => `
+            <section class="control-section point-editor">
+              <div class="point-editor-heading">
+                <h2 class="control-section-title">
+                  ${escapeHTML(point.name || "Unnamed point")}
+                </h2>
+
+                <span class="point-index">
+                  Point ${index + 1}
+                </span>
+              </div>
+
+              <div class="point-name-colour">
+                <div class="field">
+                  <label for="point-name-${index}">
+                    Point name
+                  </label>
+
+                  <input
+                    id="point-name-${index}"
+                    type="text"
+                    data-index="${index}"
+                    data-field="name"
+                    value="${escapeHTML(point.name)}"
+                    autocomplete="off"
+                  >
+                </div>
+
+                <div class="field">
+                  <label for="point-colour-${index}">
+                    Colour
+                  </label>
+
+                  <input
+                    id="point-colour-${index}"
+                    type="color"
+                    data-index="${index}"
+                    data-field="colour"
+                    value="${escapeHTML(point.colour)}"
+                  >
+                </div>
+              </div>
+
+              <div class="field-row three-columns">
+                <div class="field">
+                  <label for="point-x-${index}">
+                    X value
+                  </label>
+
+                  <input
+                    id="point-x-${index}"
+                    type="number"
+                    step="any"
+                    data-index="${index}"
+                    data-field="x"
+                    value="${escapeHTML(point.x)}"
+                  >
+                </div>
+
+                <div class="field">
+                  <label for="point-y-${index}">
+                    Y value
+                  </label>
+
+                  <input
+                    id="point-y-${index}"
+                    type="number"
+                    step="any"
+                    data-index="${index}"
+                    data-field="y"
+                    value="${escapeHTML(point.y)}"
+                  >
+                </div>
+
+                <div class="field">
+                  <label for="point-size-${index}">
+                    Size
+                  </label>
+
+                  <input
+                    id="point-size-${index}"
+                    type="number"
+                    min="3"
+                    max="40"
+                    step="1"
+                    data-index="${index}"
+                    data-field="size"
+                    value="${escapeHTML(point.size)}"
+                  >
+                </div>
+              </div>
+
+              <div class="point-actions">
+                <button
+                  class="icon-button"
+                  type="button"
+                  data-action="up"
+                  data-index="${index}"
+                  aria-label="Move ${escapeHTML(point.name)} up"
+                  title="Move up"
+                  ${index === 0 ? "disabled" : ""}
+                >
+                  ↑
+                </button>
+
+                <button
+                  class="icon-button"
+                  type="button"
+                  data-action="down"
+                  data-index="${index}"
+                  aria-label="Move ${escapeHTML(point.name)} down"
+                  title="Move down"
+                  ${index === points.length - 1 ? "disabled" : ""}
+                >
+                  ↓
+                </button>
+
+                <button
+                  class="icon-button delete"
+                  type="button"
+                  data-action="delete"
+                  data-index="${index}"
+                  aria-label="Delete ${escapeHTML(point.name)}"
+                  title="Delete point"
+                >
+                  ×
+                </button>
+              </div>
+            </section>
+          `)
+          .join("");
+    }
+
+    function getChartSettings() {
+      return {
+        title:
+          chartTitleInput.value.trim() ||
+          "Scatter Plot",
+        xLabel:
+          xAxisLabelInput.value.trim() ||
+          "X axis",
+        yLabel:
+          yAxisLabelInput.value.trim() ||
+          "Y axis",
+        xMin: readNumber(xMinInput),
+        xMax: readNumber(xMaxInput),
+        yMin: readNumber(yMinInput),
+        yMax: readNumber(yMaxInput),
+        xSplit: readNumber(xSplitInput),
+        ySplit: readNumber(ySplitInput),
+        xSplitEnabled:
+          enableXSplitInput.checked,
+        ySplitEnabled:
+          enableYSplitInput.checked,
+        quadrantsIncluded:
+          enableXSplitInput.checked &&
+          enableYSplitInput.checked &&
+          includeQuadrantsInput.checked,
+        plotTop:
+          showTitleInput.checked
+            ? PLOT_TOP_WITH_TITLE
+            : PLOT_TOP_WITHOUT_TITLE
+      };
+    }
+
+    function setValidationError(message) {
+      validationError.textContent =
+        message;
+
+      validationError.classList.toggle(
+        "visible",
+        Boolean(message)
+      );
+
+      exportSvgButton.disabled =
+        Boolean(message);
+
+      exportPngButton.disabled =
+        Boolean(message);
+    }
+
+    function validateChart(settings) {
+      if (settings.xMax <= settings.xMin) {
+        setValidationError(
+          "The X-axis maximum must be greater than its minimum."
+        );
+
+        return false;
+      }
+
+      if (settings.yMax <= settings.yMin) {
+        setValidationError(
+          "The Y-axis maximum must be greater than its minimum."
+        );
+
+        return false;
+      }
+
+      if (
+        settings.xSplitEnabled &&
+        (
+          settings.xSplit <= settings.xMin ||
+          settings.xSplit >= settings.xMax
+        )
+      ) {
+        setValidationError(
+          "The X split must be between the X-axis minimum and maximum."
+        );
+
+        return false;
+      }
+
+      if (
+        settings.ySplitEnabled &&
+        (
+          settings.ySplit <= settings.yMin ||
+          settings.ySplit >= settings.yMax
+        )
+      ) {
+        setValidationError(
+          "The Y split must be between the Y-axis minimum and maximum."
+        );
+
+        return false;
+      }
+
+      const invalidPoint =
+        points.find(point =>
+          !Number.isFinite(Number(point.x)) ||
+          !Number.isFinite(Number(point.y)) ||
+          !Number.isFinite(Number(point.size)) ||
+          Number(point.size) < 3 ||
+          Number(point.size) > 40
+        );
+
+      if (invalidPoint) {
+        setValidationError(
+          "Every point needs valid X and Y values and a size between 3 and 40."
+        );
+
+        return false;
+      }
+
+      setValidationError("");
+
+      return true;
+    }
+
+    function mapX(value, settings) {
+      const ratio =
+        (value - settings.xMin) /
+        (settings.xMax - settings.xMin);
+
+      return (
+        PLOT_LEFT +
+        ratio *
+        (PLOT_RIGHT - PLOT_LEFT)
+      );
+    }
+
+    function mapY(value, settings) {
+      const ratio =
+        (value - settings.yMin) /
+        (settings.yMax - settings.yMin);
+
+      return (
+        PLOT_BOTTOM -
+        ratio *
+        (
+          PLOT_BOTTOM -
+          settings.plotTop
+        )
+      );
+    }
+
+    function addQuadrantRectangle(
+      parent,
+      x,
+      y,
+      width,
+      height,
+      colour,
+      opacity
+    ) {
+      parent.appendChild(
+        createSvgElement(
+          "rect",
+          {
+            x,
+            y,
+            width,
+            height,
+            fill: colour,
+            "fill-opacity": opacity
+          }
+        )
+      );
+    }
+
+    function addGridLine(
+      parent,
+      x1,
+      y1,
+      x2,
+      y2,
+      colour
+    ) {
+      parent.appendChild(
+        createSvgElement(
+          "line",
+          {
+            x1,
+            y1,
+            x2,
+            y2,
+            stroke: colour,
+            "stroke-width": 1,
+            "stroke-opacity": 0.23,
+            "stroke-dasharray": "4 6"
+          }
+        )
+      );
+    }
+
+    function getQuadrantFontSize(label) {
+      if (label.length > 24) {
+        return 11;
+      }
+
+      if (label.length > 16) {
+        return 13;
+      }
+
+      return 15;
+    }
+
+    function renderChart() {
+      updateSplitInterface();
+
+      const settings =
+        getChartSettings();
+
+      quadrantOpacityValue.textContent =
+        `${quadrantOpacityInput.value}%`;
+
+      backgroundSwatch.style.setProperty(
+        "--preview-background",
+        transparentBackgroundInput.checked
+          ? "transparent"
+          : backgroundColourInput.value
+      );
+
+      if (!validateChart(settings)) {
+        return;
+      }
+
+      chartRoot.replaceChildren();
+
+      const textColour =
+        textColourInput.value;
+
+      const gridColour =
+        gridColourInput.value;
+
+      const splitColour =
+        splitColourInput.value;
+
+      const splitX =
+        settings.xSplitEnabled
+          ? mapX(
+              settings.xSplit,
+              settings
+            )
+          : null;
+
+      const splitY =
+        settings.ySplitEnabled
+          ? mapY(
+              settings.ySplit,
+              settings
+            )
+          : null;
+
+      const plotWidth =
+        PLOT_RIGHT - PLOT_LEFT;
+
+      const plotHeight =
+        PLOT_BOTTOM - settings.plotTop;
+
+      /* Export background */
+
+      if (
+        !transparentBackgroundInput.checked
+      ) {
+        chartRoot.appendChild(
+          createSvgElement(
+            "rect",
+            {
+              x: 0,
+              y: 0,
+              width: SVG_WIDTH,
+              height: SVG_HEIGHT,
+              fill:
+                backgroundColourInput.value
+            }
+          )
+        );
+      }
+
+      const quadrantLayer =
+        createSvgElement("g");
+
+      const gridLayer =
+        createSvgElement("g");
+
+      const axisLayer =
+        createSvgElement("g");
+
+      const labelLayer =
+        createSvgElement("g");
+
+      const pointLayer =
+        createSvgElement("g");
+
+      /* Four quadrant backgrounds */
+
+      if (
+        settings.quadrantsIncluded &&
+        showQuadrantFillsInput.checked
+      ) {
+        const opacity =
+          Number(
+            quadrantOpacityInput.value
+          ) / 100;
+
+        addQuadrantRectangle(
+          quadrantLayer,
+          PLOT_LEFT,
+          settings.plotTop,
+          splitX - PLOT_LEFT,
+          splitY - settings.plotTop,
+          quadrantTopLeftColourInput.value,
+          opacity
+        );
+
+        addQuadrantRectangle(
+          quadrantLayer,
+          splitX,
+          settings.plotTop,
+          PLOT_RIGHT - splitX,
+          splitY - settings.plotTop,
+          quadrantTopRightColourInput.value,
+          opacity
+        );
+
+        addQuadrantRectangle(
+          quadrantLayer,
+          PLOT_LEFT,
+          splitY,
+          splitX - PLOT_LEFT,
+          PLOT_BOTTOM - splitY,
+          quadrantBottomLeftColourInput.value,
+          opacity
+        );
+
+        addQuadrantRectangle(
+          quadrantLayer,
+          splitX,
+          splitY,
+          PLOT_RIGHT - splitX,
+          PLOT_BOTTOM - splitY,
+          quadrantBottomRightColourInput.value,
+          opacity
+        );
+      }
+
+      /* Gridlines and axis values */
+
+      for (
+        let index = 0;
+        index <= TICK_COUNT;
+        index++
+      ) {
+        const ratio =
+          index / TICK_COUNT;
+
+        const x =
+          PLOT_LEFT +
+          ratio * plotWidth;
+
+        const y =
+          PLOT_BOTTOM -
+          ratio * plotHeight;
+
+        const xValue =
+          settings.xMin +
+          ratio *
+          (
+            settings.xMax -
+            settings.xMin
+          );
+
+        const yValue =
+          settings.yMin +
+          ratio *
+          (
+            settings.yMax -
+            settings.yMin
+          );
+
+        if (
+          showGridlinesInput.checked &&
+          index > 0 &&
+          index < TICK_COUNT
+        ) {
+          addGridLine(
+            gridLayer,
+            x,
+            settings.plotTop,
+            x,
+            PLOT_BOTTOM,
+            gridColour
+          );
+
+          addGridLine(
+            gridLayer,
+            PLOT_LEFT,
+            y,
+            PLOT_RIGHT,
+            y,
+            gridColour
+          );
+        }
+
+        appendText(
+          axisLayer,
+          {
+            x,
+            y: PLOT_BOTTOM + 24,
+            text:
+              formatNumber(xValue),
+            size: 11,
+            weight: 600,
+            fill: textColour,
+            opacity: 0.65
+          }
+        );
+
+        appendText(
+          axisLayer,
+          {
+            x: PLOT_LEFT - 14,
+            y: y + 4,
+            text:
+              formatNumber(yValue),
+            anchor: "end",
+            size: 11,
+            weight: 600,
+            fill: textColour,
+            opacity: 0.65
+          }
+        );
+      }
+
+      /* Plot border */
+
+      axisLayer.appendChild(
+        createSvgElement(
+          "rect",
+          {
+            x: PLOT_LEFT,
+            y: settings.plotTop,
+            width: plotWidth,
+            height: plotHeight,
+            fill: "none",
+            stroke: textColour,
+            "stroke-width": 2,
+            "stroke-opacity": 0.75
+          }
+        )
+      );
+
+      /* Independent X split */
+
+      if (settings.xSplitEnabled) {
+        axisLayer.appendChild(
+          createSvgElement(
+            "line",
+            {
+              x1: splitX,
+              y1: settings.plotTop,
+              x2: splitX,
+              y2: PLOT_BOTTOM,
+              stroke: splitColour,
+              "stroke-width": 3,
+              "stroke-dasharray": "9 7"
+            }
+          )
+        );
+
+        if (
+          showSplitLabelsInput.checked
+        ) {
+          appendText(
+            axisLayer,
+            {
+              x: splitX,
+              y: PLOT_BOTTOM + 43,
+              text:
+                `X split: ${formatNumber(settings.xSplit)}`,
+              size: 10,
+              weight: 800,
+              fill: splitColour
+            }
+          );
+        }
+      }
+
+      /* Independent Y split */
+
+      if (settings.ySplitEnabled) {
+        axisLayer.appendChild(
+          createSvgElement(
+            "line",
+            {
+              x1: PLOT_LEFT,
+              y1: splitY,
+              x2: PLOT_RIGHT,
+              y2: splitY,
+              stroke: splitColour,
+              "stroke-width": 3,
+              "stroke-dasharray": "9 7"
+            }
+          )
+        );
+
+        if (
+          showSplitLabelsInput.checked
+        ) {
+          appendText(
+            axisLayer,
+            {
+              x: PLOT_LEFT - 48,
+              y: splitY + 3,
+              text:
+                `Y split: ${formatNumber(settings.ySplit)}`,
+              size: 10,
+              weight: 800,
+              fill: splitColour,
+              transform:
+                `rotate(-90 ${PLOT_LEFT - 48} ${splitY + 3})`
+            }
+          );
+        }
+      }
+
+      /* Chart title */
+
+      if (showTitleInput.checked) {
+        appendText(
+          labelLayer,
+          {
+            x: PLOT_LEFT,
+            y: 50,
+            text: settings.title,
+            anchor: "start",
+            size: 27,
+            weight: 800,
+            fill: textColour
+          }
+        );
+      }
+
+      /* Axis names */
+
+      appendText(
+        labelLayer,
+        {
+          x:
+            (
+              PLOT_LEFT +
+              PLOT_RIGHT
+            ) / 2,
+          y: 660,
+          text: settings.xLabel,
+          size: 14,
+          weight: 800,
+          fill: textColour,
+          letterSpacing: 0.7
+        }
+      );
+
+      appendText(
+        labelLayer,
+        {
+          x: 28,
+          y:
+            (
+              settings.plotTop +
+              PLOT_BOTTOM
+            ) / 2,
+          text: settings.yLabel,
+          size: 14,
+          weight: 800,
+          fill: textColour,
+          letterSpacing: 0.7,
+          transform:
+            `rotate(-90 28 ${(settings.plotTop + PLOT_BOTTOM) / 2})`
+        }
+      );
+
+      /*
+       * Quadrant names are optional.
+       * Blank names are filtered out and
+       * produce no text in the chart.
+       */
+
+      if (
+        settings.quadrantsIncluded &&
+        showQuadrantLabelsInput.checked
+      ) {
+        const quadrantLabels = [
+          {
+            text:
+              quadrantTopLeftInput.value.trim(),
+            x:
+              PLOT_LEFT +
+              (
+                splitX -
+                PLOT_LEFT
+              ) / 2,
+            y:
+              settings.plotTop + 27
+          },
+          {
+            text:
+              quadrantTopRightInput.value.trim(),
+            x:
+              splitX +
+              (
+                PLOT_RIGHT -
+                splitX
+              ) / 2,
+            y:
+              settings.plotTop + 27
+          },
+          {
+            text:
+              quadrantBottomLeftInput.value.trim(),
+            x:
+              PLOT_LEFT +
+              (
+                splitX -
+                PLOT_LEFT
+              ) / 2,
+            y:
+              PLOT_BOTTOM - 17
+          },
+          {
+            text:
+              quadrantBottomRightInput.value.trim(),
+            x:
+              splitX +
+              (
+                PLOT_RIGHT -
+                splitX
+              ) / 2,
+            y:
+              PLOT_BOTTOM - 17
+          }
+        ];
+
+        quadrantLabels
+          .filter(
+            item =>
+              item.text.length > 0
+          )
+          .forEach(item => {
+            appendText(
+              labelLayer,
+              {
+                x: item.x,
+                y: item.y,
+                text:
+                  item.text.toUpperCase(),
+                size:
+                  getQuadrantFontSize(
+                    item.text
+                  ),
+                weight: 800,
+                fill: textColour,
+                opacity: 0.62,
+                letterSpacing: 1.4
+              }
+            );
+          });
+      }
+
+      /* Simple solid data points */
+
+      points.forEach(point => {
+        const rawX =
+          Number(point.x);
+
+        const rawY =
+          Number(point.y);
+
+        const clampedX =
+          Math.max(
+            settings.xMin,
+            Math.min(
+              settings.xMax,
+              rawX
+            )
+          );
+
+        const clampedY =
+          Math.max(
+            settings.yMin,
+            Math.min(
+              settings.yMax,
+              rawY
+            )
+          );
+
+        const x =
+          mapX(
+            clampedX,
+            settings
+          );
+
+        const y =
+          mapY(
+            clampedY,
+            settings
+          );
+
+        const radius =
+          Math.max(
+            3,
+            Math.min(
+              40,
+              Number(point.size)
+            )
+          );
+
+        const group =
+          createSvgElement("g");
+
+        /*
+         * One solid circle only:
+         * no halo and no point outline.
+         */
+        group.appendChild(
+          createSvgElement(
+            "circle",
+            {
+              cx: x,
+              cy: y,
+              r: radius,
+              fill: point.colour
+            }
+          )
+        );
+
+        if (
+          rawX < settings.xMin ||
+          rawX > settings.xMax ||
+          rawY < settings.yMin ||
+          rawY > settings.yMax
+        ) {
+          group.setAttribute(
+            "opacity",
+            "0.45"
+          );
+        }
+
+        const showName =
+          showPointLabelsInput.checked;
+
+        const showValues =
+          showPointValuesInput.checked;
+
+        if (
+          showName ||
+          showValues
+        ) {
+          let label = "";
+
+          if (showName) {
+            label =
+              point.name ||
+              "Unnamed point";
+          }
+
+          if (showValues) {
+            const valueText =
+              `(${formatNumber(rawX)}, ${formatNumber(rawY)})`;
+
+            label = showName
+              ? `${label} ${valueText}`
+              : valueText;
+          }
+
+          appendText(
+            group,
+            {
+              x,
+              y:
+                y -
+                radius -
+                10,
+              text: label,
+              size: 11,
+              weight: 800,
+              fill: textColour
+            }
+          );
+        }
+
+        pointLayer.appendChild(
+          group
+        );
+      });
+
+      chartRoot.append(
+        quadrantLayer,
+        gridLayer,
+        axisLayer,
+        labelLayer,
+        pointLayer
+      );
+    }
+
+    function updatePoint(
+      index,
+      field,
+      value
+    ) {
+      if (!points[index]) {
+        return;
+      }
+
+      const numericFields =
+        ["x", "y", "size"];
+
+      points[index] = {
+        ...points[index],
+        [field]:
+          numericFields.includes(field)
+            ? Number(value)
+            : value
+      };
+
+      renderChart();
+    }
+
+    function addPoint() {
+      if (
+        points.length >= MAX_POINTS
+      ) {
+        return;
+      }
+
+      points.push(
+        createEmptyPoint()
+      );
+
+      renderPointEditors();
+      renderChart();
+
+      requestAnimationFrame(() => {
+        const editors =
+          pointEditors.querySelectorAll(
+            ".point-editor"
+          );
+
+        const newest =
+          editors[
+            editors.length - 1
+          ];
+
+        if (!newest) {
+          return;
+        }
+
+        newest.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+
+        const nameInput =
+          newest.querySelector(
+            '[data-field="name"]'
+          );
+
+        if (nameInput) {
+          nameInput.focus();
+          nameInput.select();
+        }
+      });
+    }
+
+    function movePoint(
+      index,
+      direction
+    ) {
+      const target =
+        direction === "up"
+          ? index - 1
+          : index + 1;
+
+      if (
+        target < 0 ||
+        target >= points.length
+      ) {
+        return;
+      }
+
+      [
+        points[index],
+        points[target]
+      ] = [
+        points[target],
+        points[index]
+      ];
+
+      renderPointEditors();
+      renderChart();
+    }
+
+    function deletePoint(index) {
+      if (!points[index]) {
+        return;
+      }
+
+      points.splice(index, 1);
+
+      renderPointEditors();
+      renderChart();
+    }
+
+    function createStandaloneSVG() {
+      const clone =
+        svg.cloneNode(true);
+
+      clone.setAttribute(
+        "width",
+        SVG_WIDTH
+      );
+
+      clone.setAttribute(
+        "height",
+        SVG_HEIGHT
+      );
+
+      clone.setAttribute(
+        "viewBox",
+        `0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`
+      );
+
+      clone.setAttribute(
+        "xmlns",
+        SVG_NS
+      );
+
+      clone.removeAttribute(
+        "style"
+      );
+
+      return new XMLSerializer()
+        .serializeToString(clone);
+    }
+
+    function downloadBlob(
+      blob,
+      filename
+    ) {
+      const url =
+        URL.createObjectURL(blob);
+
+      const link =
+        document.createElement("a");
+
+      link.href = url;
+      link.download = filename;
+
+      document.body.appendChild(
+        link
+      );
+
+      link.click();
+      link.remove();
+
+      window.setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
+    }
+
+    function exportSVG() {
+      renderChart();
+
+      if (exportSvgButton.disabled) {
+        return;
+      }
+
+      const markup =
+        createStandaloneSVG();
+
+      const blob =
+        new Blob(
+          [markup],
+          {
+            type:
+              "image/svg+xml;charset=utf-8"
+          }
+        );
+
+      downloadBlob(
+        blob,
+        "Scatter_Plot_Quadrant_Map.svg"
+      );
+    }
+
+    function exportPNG() {
+      renderChart();
+
+      if (exportPngButton.disabled) {
+        return;
+      }
+
+      const markup =
+        createStandaloneSVG();
+
+      const blob =
+        new Blob(
+          [markup],
+          {
+            type:
+              "image/svg+xml;charset=utf-8"
+          }
+        );
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const image =
+        new Image();
+
+      image.onload = () => {
+        const scale = 2;
+
+        const canvas =
+          document.createElement(
+            "canvas"
+          );
+
+        canvas.width =
+          SVG_WIDTH * scale;
+
+        canvas.height =
+          SVG_HEIGHT * scale;
+
+        const context =
+          canvas.getContext("2d");
+
+        if (
+          !transparentBackgroundInput.checked
+        ) {
+          context.fillStyle =
+            backgroundColourInput.value;
+
+          context.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+        } else {
+          context.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+        }
+
+        context.drawImage(
+          image,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        URL.revokeObjectURL(url);
+
+        canvas.toBlob(
+          pngBlob => {
+            if (!pngBlob) {
+              alert(
+                "The PNG could not be generated."
+              );
+
+              return;
+            }
+
+            downloadBlob(
+              pngBlob,
+              "Scatter_Plot_Quadrant_Map.png"
+            );
+          },
+          "image/png"
+        );
+      };
+
+      image.onerror = () => {
+        URL.revokeObjectURL(url);
+
+        alert(
+          "The PNG could not be generated."
+        );
+      };
+
+      image.src = url;
+    }
+
+    const globalInputs = [
+      chartTitleInput,
+      xAxisLabelInput,
+      yAxisLabelInput,
+      xMinInput,
+      xMaxInput,
+      yMinInput,
+      yMaxInput,
+      enableXSplitInput,
+      enableYSplitInput,
+      xSplitInput,
+      ySplitInput,
+      includeQuadrantsInput,
+      quadrantTopLeftInput,
+      quadrantTopRightInput,
+      quadrantBottomLeftInput,
+      quadrantBottomRightInput,
+      quadrantTopLeftColourInput,
+      quadrantTopRightColourInput,
+      quadrantBottomLeftColourInput,
+      quadrantBottomRightColourInput,
+      quadrantOpacityInput,
+      backgroundColourInput,
+      textColourInput,
+      gridColourInput,
+      splitColourInput,
+      showTitleInput,
+      showGridlinesInput,
+      showSplitLabelsInput,
+      showQuadrantFillsInput,
+      showQuadrantLabelsInput,
+      showPointLabelsInput,
+      showPointValuesInput,
+      transparentBackgroundInput
+    ];
+
+    globalInputs.forEach(input => {
+      input.addEventListener(
+        "input",
+        renderChart
+      );
+
+      input.addEventListener(
+        "change",
+        renderChart
+      );
+    });
+
+    pointEditors.addEventListener(
+      "input",
+      event => {
+        const input =
+          event.target;
+
+        if (
+          !input.matches(
+            "[data-field]"
+          )
+        ) {
+          return;
+        }
+
+        const index =
+          Number(
+            input.dataset.index
+          );
+
+        const field =
+          input.dataset.field;
+
+        updatePoint(
+          index,
+          field,
+          input.value
+        );
+
+        if (field === "name") {
+          const heading =
+            input
+              .closest(".point-editor")
+              ?.querySelector(
+                ".control-section-title"
+              );
+
+          if (heading) {
+            heading.textContent =
+              input.value ||
+              "Unnamed point";
+          }
+        }
+      }
+    );
+
+    pointEditors.addEventListener(
+      "click",
+      event => {
+        const button =
+          event.target.closest(
+            "[data-action]"
+          );
+
+        if (!button) {
+          return;
+        }
+
+        const index =
+          Number(
+            button.dataset.index
+          );
+
+        const action =
+          button.dataset.action;
+
+        if (action === "up") {
+          movePoint(
+            index,
+            "up"
+          );
+        }
+
+        if (action === "down") {
+          movePoint(
+            index,
+            "down"
+          );
+        }
+
+        if (action === "delete") {
+          deletePoint(index);
+        }
+      }
+    );
+
+    addPointButton.addEventListener(
+      "click",
+      addPoint
+    );
+
+    exportSvgButton.addEventListener(
+      "click",
+      exportSVG
+    );
+
+    exportPngButton.addEventListener(
+      "click",
+      exportPNG
+    );
+
+    renderPointEditors();
+    updateSplitInterface();
+    renderChart();
+  </script>
+
+</body></html>
