@@ -1,12 +1,14 @@
 <html lang="en"><head>
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Audience Age Comparison — Visual Intelligence Lab</title>
+  <title>Comparison Butterfly Chart — Visual Intelligence Lab</title>
 
-  <meta name="description" content="Create and export an audience age butterfly chart for the intelligence team.">
+  <meta name="description" content="Create and export a custom category comparison butterfly chart.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
@@ -59,6 +61,15 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.35;
+    }
+
     /* Navigation */
 
     .nav {
@@ -88,6 +99,7 @@
       height: 40px;
       display: grid;
       place-items: center;
+      flex: 0 0 auto;
       color: var(--black);
       background: var(--lime);
       border-radius: 50%;
@@ -172,7 +184,7 @@
       height: 100vh;
       padding-top: var(--nav-height);
       display: grid;
-      grid-template-columns: 370px minmax(0, 1fr);
+      grid-template-columns: 390px minmax(0, 1fr);
       overflow: hidden;
     }
 
@@ -188,6 +200,18 @@
       scrollbar-width: thin;
     }
 
+    .controls::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .controls::-webkit-scrollbar-track {
+      background: var(--soft-black);
+    }
+
+    .controls::-webkit-scrollbar-thumb {
+      background: var(--orange);
+    }
+
     .tool-number {
       display: block;
       margin-bottom: 14px;
@@ -199,7 +223,7 @@
     }
 
     .controls h1 {
-      max-width: 310px;
+      max-width: 330px;
       margin: 0;
       font-family: "Archivo Black", sans-serif;
       font-size: 32px;
@@ -236,6 +260,13 @@
       text-transform: uppercase;
     }
 
+    .section-description {
+      margin: -8px 0 17px;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
     .field {
       margin-bottom: 16px;
     }
@@ -258,6 +289,7 @@
     input[type="color"] {
       width: 100%;
       height: 44px;
+      min-width: 0;
       padding: 9px 11px;
       color: var(--white);
       background: var(--soft-black);
@@ -284,6 +316,18 @@
       cursor: pointer;
     }
 
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+      border: 0;
+    }
+
+    input[type="color"]::-moz-color-swatch {
+      border: 0;
+    }
+
     .colour-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -298,11 +342,11 @@
       margin-bottom: 0;
     }
 
-    /* Age data table */
+    /* Category data table */
 
-    .age-inputs-header {
+    .category-inputs-header {
       display: grid;
-      grid-template-columns: 78px 1fr 1fr;
+      grid-template-columns: minmax(92px, 1.25fr) 1fr 1fr;
       gap: 8px;
       margin-bottom: 8px;
       color: var(--dark-grey);
@@ -313,26 +357,26 @@
       text-transform: uppercase;
     }
 
-    .age-input-row {
+    .category-input-row {
       display: grid;
-      grid-template-columns: 78px 1fr 1fr;
+      grid-template-columns: minmax(92px, 1.25fr) 1fr 1fr;
       gap: 8px;
       margin-bottom: 8px;
     }
 
-    .age-input-row:last-child {
+    .category-input-row:last-child {
       margin-bottom: 0;
     }
 
-    .age-input-row input[type="text"],
-    .age-input-row input[type="number"] {
+    .category-input-row input[type="text"],
+    .category-input-row input[type="number"] {
       min-width: 0;
       height: 37px;
       padding: 6px 7px;
       font-size: 11px;
     }
 
-    .age-input-row input[type="number"] {
+    .category-input-row input[type="number"] {
       text-align: right;
     }
 
@@ -365,7 +409,7 @@
       cursor: pointer;
     }
 
-    /* Error state */
+    /* Error */
 
     .error {
       display: none;
@@ -431,11 +475,6 @@
     .png-button:hover:not(:disabled) {
       background: var(--orange);
       border-color: var(--orange);
-    }
-
-    button:disabled {
-      cursor: not-allowed;
-      opacity: 0.35;
     }
 
     .privacy-note {
@@ -519,6 +558,8 @@
       filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.22));
     }
 
+    /* Responsive */
+
     @media (max-width: 900px) {
       body {
         overflow: auto;
@@ -597,9 +638,9 @@
     }
 
     @media (max-width: 400px) {
-      .age-inputs-header,
-      .age-input-row {
-        grid-template-columns: 68px 1fr 1fr;
+      .category-inputs-header,
+      .category-input-row {
+        grid-template-columns: minmax(76px, 1.15fr) 1fr 1fr;
         gap: 5px;
       }
     }
@@ -640,96 +681,109 @@
   <div class="application">
     <aside class="controls">
       <span class="tool-number">
-        Tool 02 / Audience comparison
+        Tool 02 / Comparison
       </span>
 
       <h1>
-        Audience age<br>
+        Comparison<br>
         butterfly chart
       </h1>
 
       <p class="controls-intro">
-        Compare the age distribution of two audiences. Enter the percentage
-        of each account’s followers in each age group and the bars will extend
-        outwards from the centre.
+        Compare two brands, accounts, audiences or datasets across a shared
+        set of categories. Enter a percentage for each side and the bars will
+        extend outwards from the centre.
       </p>
 
       <section class="control-section">
-        <h2>Accounts</h2>
+        <h2>Comparison names</h2>
 
         <div class="field">
-          <label for="account-one-name">
-            Left account
+          <label for="left-series-name">
+            Left side
           </label>
 
-          <input id="account-one-name" type="text" value="Betfair Casino">
+          <input id="left-series-name" type="text" value="Brand A" autocomplete="off">
         </div>
 
         <div class="field">
-          <label for="account-two-name">
-            Right account
+          <label for="right-series-name">
+            Right side
           </label>
 
-          <input id="account-two-name" type="text" value="PlayOJO">
+          <input id="right-series-name" type="text" value="Brand B" autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label for="heading-subtitle">
+            Heading subtitle
+          </label>
+
+          <input id="heading-subtitle" type="text" value="CATEGORY SHARE" autocomplete="off">
         </div>
       </section>
 
       <section class="control-section">
-        <h2>Age-group percentages</h2>
+        <h2>Category values</h2>
 
-        <div class="age-inputs-header" aria-hidden="true">
-          <span>Age</span>
+        <p class="section-description">
+          Category names and values are fully editable. Values represent
+          percentages from 0 to 100.
+        </p>
+
+        <div class="category-inputs-header" aria-hidden="true">
+          <span>Category</span>
           <span>Left %</span>
           <span>Right %</span>
         </div>
 
-        <div id="age-input-container">
-          <div class="age-input-row">
-            <input class="age-label-input" type="text" value="13–17" aria-label="First age group">
+        <div id="category-input-container">
+          <div class="category-input-row">
+            <input class="category-label-input" type="text" value="Awareness" aria-label="First category name">
 
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="2.55" aria-label="Left account percentage for ages 13 to 17">
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="32" aria-label="Left value for Awareness">
 
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="1.16" aria-label="Right account percentage for ages 13 to 17">
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="26" aria-label="Right value for Awareness">
           </div>
 
-          <div class="age-input-row">
-            <input class="age-label-input" type="text" value="18–24" aria-label="Second age group">
+          <div class="category-input-row">
+            <input class="category-label-input" type="text" value="Consideration" aria-label="Second category name">
 
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="24.18" aria-label="Left account percentage for ages 18 to 24">
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="24" aria-label="Left value for Consideration">
 
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="12.93" aria-label="Right account percentage for ages 18 to 24">
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="37" aria-label="Right value for Consideration">
           </div>
 
-          <div class="age-input-row">
-            <input class="age-label-input" type="text" value="25–34" aria-label="Third age group">
+          <div class="category-input-row">
+            <input class="category-label-input" type="text" value="Preference" aria-label="Third category name">
 
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="39.96" aria-label="Left account percentage for ages 25 to 34">
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="46" aria-label="Left value for Preference">
 
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="46.85" aria-label="Right account percentage for ages 25 to 34">
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="41" aria-label="Right value for Preference">
           </div>
 
-          <div class="age-input-row">
-            <input class="age-label-input" type="text" value="35–44" aria-label="Fourth age group">
+          <div class="category-input-row">
+            <input class="category-label-input" type="text" value="Purchase intent" aria-label="Fourth category name">
 
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="22.06" aria-label="Left account percentage for ages 35 to 44">
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="29" aria-label="Left value for Purchase intent">
 
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="29.81" aria-label="Right account percentage for ages 35 to 44">
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="35" aria-label="Right value for Purchase intent">
           </div>
 
-          <div class="age-input-row">
-            <input class="age-label-input" type="text" value="45–64" aria-label="Fifth age group">
+          <div class="category-input-row">
+            <input class="category-label-input" type="text" value="Loyalty" aria-label="Fifth category name">
 
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="10.95" aria-label="Left account percentage for ages 45 to 64">
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="18" aria-label="Left value for Loyalty">
 
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="9.01" aria-label="Right account percentage for ages 45 to 64">
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="23" aria-label="Right value for Loyalty">
           </div>
 
-          <div class="age-input-row">
-            <input class="age-label-input" type="text" value="65+" aria-label="Sixth age group">
+          <div class="category-input-row">
+            <input class="category-label-input" type="text" value="Advocacy" aria-label="Sixth category name">
 
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="0.30" aria-label="Left account percentage for ages 65 and over">
+            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="12" aria-label="Left value for Advocacy">
 
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="0.25" aria-label="Right account percentage for ages 65 and over">
+            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="15" aria-label="Right value for Advocacy">
           </div>
         </div>
 
@@ -770,7 +824,7 @@
         <div class="colour-grid">
           <div class="field">
             <label for="outline-colour">
-              Outline
+              Outlines
             </label>
 
             <input id="outline-colour" type="color" value="#080808">
@@ -784,6 +838,24 @@
             <input id="text-colour" type="color" value="#080808">
           </div>
         </div>
+
+        <div class="colour-grid">
+          <div class="field">
+            <label for="label-background-colour">
+              Category labels
+            </label>
+
+            <input id="label-background-colour" type="color" value="#f7f7f2">
+          </div>
+
+          <div class="field">
+            <label for="label-text-colour">
+              Category text
+            </label>
+
+            <input id="label-text-colour" type="color" value="#080808">
+          </div>
+        </div>
       </section>
 
       <section class="control-section">
@@ -793,7 +865,7 @@
           <input id="show-headings" type="checkbox" checked="">
 
           <label for="show-headings">
-            Show account headings
+            Show comparison headings
           </label>
         </div>
 
@@ -849,7 +921,7 @@
       </div>
 
       <div class="diagram-frame">
-        <svg id="butterfly-svg" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Audience age butterfly chart">
+        <svg id="butterfly-svg" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Category comparison butterfly chart">
           <g id="chart-root"></g>
         </svg>
       </div>
@@ -862,84 +934,148 @@
 
     const LEFT_AXIS_X = 535;
     const RIGHT_AXIS_X = 665;
-    const AGE_LABEL_X = 600;
+    const CATEGORY_LABEL_X = 600;
 
     const MAX_BAR_WIDTH = 410;
     const BAR_HEIGHT = 46;
     const FIRST_ROW_Y = 144;
     const ROW_GAP = 82;
 
-    const SVG_NS = "http://www.w3.org/2000/svg";
+    const SVG_NS =
+      "http://www.w3.org/2000/svg";
 
-    const accountOneNameInput =
-      document.getElementById("account-one-name");
+    const leftSeriesNameInput =
+      document.getElementById(
+        "left-series-name"
+      );
 
-    const accountTwoNameInput =
-      document.getElementById("account-two-name");
+    const rightSeriesNameInput =
+      document.getElementById(
+        "right-series-name"
+      );
+
+    const headingSubtitleInput =
+      document.getElementById(
+        "heading-subtitle"
+      );
 
     const chartMaximumInput =
-      document.getElementById("chart-maximum");
+      document.getElementById(
+        "chart-maximum"
+      );
 
     const leftColourInput =
-      document.getElementById("left-colour");
+      document.getElementById(
+        "left-colour"
+      );
 
     const rightColourInput =
-      document.getElementById("right-colour");
+      document.getElementById(
+        "right-colour"
+      );
 
     const outlineColourInput =
-      document.getElementById("outline-colour");
+      document.getElementById(
+        "outline-colour"
+      );
 
     const textColourInput =
-      document.getElementById("text-colour");
+      document.getElementById(
+        "text-colour"
+      );
+
+    const labelBackgroundColourInput =
+      document.getElementById(
+        "label-background-colour"
+      );
+
+    const labelTextColourInput =
+      document.getElementById(
+        "label-text-colour"
+      );
 
     const showHeadingsInput =
-      document.getElementById("show-headings");
+      document.getElementById(
+        "show-headings"
+      );
 
     const showValuesInput =
-      document.getElementById("show-values");
+      document.getElementById(
+        "show-values"
+      );
 
     const showGridlinesInput =
-      document.getElementById("show-gridlines");
+      document.getElementById(
+        "show-gridlines"
+      );
 
     const showOutlinesInput =
-      document.getElementById("show-outlines");
+      document.getElementById(
+        "show-outlines"
+      );
 
-    const ageLabelInputs = Array.from(
-      document.querySelectorAll(".age-label-input")
-    );
+    const categoryLabelInputs =
+      Array.from(
+        document.querySelectorAll(
+          ".category-label-input"
+        )
+      );
 
-    const leftValueInputs = Array.from(
-      document.querySelectorAll(".left-value-input")
-    );
+    const leftValueInputs =
+      Array.from(
+        document.querySelectorAll(
+          ".left-value-input"
+        )
+      );
 
-    const rightValueInputs = Array.from(
-      document.querySelectorAll(".right-value-input")
-    );
+    const rightValueInputs =
+      Array.from(
+        document.querySelectorAll(
+          ".right-value-input"
+        )
+      );
 
     const valueError =
-      document.getElementById("value-error");
+      document.getElementById(
+        "value-error"
+      );
 
     const svg =
-      document.getElementById("butterfly-svg");
+      document.getElementById(
+        "butterfly-svg"
+      );
 
     const chartRoot =
-      document.getElementById("chart-root");
+      document.getElementById(
+        "chart-root"
+      );
 
     const exportSvgButton =
-      document.getElementById("export-svg");
+      document.getElementById(
+        "export-svg"
+      );
 
     const exportPngButton =
-      document.getElementById("export-png");
-
-    function createSvgElement(elementName, attributes = {}) {
-      const element = document.createElementNS(
-        SVG_NS,
-        elementName
+      document.getElementById(
+        "export-png"
       );
+
+    function createSvgElement(
+      elementName,
+      attributes = {}
+    ) {
+      const element =
+        document.createElementNS(
+          SVG_NS,
+          elementName
+        );
 
       Object.entries(attributes).forEach(
         ([attribute, value]) => {
-          element.setAttribute(attribute, value);
+          element.setAttribute(
+            attribute,
+            value
+          );
         }
       );
 
@@ -947,9 +1083,12 @@
     }
 
     function readNumber(input) {
-      const value = Number(input.value);
+      const value =
+        Number(input.value);
 
-      return Number.isFinite(value) ? value : 0;
+      return Number.isFinite(value)
+        ? value
+        : 0;
     }
 
     function formatPercentage(value) {
@@ -973,17 +1112,22 @@
       const chartMaximum =
         readNumber(chartMaximumInput);
 
-      const valuesValid = values.every(
-        value => value >= 0 && value <= 100
-      );
+      const valuesValid =
+        values.every(
+          value =>
+            value >= 0 &&
+            value <= 100
+        );
 
       const maximumValid =
         chartMaximum > 0 &&
         chartMaximum <= 100;
 
-      const allValuesFit = values.every(
-        value => value <= chartMaximum
-      );
+      const allValuesFit =
+        values.every(
+          value =>
+            value <= chartMaximum
+        );
 
       const valid =
         valuesValid &&
@@ -998,7 +1142,7 @@
           "The maximum axis value must be between 1% and 100%.";
       } else if (!allValuesFit) {
         valueError.textContent =
-          "The maximum axis value must be at least as high as the largest age-group value.";
+          "The maximum axis value must be at least as high as the largest category value.";
       }
 
       valueError.classList.toggle(
@@ -1006,8 +1150,11 @@
         !valid
       );
 
-      exportSvgButton.disabled = !valid;
-      exportPngButton.disabled = !valid;
+      exportSvgButton.disabled =
+        !valid;
+
+      exportPngButton.disabled =
+        !valid;
 
       return valid;
     }
@@ -1023,23 +1170,30 @@
       opacity = 1,
       letterSpacing = 0
     }) {
-      const textElement = createSvgElement(
-        "text",
-        {
-          x,
-          y,
-          "text-anchor": anchor,
-          "font-family": "Arial, Helvetica, sans-serif",
-          "font-size": size,
-          "font-weight": weight,
-          fill,
-          opacity,
-          "letter-spacing": letterSpacing
-        }
-      );
+      const textElement =
+        createSvgElement(
+          "text",
+          {
+            x,
+            y,
+            "text-anchor": anchor,
+            "font-family":
+              "Arial, Helvetica, sans-serif",
+            "font-size": size,
+            "font-weight": weight,
+            fill,
+            opacity,
+            "letter-spacing":
+              letterSpacing
+          }
+        );
 
-      textElement.textContent = text;
-      chartRoot.appendChild(textElement);
+      textElement.textContent =
+        text;
+
+      chartRoot.appendChild(
+        textElement
+      );
 
       return textElement;
     }
@@ -1051,26 +1205,38 @@
 
       chartRoot.replaceChildren();
 
-      const accountOneName =
-        accountOneNameInput.value.trim() ||
-        "Account 1";
+      const leftSeriesName =
+        leftSeriesNameInput.value.trim() ||
+        "Left";
 
-      const accountTwoName =
-        accountTwoNameInput.value.trim() ||
-        "Account 2";
+      const rightSeriesName =
+        rightSeriesNameInput.value.trim() ||
+        "Right";
 
-      const ageLabels = ageLabelInputs.map(
-        input => input.value.trim() || "Age"
-      );
+      const headingSubtitle =
+        headingSubtitleInput.value.trim();
+
+      const categoryLabels =
+        categoryLabelInputs.map(
+          (input, index) =>
+            input.value.trim() ||
+            `Category ${index + 1}`
+        );
 
       const leftValues =
-        leftValueInputs.map(readNumber);
+        leftValueInputs.map(
+          readNumber
+        );
 
       const rightValues =
-        rightValueInputs.map(readNumber);
+        rightValueInputs.map(
+          readNumber
+        );
 
       const chartMaximum =
-        readNumber(chartMaximumInput);
+        readNumber(
+          chartMaximumInput
+        );
 
       const leftColour =
         leftColourInput.value;
@@ -1083,6 +1249,12 @@
 
       const textColour =
         textColourInput.value;
+
+      const labelBackgroundColour =
+        labelBackgroundColourInput.value;
+
+      const labelTextColour =
+        labelTextColourInput.value;
 
       const showHeadings =
         showHeadingsInput.checked;
@@ -1103,7 +1275,7 @@
         addText({
           x: 315,
           y: 58,
-          text: accountOneName,
+          text: leftSeriesName,
           size: 25,
           weight: 800,
           fill: textColour
@@ -1112,33 +1284,37 @@
         addText({
           x: 885,
           y: 58,
-          text: accountTwoName,
+          text: rightSeriesName,
           size: 25,
           weight: 800,
           fill: textColour
         });
 
-        addText({
-          x: 315,
-          y: 84,
-          text: "FOLLOWERS",
-          size: 12,
-          weight: 700,
-          fill: textColour,
-          opacity: 0.62,
-          letterSpacing: 2
-        });
+        if (headingSubtitle) {
+          addText({
+            x: 315,
+            y: 84,
+            text:
+              headingSubtitle.toUpperCase(),
+            size: 12,
+            weight: 700,
+            fill: textColour,
+            opacity: 0.62,
+            letterSpacing: 2
+          });
 
-        addText({
-          x: 885,
-          y: 84,
-          text: "FOLLOWERS",
-          size: 12,
-          weight: 700,
-          fill: textColour,
-          opacity: 0.62,
-          letterSpacing: 2
-        });
+          addText({
+            x: 885,
+            y: 84,
+            text:
+              headingSubtitle.toUpperCase(),
+            size: 12,
+            weight: 700,
+            fill: textColour,
+            opacity: 0.62,
+            letterSpacing: 2
+          });
+        }
       }
 
       if (showGridlines) {
@@ -1150,60 +1326,75 @@
           index++
         ) {
           const ratio =
-            index / numberOfIntervals;
+            index /
+            numberOfIntervals;
 
           const distance =
-            MAX_BAR_WIDTH * ratio;
+            MAX_BAR_WIDTH *
+            ratio;
 
           const scaleValue =
-            chartMaximum * ratio;
+            chartMaximum *
+            ratio;
 
           const leftX =
-            LEFT_AXIS_X - distance;
+            LEFT_AXIS_X -
+            distance;
 
           const rightX =
-            RIGHT_AXIS_X + distance;
+            RIGHT_AXIS_X +
+            distance;
 
           const gridTop = 109;
           const gridBottom = 608;
 
           if (index > 0) {
-            const leftLine = createSvgElement(
-              "line",
-              {
-                x1: leftX,
-                y1: gridTop,
-                x2: leftX,
-                y2: gridBottom,
-                stroke: textColour,
-                "stroke-width": 1,
-                "stroke-opacity": 0.15,
-                "stroke-dasharray": "5 6"
-              }
+            const leftLine =
+              createSvgElement(
+                "line",
+                {
+                  x1: leftX,
+                  y1: gridTop,
+                  x2: leftX,
+                  y2: gridBottom,
+                  stroke: textColour,
+                  "stroke-width": 1,
+                  "stroke-opacity": 0.15,
+                  "stroke-dasharray":
+                    "5 6"
+                }
+              );
+
+            const rightLine =
+              createSvgElement(
+                "line",
+                {
+                  x1: rightX,
+                  y1: gridTop,
+                  x2: rightX,
+                  y2: gridBottom,
+                  stroke: textColour,
+                  "stroke-width": 1,
+                  "stroke-opacity": 0.15,
+                  "stroke-dasharray":
+                    "5 6"
+                }
+              );
+
+            chartRoot.appendChild(
+              leftLine
             );
 
-            const rightLine = createSvgElement(
-              "line",
-              {
-                x1: rightX,
-                y1: gridTop,
-                x2: rightX,
-                y2: gridBottom,
-                stroke: textColour,
-                "stroke-width": 1,
-                "stroke-opacity": 0.15,
-                "stroke-dasharray": "5 6"
-              }
+            chartRoot.appendChild(
+              rightLine
             );
-
-            chartRoot.appendChild(leftLine);
-            chartRoot.appendChild(rightLine);
           }
 
           addText({
             x: leftX,
             y: 632,
-            text: `${scaleValue.toFixed(0)}%`,
+            text:
+              `${scaleValue.toFixed(0)}%`,
             size: 11,
             weight: 600,
             fill: textColour,
@@ -1213,7 +1404,8 @@
           addText({
             x: rightX,
             y: 632,
-            text: `${scaleValue.toFixed(0)}%`,
+            text:
+              `${scaleValue.toFixed(0)}%`,
             size: 11,
             weight: 600,
             fill: textColour,
@@ -1222,161 +1414,231 @@
         }
       }
 
-      const leftAxis = createSvgElement(
-        "line",
-        {
-          x1: LEFT_AXIS_X,
-          y1: 109,
-          x2: LEFT_AXIS_X,
-          y2: 608,
-          stroke: textColour,
-          "stroke-width": 2,
-          "stroke-opacity": 0.65
-        }
-      );
-
-      const rightAxis = createSvgElement(
-        "line",
-        {
-          x1: RIGHT_AXIS_X,
-          y1: 109,
-          x2: RIGHT_AXIS_X,
-          y2: 608,
-          stroke: textColour,
-          "stroke-width": 2,
-          "stroke-opacity": 0.65
-        }
-      );
-
-      chartRoot.appendChild(leftAxis);
-      chartRoot.appendChild(rightAxis);
-
-      ageLabels.forEach((ageLabel, index) => {
-        const centreY =
-          FIRST_ROW_Y +
-          index * ROW_GAP;
-
-        const leftValue =
-          leftValues[index];
-
-        const rightValue =
-          rightValues[index];
-
-        const leftWidth = Math.max(
-          0,
-          (leftValue / chartMaximum) *
-          MAX_BAR_WIDTH
-        );
-
-        const rightWidth = Math.max(
-          0,
-          (rightValue / chartMaximum) *
-          MAX_BAR_WIDTH
-        );
-
-        const leftBar = createSvgElement(
-          "rect",
+      const leftAxis =
+        createSvgElement(
+          "line",
           {
-            x: LEFT_AXIS_X - leftWidth,
-            y: centreY - BAR_HEIGHT / 2,
-            width: leftWidth,
-            height: BAR_HEIGHT,
-            fill: leftColour,
-            stroke: outlineColour,
-            "stroke-width": outlineWidth
+            x1: LEFT_AXIS_X,
+            y1: 109,
+            x2: LEFT_AXIS_X,
+            y2: 608,
+            stroke: textColour,
+            "stroke-width": 2,
+            "stroke-opacity": 0.65
           }
         );
 
-        const rightBar = createSvgElement(
-          "rect",
+      const rightAxis =
+        createSvgElement(
+          "line",
           {
-            x: RIGHT_AXIS_X,
-            y: centreY - BAR_HEIGHT / 2,
-            width: rightWidth,
-            height: BAR_HEIGHT,
-            fill: rightColour,
-            stroke: outlineColour,
-            "stroke-width": outlineWidth
+            x1: RIGHT_AXIS_X,
+            y1: 109,
+            x2: RIGHT_AXIS_X,
+            y2: 608,
+            stroke: textColour,
+            "stroke-width": 2,
+            "stroke-opacity": 0.65
           }
         );
 
-        chartRoot.appendChild(leftBar);
-        chartRoot.appendChild(rightBar);
+      chartRoot.appendChild(
+        leftAxis
+      );
 
-        const labelBackground =
-          createSvgElement(
-            "rect",
-            {
-              x: 544,
-              y: centreY - 23,
-              width: 112,
-              height: 46,
-              fill: "#f7f7f2",
-              "fill-opacity": 0.96,
-              stroke: outlineColour,
-              "stroke-width": 2
-            }
+      chartRoot.appendChild(
+        rightAxis
+      );
+
+      categoryLabels.forEach(
+        (categoryLabel, index) => {
+          const centreY =
+            FIRST_ROW_Y +
+            index * ROW_GAP;
+
+          const leftValue =
+            leftValues[index];
+
+          const rightValue =
+            rightValues[index];
+
+          const leftWidth =
+            Math.max(
+              0,
+              (
+                leftValue /
+                chartMaximum
+              ) *
+              MAX_BAR_WIDTH
+            );
+
+          const rightWidth =
+            Math.max(
+              0,
+              (
+                rightValue /
+                chartMaximum
+              ) *
+              MAX_BAR_WIDTH
+            );
+
+          const leftBar =
+            createSvgElement(
+              "rect",
+              {
+                x:
+                  LEFT_AXIS_X -
+                  leftWidth,
+                y:
+                  centreY -
+                  BAR_HEIGHT / 2,
+                width: leftWidth,
+                height: BAR_HEIGHT,
+                fill: leftColour,
+                stroke:
+                  outlineColour,
+                "stroke-width":
+                  outlineWidth
+              }
+            );
+
+          const rightBar =
+            createSvgElement(
+              "rect",
+              {
+                x: RIGHT_AXIS_X,
+                y:
+                  centreY -
+                  BAR_HEIGHT / 2,
+                width: rightWidth,
+                height: BAR_HEIGHT,
+                fill: rightColour,
+                stroke:
+                  outlineColour,
+                "stroke-width":
+                  outlineWidth
+              }
+            );
+
+          chartRoot.appendChild(
+            leftBar
           );
 
-        chartRoot.appendChild(labelBackground);
+          chartRoot.appendChild(
+            rightBar
+          );
 
-        addText({
-          x: AGE_LABEL_X,
-          y: centreY + 7,
-          text: ageLabel,
-          size: 18,
-          weight: 800,
-          fill: textColour
-        });
+          const labelBackground =
+            createSvgElement(
+              "rect",
+              {
+                x: 544,
+                y: centreY - 23,
+                width: 112,
+                height: 46,
+                fill:
+                  labelBackgroundColour,
+                "fill-opacity": 0.98,
+                stroke:
+                  outlineColour,
+                "stroke-width": 2
+              }
+            );
 
-        if (showValues) {
-          const leftLabelInside =
-            leftWidth > 85;
+          chartRoot.appendChild(
+            labelBackground
+          );
 
-          const rightLabelInside =
-            rightWidth > 85;
+          /*
+           * Long category names are reduced
+           * slightly to remain inside the
+           * centre label box.
+           */
+          let categoryFontSize = 18;
 
-          const leftLabelX =
-            leftLabelInside
-              ? LEFT_AXIS_X - leftWidth + 15
-              : LEFT_AXIS_X - leftWidth - 10;
-
-          const rightLabelX =
-            rightLabelInside
-              ? RIGHT_AXIS_X + rightWidth - 15
-              : RIGHT_AXIS_X + rightWidth + 10;
+          if (
+            categoryLabel.length > 14
+          ) {
+            categoryFontSize = 13;
+          } else if (
+            categoryLabel.length > 10
+          ) {
+            categoryFontSize = 15;
+          }
 
           addText({
-            x: leftLabelX,
-            y: centreY + 7,
-            text: formatPercentage(leftValue),
-            anchor:
+            x: CATEGORY_LABEL_X,
+            y: centreY + 6,
+            text: categoryLabel,
+            size: categoryFontSize,
+            weight: 800,
+            fill: labelTextColour
+          });
+
+          if (showValues) {
+            const leftLabelInside =
+              leftWidth > 85;
+
+            const rightLabelInside =
+              rightWidth > 85;
+
+            const leftLabelX =
               leftLabelInside
-                ? "start"
-                : "end",
-            size: 15,
-            weight: 800,
-            fill: textColour
-          });
+                ? LEFT_AXIS_X -
+                  leftWidth +
+                  15
+                : LEFT_AXIS_X -
+                  leftWidth -
+                  10;
 
-          addText({
-            x: rightLabelX,
-            y: centreY + 7,
-            text: formatPercentage(rightValue),
-            anchor:
+            const rightLabelX =
               rightLabelInside
-                ? "end"
-                : "start",
-            size: 15,
-            weight: 800,
-            fill: textColour
-          });
+                ? RIGHT_AXIS_X +
+                  rightWidth -
+                  15
+                : RIGHT_AXIS_X +
+                  rightWidth +
+                  10;
+
+            addText({
+              x: leftLabelX,
+              y: centreY + 7,
+              text:
+                formatPercentage(
+                  leftValue
+                ),
+              anchor:
+                leftLabelInside
+                  ? "start"
+                  : "end",
+              size: 15,
+              weight: 800,
+              fill: textColour
+            });
+
+            addText({
+              x: rightLabelX,
+              y: centreY + 7,
+              text:
+                formatPercentage(
+                  rightValue
+                ),
+              anchor:
+                rightLabelInside
+                  ? "end"
+                  : "start",
+              size: 15,
+              weight: 800,
+              fill: textColour
+            });
+          }
         }
-      });
+      );
     }
 
     function createStandaloneSVG() {
-      const clone = svg.cloneNode(true);
+      const clone =
+        svg.cloneNode(true);
 
       clone.setAttribute(
         "width",
@@ -1397,7 +1659,10 @@
         .serializeToString(clone);
     }
 
-    function downloadBlob(blob, filename) {
+    function downloadBlob(
+      blob,
+      filename
+    ) {
       const url =
         URL.createObjectURL(blob);
 
@@ -1407,7 +1672,10 @@
       link.href = url;
       link.download = filename;
 
-      document.body.appendChild(link);
+      document.body.appendChild(
+        link
+      );
+
       link.click();
       link.remove();
 
@@ -1417,32 +1685,44 @@
     }
 
     function exportSVG() {
+      if (!validateData()) {
+        return;
+      }
+
       const markup =
         createStandaloneSVG();
 
-      const blob = new Blob(
-        [markup],
-        {
-          type: "image/svg+xml;charset=utf-8"
-        }
-      );
+      const blob =
+        new Blob(
+          [markup],
+          {
+            type:
+              "image/svg+xml;charset=utf-8"
+          }
+        );
 
       downloadBlob(
         blob,
-        "Audience_Age_Butterfly_Chart.svg"
+        "Comparison_Butterfly_Chart.svg"
       );
     }
 
     function exportPNG() {
+      if (!validateData()) {
+        return;
+      }
+
       const markup =
         createStandaloneSVG();
 
-      const blob = new Blob(
-        [markup],
-        {
-          type: "image/svg+xml;charset=utf-8"
-        }
-      );
+      const blob =
+        new Blob(
+          [markup],
+          {
+            type:
+              "image/svg+xml;charset=utf-8"
+          }
+        );
 
       const url =
         URL.createObjectURL(blob);
@@ -1454,7 +1734,9 @@
         const scale = 2;
 
         const canvas =
-          document.createElement("canvas");
+          document.createElement(
+            "canvas"
+          );
 
         canvas.width =
           SVG_WIDTH * scale;
@@ -1494,7 +1776,7 @@
 
             downloadBlob(
               pngBlob,
-              "Audience_Age_Butterfly_Chart.png"
+              "Comparison_Butterfly_Chart.png"
             );
           },
           "image/png"
@@ -1513,18 +1795,21 @@
     }
 
     const allInputs = [
-      accountOneNameInput,
-      accountTwoNameInput,
+      leftSeriesNameInput,
+      rightSeriesNameInput,
+      headingSubtitleInput,
       chartMaximumInput,
       leftColourInput,
       rightColourInput,
       outlineColourInput,
       textColourInput,
+      labelBackgroundColourInput,
+      labelTextColourInput,
       showHeadingsInput,
       showValuesInput,
       showGridlinesInput,
       showOutlinesInput,
-      ...ageLabelInputs,
+      ...categoryLabelInputs,
       ...leftValueInputs,
       ...rightValueInputs
     ];
