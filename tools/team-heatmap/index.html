@@ -1,0 +1,519 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team Heatmap — Visual Intelligence Lab</title>
+  <meta name="description" content="Explore team workload intensity across projects in an accessible heatmap.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #080808;
+      --soft-black: #11110f;
+      --panel: #191917;
+      --panel-light: #242421;
+      --white: #f7f7f2;
+      --grey: #b9b9b2;
+      --dark-grey: #73736e;
+      --orange: #ff3d0a;
+      --lime: #a8ff37;
+      --error: #ff7777;
+      --line: rgba(255, 255, 255, 0.16);
+      --navigation-height: 72px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { height: 100%; }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
+      color: var(--white);
+      background: var(--black);
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    [hidden] { display: none !important; }
+
+    .nav {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--navigation-height);
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand { display: flex; align-items: center; gap: 13px; }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: var(--black);
+      background: var(--lime);
+      border-radius: 50%;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 18px;
+    }
+
+    .brand-name {
+      font-family: "Archivo Black", sans-serif;
+      font-size: 17px;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+    }
+
+    .brand-name span {
+      color: var(--grey);
+      font-family: "Inter", sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .nav-meta { display: flex; align-items: center; gap: 24px; }
+
+    .tool-status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--lime);
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(168, 255, 55, 0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(168, 255, 55, 0); } }
+
+    .home-link {
+      min-height: 40px;
+      padding: 0 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--black);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: transform 180ms ease, background 180ms ease;
+    }
+
+    .home-link:hover { background: var(--lime); transform: translateY(-2px); }
+    .home-link:focus-visible, .heatmap-cell:focus-visible { outline: 3px solid var(--lime); outline-offset: 3px; }
+
+    .application {
+      height: 100vh;
+      padding-top: var(--navigation-height);
+      display: grid;
+      grid-template-columns: 390px minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .controls {
+      height: calc(100vh - var(--navigation-height));
+      padding: 28px 24px 36px;
+      overflow-y: auto;
+      background: var(--soft-black);
+      border-right: 1px solid var(--line);
+      scrollbar-color: var(--orange) var(--soft-black);
+      scrollbar-width: thin;
+    }
+
+    .tool-number {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--orange);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .controls > h1 {
+      max-width: 340px;
+      margin: 0;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+      text-transform: uppercase;
+    }
+
+    .introduction, .section-description {
+      color: var(--grey);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .introduction { margin: 18px 0 28px; }
+
+    .control-section {
+      margin-bottom: 12px;
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .control-section:first-of-type { border-top: 3px solid var(--orange); }
+
+    .control-section h2 {
+      margin: 0 0 17px;
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .stat-list { display: grid; gap: 12px; margin: 0; }
+    .stat-list div { display: flex; justify-content: space-between; gap: 18px; padding-bottom: 11px; border-bottom: 1px solid var(--line); }
+    .stat-list dt { color: var(--grey); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .stat-list dd { margin: 0; color: var(--white); font-size: 13px; font-weight: 800; }
+
+    .workspace {
+      min-width: 0;
+      height: calc(100vh - var(--navigation-height));
+      padding: 28px;
+      overflow: auto;
+      background:
+        radial-gradient(circle at 78% 16%, rgba(255, 61, 10, 0.16), transparent 34%),
+        linear-gradient(135deg, #10100f 0%, #080808 55%, #151512 100%);
+    }
+
+    .preview-panel {
+      min-height: 100%;
+      padding: 24px;
+      background: rgba(25, 25, 23, 0.82);
+      border: 1px solid var(--line);
+    }
+
+    .heatmap-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow { color: var(--orange); font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+    .heatmap-header h2 { margin: 8px 0 0; font-family: "Archivo Black", sans-serif; font-size: clamp(34px, 5vw, 72px); font-weight: 400; letter-spacing: -0.06em; line-height: 0.94; text-transform: uppercase; }
+
+    .detail-card {
+      min-width: 220px;
+      padding: 16px;
+      background: var(--black);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--orange);
+    }
+
+    .detail-label { display: block; color: var(--grey); font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+    .detail-value { display: block; margin-top: 6px; color: var(--white); font-size: 17px; font-weight: 800; }
+
+    .heatmap-scroll { overflow: auto; padding-bottom: 12px; scrollbar-color: var(--orange) var(--soft-black); scrollbar-width: thin; }
+
+    .heatmap-table {
+      width: 100%;
+      min-width: 860px;
+      border-collapse: separate;
+      border-spacing: 6px;
+      table-layout: fixed;
+    }
+
+    .heatmap-table caption {
+      margin-bottom: 12px;
+      color: var(--grey);
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .heatmap-table th {
+      padding: 10px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      vertical-align: bottom;
+    }
+
+    .row-heading { width: 148px; text-align: right; overflow-wrap: anywhere; }
+    .column-heading { height: 72px; text-align: center; overflow-wrap: anywhere; }
+
+    .heatmap-cell {
+      height: 76px;
+      min-width: 92px;
+      padding: 8px;
+      color: var(--white);
+      background: hsl(var(--heat-hue, 14) 100% var(--heat-lightness, 46%));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      vertical-align: middle;
+      transition: transform 180ms ease, border-color 180ms ease;
+    }
+
+    .heatmap-cell:hover, .heatmap-cell:focus-visible { border-color: var(--lime); transform: translateY(-2px); }
+    .cell-value { display: block; font-size: 20px; font-weight: 800; line-height: 1; }
+    .cell-label { display: block; margin-top: 6px; color: rgba(247, 247, 242, 0.82); font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .heatmap-cell.is-zero { color: var(--black); background: var(--lime); }
+    .heatmap-cell.is-zero .cell-label { color: rgba(8, 8, 8, 0.72); }
+    .heatmap-cell.is-missing { color: var(--grey); background: repeating-linear-gradient(135deg, rgba(255,255,255,0.08) 0 8px, rgba(255,255,255,0.02) 8px 16px), var(--panel-light); }
+    .heatmap-cell.is-missing .cell-label { color: var(--grey); }
+
+    .legend { margin-top: 18px; padding: 18px; background: var(--soft-black); border: 1px solid var(--line); }
+    .legend-title { margin: 0 0 12px; color: var(--lime); font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+    .legend-scale { display: grid; grid-template-columns: repeat(5, minmax(74px, 1fr)) auto auto; gap: 8px; align-items: center; }
+    .legend-swatch { min-height: 34px; display: grid; place-items: center; color: var(--white); border: 1px solid var(--line); font-size: 10px; font-weight: 800; }
+    .legend-zero { color: var(--black); background: var(--lime); }
+    .legend-missing { background: repeating-linear-gradient(135deg, rgba(255,255,255,0.08) 0 8px, rgba(255,255,255,0.02) 8px 16px), var(--panel-light); color: var(--grey); }
+    .empty-state { padding: 42px; color: var(--grey); background: var(--soft-black); border: 1px dashed var(--line); text-align: center; }
+
+    @media (max-width: 980px) {
+      body { overflow: auto; }
+      .application { height: auto; min-height: 100vh; grid-template-columns: 1fr; overflow: visible; }
+      .controls, .workspace { height: auto; overflow: visible; }
+      .controls { border-right: 0; border-bottom: 1px solid var(--line); }
+      .heatmap-header { align-items: stretch; flex-direction: column; }
+    }
+
+    @media (max-width: 640px) {
+      .nav { height: auto; min-height: var(--navigation-height); padding: 14px 18px; align-items: flex-start; gap: 12px; flex-direction: column; }
+      .application { padding-top: 112px; }
+      .tool-status { display: none; }
+      .controls, .workspace { padding: 20px; }
+      .preview-panel { padding: 16px; }
+      .legend-scale { grid-template-columns: repeat(2, minmax(100px, 1fr)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="../../" aria-label="Return to the Visual Intelligence Lab homepage">
+      <span class="brand-mark">G</span>
+      <span class="brand-name">goat <span>/ Visual Intelligence Lab</span></span>
+    </a>
+    <div class="nav-meta">
+      <span class="tool-status"><span class="status-dot"></span>Tool online</span>
+      <a class="home-link" href="../../">← Back home</a>
+    </div>
+  </nav>
+
+  <main class="application">
+    <aside class="controls" aria-labelledby="page-title">
+      <span class="tool-number">Tool 05 / Team intelligence</span>
+      <h1 id="page-title">Team<br>heatmap</h1>
+      <p class="introduction">Review effort, coverage and delivery pressure across teams and projects. Replace the sample data at the top of the script to reuse this heatmap for another matrix.</p>
+
+      <section class="control-section">
+        <h2>Dataset summary</h2>
+        <dl class="stat-list">
+          <div><dt>Rows</dt><dd id="row-count">—</dd></div>
+          <div><dt>Columns</dt><dd id="column-count">—</dd></div>
+          <div><dt>Valid range</dt><dd id="range-summary">—</dd></div>
+          <div><dt>Selected cell</dt><dd id="selected-summary">Hover or focus a cell</dd></div>
+        </dl>
+      </section>
+
+      <section class="control-section">
+        <h2>Reading guide</h2>
+        <p class="section-description">Orange cells are positive workload intensity, darker red cells are negative allocation gaps, lime cells are true zeroes, and hatched cells announce missing values as “No data.”</p>
+      </section>
+    </aside>
+
+    <section class="workspace" aria-label="Heatmap workspace">
+      <div class="preview-panel">
+        <header class="heatmap-header">
+          <div>
+            <span class="eyebrow">Weekly delivery matrix</span>
+            <h2>Project load by team</h2>
+          </div>
+          <aside class="detail-card" aria-live="polite" aria-atomic="true">
+            <span class="detail-label">Cell details</span>
+            <span id="cell-detail" class="detail-value">Hover or focus a cell</span>
+          </aside>
+        </header>
+
+        <div id="empty-state" class="empty-state" hidden>No valid heatmap data is available. Add row labels, column labels and at least one numeric value.</div>
+        <div id="heatmap-root" class="heatmap-scroll"></div>
+
+        <section class="legend" aria-labelledby="legend-title">
+          <h3 id="legend-title" class="legend-title">Colour scale legend</h3>
+          <div id="legend-scale" class="legend-scale"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const heatmapData = {
+      title: "Project load by team",
+      unit: "pts",
+      rows: ["Strategy", "Insights", "Creative", "Paid Media", "Client Ops", "Production"],
+      columns: ["Mon", "Tue", "Wed", "Thu", "Fri", "Overflow"],
+      values: [
+        [18, 24, 31, 27, 14, -3],
+        [12, 0, 28, null, 22, 7],
+        [35, 42, 39, 45, 30, 12],
+        [-6, 15, 21, 19, 0, 4],
+        [8, 11, NaN, 17, 13, 5],
+        [25, 33, 29, 38, 41]
+      ]
+    };
+
+    const elements = {
+      root: document.getElementById("heatmap-root"),
+      empty: document.getElementById("empty-state"),
+      detail: document.getElementById("cell-detail"),
+      selected: document.getElementById("selected-summary"),
+      rows: document.getElementById("row-count"),
+      columns: document.getElementById("column-count"),
+      range: document.getElementById("range-summary"),
+      legend: document.getElementById("legend-scale")
+    };
+
+    const isValidNumber = (value) => typeof value === "number" && Number.isFinite(value);
+    const formatValue = (value) => isValidNumber(value) ? `${value} ${heatmapData.unit}` : "No data";
+    const cellName = (row, column, value) => `${row}, ${column}: ${formatValue(value)}`;
+
+    function getValueRange(values) {
+      const validValues = values.flat().filter(isValidNumber);
+      if (!validValues.length) return null;
+      return { min: Math.min(...validValues), max: Math.max(...validValues) };
+    }
+
+    function getCellStyle(value, range) {
+      if (!isValidNumber(value) || value === 0 || !range) return "";
+      if (range.min === range.max) return "--heat-hue: 14; --heat-lightness: 46%;";
+
+      const isNegative = value < 0;
+      const bound = isNegative ? Math.min(range.min, -1) : Math.max(range.max, 1);
+      const intensity = Math.min(Math.abs(value / bound), 1);
+      const hue = isNegative ? 357 : 14;
+      const lightness = 78 - (intensity * 34);
+      return `--heat-hue: ${hue}; --heat-lightness: ${lightness}%;`;
+    }
+
+    function showDetail(row, column, value) {
+      const text = cellName(row, column, value);
+      elements.detail.textContent = text;
+      elements.selected.textContent = text;
+    }
+
+    function renderLegend(range) {
+      elements.legend.replaceChildren();
+      if (!range) return;
+      const samples = range.min === range.max ? [range.min] : [range.min, range.min / 2, 0, range.max / 2, range.max];
+      samples.forEach((sample) => {
+        const swatch = document.createElement("span");
+        swatch.className = sample === 0 ? "legend-swatch legend-zero" : "legend-swatch";
+        swatch.style.cssText = getCellStyle(sample, range);
+        swatch.textContent = formatValue(Math.round(sample));
+        elements.legend.append(swatch);
+      });
+      const zero = document.createElement("span");
+      zero.className = "legend-swatch legend-zero";
+      zero.textContent = "0 pts";
+      elements.legend.append(zero);
+      const missing = document.createElement("span");
+      missing.className = "legend-swatch legend-missing";
+      missing.textContent = "No data";
+      elements.legend.append(missing);
+    }
+
+    function renderHeatmap(data) {
+      const range = getValueRange(data.values);
+      elements.rows.textContent = data.rows.length;
+      elements.columns.textContent = data.columns.length;
+      elements.range.textContent = range ? `${range.min} to ${range.max} ${data.unit}` : "No valid values";
+      renderLegend(range);
+
+      if (!range || !data.rows.length || !data.columns.length) {
+        elements.empty.hidden = false;
+        elements.root.replaceChildren();
+        return;
+      }
+
+      elements.empty.hidden = true;
+      const table = document.createElement("table");
+      table.className = "heatmap-table";
+      table.innerHTML = `<caption>${data.title}. Use Tab to move through each cell and reveal its row, column and value.</caption>`;
+
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+      headerRow.append(document.createElement("th"));
+      data.columns.forEach((column) => {
+        const th = document.createElement("th");
+        th.scope = "col";
+        th.className = "column-heading";
+        th.textContent = column;
+        headerRow.append(th);
+      });
+      thead.append(headerRow);
+      table.append(thead);
+
+      const tbody = document.createElement("tbody");
+      data.rows.forEach((row, rowIndex) => {
+        const tr = document.createElement("tr");
+        const th = document.createElement("th");
+        th.scope = "row";
+        th.className = "row-heading";
+        th.textContent = row;
+        tr.append(th);
+
+        data.columns.forEach((column, columnIndex) => {
+          const value = data.values[rowIndex]?.[columnIndex];
+          const td = document.createElement("td");
+          td.className = "heatmap-cell";
+          td.tabIndex = 0;
+          td.setAttribute("aria-label", cellName(row, column, value));
+          td.style.cssText = getCellStyle(value, range);
+          if (!isValidNumber(value)) td.classList.add("is-missing");
+          if (value === 0) td.classList.add("is-zero");
+          td.innerHTML = `<span class="cell-value">${isValidNumber(value) ? value : "—"}</span><span class="cell-label">${isValidNumber(value) ? data.unit : "No data"}</span>`;
+          td.addEventListener("mouseenter", () => showDetail(row, column, value));
+          td.addEventListener("focus", () => showDetail(row, column, value));
+          tr.append(td);
+        });
+        tbody.append(tr);
+      });
+      table.append(tbody);
+      elements.root.replaceChildren(table);
+    }
+
+    renderHeatmap(heatmapData);
+  </script>
+</body></html>
