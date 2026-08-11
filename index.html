@@ -669,6 +669,11 @@
       background: #242421;
     }
 
+    .heatmap-tool {
+      color: var(--white);
+      background: var(--soft-black);
+    }
+
     .tool-card-top {
       position: relative;
       z-index: 3;
@@ -707,7 +712,8 @@
       background: var(--orange);
     }
 
-    .scatter-tool .tool-status-label {
+    .scatter-tool .tool-status-label,
+    .heatmap-tool .tool-status-label {
       color: var(--black);
       background: var(--lime);
     }
@@ -730,7 +736,8 @@
     }
 
     .tool-visual > svg,
-    .tool-visual > .matrix-board {
+    .tool-visual > .matrix-board,
+    .tool-visual > .heatmap-board {
       transition: transform 500ms ease;
     }
 
@@ -740,6 +747,10 @@
 
     .tool-card:hover .matrix-board {
       transform: rotate(-2deg) scale(1.035);
+    }
+
+    .tool-card:hover .heatmap-board {
+      transform: rotate(2deg) scale(1.035);
     }
 
     .tool-card-bottom {
@@ -783,7 +794,8 @@
       color: rgba(0, 0, 0, 0.68);
     }
 
-    .scatter-tool p {
+    .scatter-tool p,
+    .heatmap-tool p {
       color: var(--grey);
     }
 
@@ -824,12 +836,14 @@
       background: var(--orange);
     }
 
-    .scatter-tool .open-tool {
+    .scatter-tool .open-tool,
+    .heatmap-tool .open-tool {
       color: var(--black);
       background: var(--lime);
     }
 
-    .scatter-tool:hover .open-tool {
+    .scatter-tool:hover .open-tool,
+    .heatmap-tool:hover .open-tool {
       background: var(--orange);
     }
 
@@ -992,6 +1006,46 @@
     .matrix-value.featured {
       color: var(--matrix-accent);
       font-size: 15px;
+    }
+
+    /* Heatmap illustration */
+
+    .heatmap-board {
+      width: 90%;
+      max-width: 540px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      background: #11110f;
+      border: 3px solid var(--lime);
+      box-shadow: 14px 14px 0 var(--orange);
+      transform: rotate(2deg);
+    }
+
+    .heatmap-chip {
+      min-height: 52px;
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      background: hsl(14 100% var(--heat-lightness));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .heatmap-chip:nth-child(3n) {
+      background: hsl(357 100% var(--heat-lightness));
+    }
+
+    .heatmap-chip.zero {
+      color: var(--black);
+      background: var(--lime);
+    }
+
+    .heatmap-chip.missing {
+      color: var(--grey);
+      background: repeating-linear-gradient(135deg, rgba(255,255,255,0.14) 0 7px, rgba(255,255,255,0.03) 7px 14px), #242421;
     }
 
     /* Scatter illustration */
@@ -1884,6 +1938,54 @@
             <span class="open-tool">Open tool ↗</span>
           </div>
         </a>
+
+        <!-- Tool 05: Team Heatmap -->
+        <a class="tool-card heatmap-tool" href="tools/team-heatmap/" aria-label="Open the team heatmap tool">
+          <div class="tool-card-top">
+            <span>Tool 05 / Team intelligence</span>
+            <span class="tool-status-label">Available now</span>
+          </div>
+
+          <div class="tool-visual heatmap-visual" aria-hidden="true">
+            <div class="heatmap-board">
+              <span class="heatmap-chip" style="--heat-lightness: 68%">18</span>
+              <span class="heatmap-chip" style="--heat-lightness: 60%">24</span>
+              <span class="heatmap-chip" style="--heat-lightness: 44%">-6</span>
+              <span class="heatmap-chip zero">0</span>
+              <span class="heatmap-chip" style="--heat-lightness: 48%">39</span>
+              <span class="heatmap-chip missing">—</span>
+              <span class="heatmap-chip" style="--heat-lightness: 55%">31</span>
+              <span class="heatmap-chip" style="--heat-lightness: 50%">35</span>
+              <span class="heatmap-chip" style="--heat-lightness: 67%">-3</span>
+              <span class="heatmap-chip" style="--heat-lightness: 46%">42</span>
+              <span class="heatmap-chip" style="--heat-lightness: 63%">21</span>
+              <span class="heatmap-chip zero">0</span>
+              <span class="heatmap-chip" style="--heat-lightness: 58%">27</span>
+              <span class="heatmap-chip missing">—</span>
+              <span class="heatmap-chip" style="--heat-lightness: 72%">12</span>
+              <span class="heatmap-chip" style="--heat-lightness: 51%">33</span>
+              <span class="heatmap-chip" style="--heat-lightness: 54%">28</span>
+              <span class="heatmap-chip" style="--heat-lightness: 45%">45</span>
+            </div>
+          </div>
+
+          <div class="tool-card-bottom">
+            <div>
+              <h3>
+                Team workload<br>
+                heatmap
+              </h3>
+
+              <p>
+                Scan two-dimensional team data with accessible cells, an
+                automatic colour scale, keyboard details, zero states and
+                missing-value handling.
+              </p>
+            </div>
+
+            <span class="open-tool">Open tool ↗</span>
+          </div>
+        </a>
       </div>
     </section>
   </main>
@@ -1891,7 +1993,7 @@
   <footer>
     <span>Visual Intelligence Lab © 2026</span>
     <span>Experimental tools for connected thinking</span>
-    <span>Four tools available</span>
+    <span>Five tools available</span>
   </footer>
 
   <script>
