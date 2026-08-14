@@ -1,11 +1,13 @@
-<html lang="en"><head>
+<html lang="en" data-type="html" data-identifier="ed584280-5b97-4586-b5d8-d819ddec9ea3" data-title="Neutral Heatmap Graph Maker" data-version="1" width="1200" height="700"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Team Heatmap — Visual Intelligence Lab</title>
-  <meta name="description" content="Explore team workload intensity across projects in an accessible heatmap.">
+  <title>Heatmap Graph Maker — Visual Intelligence Lab</title>
+  <meta name="description" content="Create, customise and export a flexible heatmap graph for any dataset.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer=""></script>
+
   <style>
     :root {
       --black: #080808;
@@ -22,9 +24,13 @@
       --navigation-height: 72px;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-    html { height: 100%; }
+    html {
+      height: 100%;
+    }
 
     body {
       min-height: 100%;
@@ -35,10 +41,35 @@
       font-family: "Inter", Arial, sans-serif;
     }
 
-    a { color: inherit; text-decoration: none; }
-    button, input { font: inherit; }
-    button, a { -webkit-tap-highlight-color: transparent; }
-    [hidden] { display: none !important; }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.35;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
 
     .nav {
       position: fixed;
@@ -56,7 +87,11 @@
       backdrop-filter: blur(16px);
     }
 
-    .brand { display: flex; align-items: center; gap: 13px; }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
 
     .brand-mark {
       width: 40px;
@@ -87,7 +122,11 @@
       text-transform: uppercase;
     }
 
-    .nav-meta { display: flex; align-items: center; gap: 24px; }
+    .nav-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
 
     .tool-status {
       display: flex;
@@ -109,7 +148,11 @@
       animation: pulse 2s infinite;
     }
 
-    @keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(168, 255, 55, 0); } }
+    @keyframes pulse {
+      70% {
+        box-shadow: 0 0 0 10px rgba(168, 255, 55, 0);
+      }
+    }
 
     .home-link {
       min-height: 40px;
@@ -127,14 +170,26 @@
       transition: transform 180ms ease, background 180ms ease;
     }
 
-    .home-link:hover { background: var(--lime); transform: translateY(-2px); }
-    .home-link:focus-visible, .heatmap-cell:focus-visible { outline: 3px solid var(--lime); outline-offset: 3px; }
+    .home-link:hover {
+      background: var(--lime);
+      transform: translateY(-2px);
+    }
+
+    .home-link:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible,
+    .heatmap-cell:focus-visible {
+      outline: 3px solid var(--lime);
+      outline-offset: 3px;
+    }
 
     .application {
       height: 100vh;
       padding-top: var(--navigation-height);
       display: grid;
-      grid-template-columns: 390px minmax(0, 1fr);
+      grid-template-columns: 400px minmax(0, 1fr);
       overflow: hidden;
     }
 
@@ -146,6 +201,22 @@
       border-right: 1px solid var(--line);
       scrollbar-color: var(--orange) var(--soft-black);
       scrollbar-width: thin;
+    }
+
+    .controls::-webkit-scrollbar,
+    .heatmap-scroll::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .controls::-webkit-scrollbar-track,
+    .heatmap-scroll::-webkit-scrollbar-track {
+      background: var(--soft-black);
+    }
+
+    .controls::-webkit-scrollbar-thumb,
+    .heatmap-scroll::-webkit-scrollbar-thumb {
+      background: var(--orange);
     }
 
     .tool-number {
@@ -169,13 +240,12 @@
       text-transform: uppercase;
     }
 
-    .introduction, .section-description {
+    .introduction {
+      margin: 18px 0 28px;
       color: var(--grey);
       font-size: 12px;
       line-height: 1.6;
     }
-
-    .introduction { margin: 18px 0 28px; }
 
     .control-section {
       margin-bottom: 12px;
@@ -184,37 +254,481 @@
       border: 1px solid var(--line);
     }
 
-    .control-section:first-of-type { border-top: 3px solid var(--orange); }
+    .control-section.first-section {
+      border-top: 3px solid var(--orange);
+    }
 
-    .control-section h2 {
+    .control-section h2,
+    .control-section-title {
       margin: 0 0 17px;
       color: var(--lime);
       font-size: 10px;
       font-weight: 800;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
     }
 
-    .stat-list { display: grid; gap: 12px; margin: 0; }
-    .stat-list div { display: flex; justify-content: space-between; gap: 18px; padding-bottom: 11px; border-bottom: 1px solid var(--line); }
-    .stat-list dt { color: var(--grey); font-size: 11px; font-weight: 700; text-transform: uppercase; }
-    .stat-list dd { margin: 0; color: var(--white); font-size: 13px; font-weight: 800; }
-
-    .workspace {
-      min-width: 0;
-      height: calc(100vh - var(--navigation-height));
-      padding: 28px;
-      overflow: auto;
-      background:
-        radial-gradient(circle at 78% 16%, rgba(255, 61, 10, 0.16), transparent 34%),
-        linear-gradient(135deg, #10100f 0%, #080808 55%, #151512 100%);
+    .section-description {
+      margin: -8px 0 17px;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.5;
     }
 
-    .preview-panel {
-      min-height: 100%;
-      padding: 24px;
-      background: rgba(25, 25, 23, 0.82);
-      border: 1px solid var(--line);
+    .field {
+      min-width: 0;
+      margin-bottom: 14px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .field-row .field {
+      margin: 0;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      min-width: 0;
+      padding: 9px 11px;
+      color: var(--white);
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 0;
+      outline: none;
+      font-size: 12px;
+      transition: border-color 180ms ease, background 180ms ease;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      height: 42px;
+    }
+
+    textarea {
+      min-height: 82px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    input[type="text"]:hover,
+    input[type="number"]:hover,
+    textarea:hover,
+    select:hover {
+      border-color: rgba(255, 255, 255, 0.45);
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus,
+    select:focus {
+      background: var(--black);
+      border-color: var(--lime);
+    }
+
+    input[type="color"] {
+      width: 100%;
+      height: 42px;
+      padding: 4px;
+      cursor: pointer;
+      color: var(--white);
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 0;
+      outline: none;
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+      border: 0;
+    }
+
+    input[type="color"]::-moz-color-swatch {
+      border: 0;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .toggle-label {
+      position: relative;
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 9px;
+      cursor: pointer;
+      color: var(--grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .toggle-label input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .toggle-box {
+      width: 17px;
+      height: 17px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      background: var(--soft-black);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .toggle-label input:checked + .toggle-box {
+      background: var(--lime);
+      border-color: var(--lime);
+    }
+
+    .toggle-label input:checked + .toggle-box::after {
+      content: "";
+      width: 7px;
+      height: 4px;
+      margin-top: -2px;
+      border-left: 2px solid var(--black);
+      border-bottom: 2px solid var(--black);
+      transform: rotate(-45deg);
+    }
+
+    .axis-editor {
+      position: relative;
+    }
+
+    .editor-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .editor-heading .control-section-title {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .editor-rank {
+      flex: 0 0 auto;
+      color: var(--dark-grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .axis-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .axis-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .axis-item input {
+      height: 38px;
+    }
+
+    .row-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-button {
+      width: 30px;
+      min-height: 30px;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+      color: var(--grey);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 0;
+      font-size: 11px;
+      font-weight: 800;
+      transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .icon-button:hover:not(:disabled) {
+      color: var(--black);
+      background: var(--white);
+      border-color: var(--white);
+    }
+
+    .icon-button.delete:hover:not(:disabled) {
+      color: var(--black);
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+
+    .small-button {
+      width: 100%;
+      min-height: 40px;
+      margin-top: 10px;
+      padding: 9px 13px;
+      color: var(--black);
+      background: var(--orange);
+      border: 1px solid var(--orange);
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    }
+
+    .small-button:hover:not(:disabled) {
+      background: var(--lime);
+      border-color: var(--lime);
+      transform: translateY(-2px);
+    }
+
+    .data-grid-wrap {
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+
+    .data-grid {
+      display: grid;
+      gap: 5px;
+      min-width: max-content;
+    }
+
+    .data-grid-row {
+      display: grid;
+      grid-template-columns: 94px repeat(var(--column-count), 62px);
+      gap: 5px;
+      align-items: center;
+    }
+
+    .data-grid-label {
+      overflow: hidden;
+      color: var(--grey);
+      font-size: 9px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .data-input {
+      width: 62px !important;
+      height: 36px !important;
+      padding: 6px !important;
+      text-align: center;
+    }
+
+    .data-grid-header {
+      color: var(--dark-grey);
+      font-size: 8px;
+      font-weight: 800;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .action-button {
+      min-height: 46px;
+      padding: 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: transform 180ms ease, background 180ms ease, color 180ms ease, border-color 180ms ease;
+    }
+
+    .action-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .reset-button {
+      color: var(--white);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .reset-button:hover:not(:disabled) {
+      color: var(--black);
+      background: var(--white);
+    }
+
+    .png-button {
+      color: var(--black);
+      background: var(--lime);
+      border: 1px solid var(--lime);
+    }
+
+    .png-button:hover:not(:disabled) {
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+
+    .privacy-note {
+      margin: 18px 2px 0;
+      color: var(--dark-grey);
+      font-size: 9px;
+      line-height: 1.5;
+    }
+
+    .preview {
+      position: relative;
+      min-width: 0;
+      height: calc(100vh - var(--navigation-height));
+      padding: 68px 32px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background:
+        linear-gradient(45deg, #1c1c1a 25%, transparent 25%),
+        linear-gradient(-45deg, #1c1c1a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1c1c1a 75%),
+        linear-gradient(-45deg, transparent 75%, #1c1c1a 75%),
+        #242421;
+      background-size: 26px 26px;
+      background-position: 0 0, 0 13px, 13px -13px, -13px 0;
+    }
+
+    .preview-header {
+      position: absolute;
+      z-index: 2;
+      top: 22px;
+      left: 28px;
+      right: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .canvas-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .canvas-swatch {
+      width: 13px;
+      height: 13px;
+      background: var(--swatch-colour, #10100f);
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+    }
+
+    .preview-viewport {
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .scaled-frame {
+      position: relative;
+      flex: 0 0 auto;
+      opacity: 0;
+      transition: opacity 120ms ease;
+    }
+
+    .scaled-frame.ready {
+      opacity: 1;
+    }
+
+    .scaled-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1100px;
+      height: 760px;
+      transform-origin: top left;
+    }
+
+    .heatmap-dashboard {
+      --canvas-background: #10100f;
+      --panel-background: #191917;
+      --heading-colour: #f7f7f2;
+      --label-colour: #b9b9b2;
+      --positive-colour: #ff3d0a;
+      --negative-colour: #8b1e2d;
+      --zero-colour: #a8ff37;
+      --missing-colour: #242421;
+      width: 1100px;
+      height: 760px;
+      padding: 40px;
+      overflow: hidden;
+      color: var(--heading-colour);
+      background: var(--canvas-background);
+      font-family: "Inter", Arial, sans-serif;
+      box-shadow: 0 26px 55px rgba(0, 0, 0, 0.3);
+    }
+
+    .output-panel {
+      height: 100%;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--panel-background);
+      border: 1px solid rgba(255, 255, 255, 0.16);
     }
 
     .heatmap-header {
@@ -222,298 +736,1372 @@
       align-items: flex-end;
       justify-content: space-between;
       gap: 24px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
 
-    .eyebrow { color: var(--orange); font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
-    .heatmap-header h2 { margin: 8px 0 0; font-family: "Archivo Black", sans-serif; font-size: clamp(34px, 5vw, 72px); font-weight: 400; letter-spacing: -0.06em; line-height: 0.94; text-transform: uppercase; }
+    .eyebrow {
+      color: var(--positive-colour);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .heatmap-header h2 {
+      max-width: 720px;
+      margin: 8px 0 0;
+      color: var(--heading-colour);
+      font-family: "Archivo Black", sans-serif;
+      font-size: 50px;
+      font-weight: 400;
+      letter-spacing: -0.06em;
+      line-height: 0.94;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
 
     .detail-card {
       min-width: 220px;
-      padding: 16px;
-      background: var(--black);
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--orange);
+      max-width: 260px;
+      padding: 15px;
+      background: var(--canvas-background);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-left: 4px solid var(--positive-colour);
     }
 
-    .detail-label { display: block; color: var(--grey); font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
-    .detail-value { display: block; margin-top: 6px; color: var(--white); font-size: 17px; font-weight: 800; }
+    .detail-label {
+      display: block;
+      color: var(--label-colour);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
 
-    .heatmap-scroll { overflow: auto; padding-bottom: 12px; scrollbar-color: var(--orange) var(--soft-black); scrollbar-width: thin; }
+    .detail-value {
+      display: block;
+      margin-top: 6px;
+      color: var(--heading-colour);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+
+    .heatmap-scroll {
+      min-height: 0;
+      flex: 1;
+      overflow: auto;
+      padding-bottom: 10px;
+      scrollbar-color: var(--positive-colour) var(--canvas-background);
+      scrollbar-width: thin;
+    }
 
     .heatmap-table {
       width: 100%;
-      min-width: 860px;
+      min-width: 760px;
       border-collapse: separate;
       border-spacing: 6px;
       table-layout: fixed;
     }
 
     .heatmap-table caption {
-      margin-bottom: 12px;
-      color: var(--grey);
-      font-size: 12px;
+      margin-bottom: 8px;
+      color: var(--label-colour);
+      font-size: 10px;
+      line-height: 1.4;
       text-align: left;
     }
 
     .heatmap-table th {
-      padding: 10px;
-      color: var(--grey);
-      font-size: 10px;
+      padding: 7px;
+      color: var(--label-colour);
+      font-size: 9px;
       font-weight: 800;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
       vertical-align: bottom;
     }
 
-    .row-heading { width: 148px; text-align: right; overflow-wrap: anywhere; }
-    .column-heading { height: 72px; text-align: center; overflow-wrap: anywhere; }
+    .row-heading {
+      width: 132px;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .column-heading {
+      height: 55px;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
 
     .heatmap-cell {
-      height: 76px;
-      min-width: 92px;
-      padding: 8px;
-      color: var(--white);
-      background: hsl(var(--heat-hue, 14) 100% var(--heat-lightness, 46%));
+      height: 65px;
+      min-width: 74px;
+      padding: 7px;
+      color: var(--cell-text, #f7f7f2);
+      background: var(--cell-background, #ff3d0a);
       border: 1px solid rgba(255, 255, 255, 0.2);
       text-align: center;
       vertical-align: middle;
       transition: transform 180ms ease, border-color 180ms ease;
     }
 
-    .heatmap-cell:hover, .heatmap-cell:focus-visible { border-color: var(--lime); transform: translateY(-2px); }
-    .cell-value { display: block; font-size: 20px; font-weight: 800; line-height: 1; }
-    .cell-label { display: block; margin-top: 6px; color: rgba(247, 247, 242, 0.82); font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-
-    .heatmap-cell.is-zero { color: var(--black); background: var(--lime); }
-    .heatmap-cell.is-zero .cell-label { color: rgba(8, 8, 8, 0.72); }
-    .heatmap-cell.is-missing { color: var(--grey); background: repeating-linear-gradient(135deg, rgba(255,255,255,0.08) 0 8px, rgba(255,255,255,0.02) 8px 16px), var(--panel-light); }
-    .heatmap-cell.is-missing .cell-label { color: var(--grey); }
-
-    .legend { margin-top: 18px; padding: 18px; background: var(--soft-black); border: 1px solid var(--line); }
-    .legend-title { margin: 0 0 12px; color: var(--lime); font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
-    .legend-scale { display: grid; grid-template-columns: repeat(5, minmax(74px, 1fr)) auto auto; gap: 8px; align-items: center; }
-    .legend-swatch { min-height: 34px; display: grid; place-items: center; color: var(--white); border: 1px solid var(--line); font-size: 10px; font-weight: 800; }
-    .legend-zero { color: var(--black); background: var(--lime); }
-    .legend-missing { background: repeating-linear-gradient(135deg, rgba(255,255,255,0.08) 0 8px, rgba(255,255,255,0.02) 8px 16px), var(--panel-light); color: var(--grey); }
-    .empty-state { padding: 42px; color: var(--grey); background: var(--soft-black); border: 1px dashed var(--line); text-align: center; }
-
-    @media (max-width: 980px) {
-      body { overflow: auto; }
-      .application { height: auto; min-height: 100vh; grid-template-columns: 1fr; overflow: visible; }
-      .controls, .workspace { height: auto; overflow: visible; }
-      .controls { border-right: 0; border-bottom: 1px solid var(--line); }
-      .heatmap-header { align-items: stretch; flex-direction: column; }
+    .heatmap-cell:hover,
+    .heatmap-cell:focus-visible {
+      border-color: var(--zero-colour);
+      transform: translateY(-2px);
     }
 
-    @media (max-width: 640px) {
-      .nav { height: auto; min-height: var(--navigation-height); padding: 14px 18px; align-items: flex-start; gap: 12px; flex-direction: column; }
-      .application { padding-top: 112px; }
-      .tool-status { display: none; }
-      .controls, .workspace { padding: 20px; }
-      .preview-panel { padding: 16px; }
-      .legend-scale { grid-template-columns: repeat(2, minmax(100px, 1fr)); }
+    .cell-value {
+      display: block;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .cell-label {
+      display: block;
+      margin-top: 5px;
+      color: var(--cell-label, rgba(247, 247, 242, 0.82));
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .heatmap-cell.is-missing {
+      color: var(--label-colour);
+      background:
+        repeating-linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0 8px,
+          rgba(255, 255, 255, 0.02) 8px 16px
+        ),
+        var(--missing-colour);
+    }
+
+    .heatmap-cell.is-missing .cell-label {
+      color: var(--label-colour);
+    }
+
+    .legend {
+      margin-top: 13px;
+      padding: 13px;
+      background: var(--canvas-background);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .legend-title {
+      margin: 0 0 9px;
+      color: var(--zero-colour);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .legend-scale {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(62px, 1fr));
+      gap: 6px;
+      align-items: center;
+    }
+
+    .legend-swatch {
+      min-height: 29px;
+      padding: 5px;
+      display: grid;
+      place-items: center;
+      color: var(--cell-text, #f7f7f2);
+      background: var(--cell-background, #ff3d0a);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      font-size: 8px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .legend-missing {
+      color: var(--label-colour);
+      background:
+        repeating-linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.08) 0 8px,
+          rgba(255, 255, 255, 0.02) 8px 16px
+        ),
+        var(--missing-colour);
+    }
+
+    .empty-state {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      padding: 42px;
+      color: var(--label-colour);
+      background: var(--canvas-background);
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      text-align: center;
+    }
+
+    .export-host {
+      position: fixed;
+      z-index: -1;
+      top: 0;
+      left: -10000px;
+      width: 1100px;
+      height: 760px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .export-host .heatmap-dashboard {
+      box-shadow: none;
+    }
+
+    @media (max-width: 1050px) {
+      .application {
+        grid-template-columns: 350px minmax(0, 1fr);
+      }
+
+      .controls {
+        padding-right: 20px;
+        padding-left: 20px;
+      }
+
+      .preview {
+        padding-right: 20px;
+        padding-left: 20px;
+      }
+    }
+
+    @media (max-width: 850px) {
+      body {
+        overflow: auto;
+      }
+
+      .application {
+        height: auto;
+        display: block;
+        overflow: visible;
+      }
+
+      .controls {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .controls > h1 {
+        max-width: none;
+      }
+
+      .preview {
+        height: 720px;
+        min-height: 720px;
+      }
+    }
+
+    @media (max-width: 580px) {
+      :root {
+        --navigation-height: 66px;
+      }
+
+      .nav {
+        padding: 0 16px;
+      }
+
+      .brand-name span,
+      .tool-status {
+        display: none;
+      }
+
+      .home-link {
+        min-height: 38px;
+        padding: 0 13px;
+        font-size: 9px;
+      }
+
+      .controls {
+        padding: 26px 18px 30px;
+      }
+
+      .controls > h1 {
+        font-size: 29px;
+      }
+
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+
+      .preview {
+        height: 500px;
+        min-height: 500px;
+        padding: 60px 14px 18px;
+      }
+
+      .preview-header {
+        top: 20px;
+        left: 18px;
+        right: 18px;
+      }
+
+      .preview-header > span:first-child {
+        display: none;
+      }
+
+      .buttons {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
+
 <body>
   <nav class="nav">
     <a class="brand" href="../../" aria-label="Return to the Visual Intelligence Lab homepage">
       <span class="brand-mark">G</span>
       <span class="brand-name">goat <span>/ Visual Intelligence Lab</span></span>
     </a>
+
     <div class="nav-meta">
-      <span class="tool-status"><span class="status-dot"></span>Tool online</span>
+      <span class="tool-status">
+        <span class="status-dot"></span>
+        Tool online
+      </span>
+
       <a class="home-link" href="../../">← Back home</a>
     </div>
   </nav>
 
-  <main class="application">
+  <div class="application">
     <aside class="controls" aria-labelledby="page-title">
-      <span class="tool-number">Tool 05 / Team intelligence</span>
-      <h1 id="page-title">Team<br>heatmap</h1>
-      <p class="introduction">Review effort, coverage and delivery pressure across teams and projects. Replace the sample data at the top of the script to reuse this heatmap for another matrix.</p>
+      <span class="tool-number">Tool 05 / Visual Intelligence</span>
 
-      <section class="control-section">
-        <h2>Dataset summary</h2>
-        <dl class="stat-list">
-          <div><dt>Rows</dt><dd id="row-count">—</dd></div>
-          <div><dt>Columns</dt><dd id="column-count">—</dd></div>
-          <div><dt>Valid range</dt><dd id="range-summary">—</dd></div>
-          <div><dt>Selected cell</dt><dd id="selected-summary">Hover or focus a cell</dd></div>
-        </dl>
+      <h1 id="page-title">Heatmap graph<br>maker</h1>
+
+      <p id="heatmap-introduction" class="introduction">
+        Build a flexible heatmap for any dataset. Edit its titles, axes, values,
+        units and colour scale, then export a presentation-ready PNG.
+      </p>
+
+      <section class="control-section first-section">
+        <h2 id="content-heading">Graph content</h2>
+
+        <p id="content-description" class="section-description">
+          Define the context displayed above and inside the heatmap.
+        </p>
+
+        <div class="field">
+          <label for="graph-title">Graph title</label>
+          <input id="graph-title" type="text" data-setting="title" autocomplete="off">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="graph-eyebrow">Eyebrow</label>
+            <input id="graph-eyebrow" type="text" data-setting="eyebrow" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="graph-unit">Unit</label>
+            <input id="graph-unit" type="text" data-setting="unit" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="graph-caption">Accessible description</label>
+          <textarea id="graph-caption" data-setting="caption"></textarea>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="decimal-places">Decimal places</label>
+            <select id="decimal-places" data-setting="decimals">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="missing-label">Missing value label</label>
+            <input id="missing-label" type="text" data-setting="missingLabel" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="toggle-row">
+          <label class="toggle-label">
+            <input id="show-values" type="checkbox" data-setting="showValues">
+            <span class="toggle-box"></span>
+            Show values
+          </label>
+
+          <label class="toggle-label">
+            <input id="show-legend" type="checkbox" data-setting="showLegend">
+            <span class="toggle-box"></span>
+            Show legend
+          </label>
+        </div>
       </section>
 
       <section class="control-section">
-        <h2>Reading guide</h2>
-        <p class="section-description">Orange cells are positive workload intensity, darker red cells are negative allocation gaps, lime cells are true zeroes, and hatched cells announce missing values as “No data.”</p>
+        <h2 id="appearance-heading">Graph appearance</h2>
+
+        <p id="appearance-description" class="section-description">
+          Choose the canvas, panel, typography and scale colours used in the exported graph.
+        </p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="canvas-background">Canvas</label>
+            <input id="canvas-background" type="color" data-setting="canvasBackground">
+          </div>
+
+          <div class="field">
+            <label for="panel-background">Panel</label>
+            <input id="panel-background" type="color" data-setting="panelBackground">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="heading-colour">Heading</label>
+            <input id="heading-colour" type="color" data-setting="headingColor">
+          </div>
+
+          <div class="field">
+            <label for="label-colour">Labels</label>
+            <input id="label-colour" type="color" data-setting="labelColor">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="positive-colour">Positive scale</label>
+            <input id="positive-colour" type="color" data-setting="positiveColor">
+          </div>
+
+          <div class="field">
+            <label for="negative-colour">Negative scale</label>
+            <input id="negative-colour" type="color" data-setting="negativeColor">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="zero-colour">Zero value</label>
+            <input id="zero-colour" type="color" data-setting="zeroColor">
+          </div>
+
+          <div class="field">
+            <label for="missing-colour">Missing value</label>
+            <input id="missing-colour" type="color" data-setting="missingColor">
+          </div>
+        </div>
       </section>
+
+      <section class="control-section axis-editor">
+        <div class="editor-heading">
+          <h2 id="rows-heading" class="control-section-title">Row labels</h2>
+          <span id="row-count" class="editor-rank">0 / 12</span>
+        </div>
+
+        <div id="row-editors" class="axis-list"></div>
+
+        <button id="add-row-button" class="small-button" type="button">
+          + Add row
+        </button>
+      </section>
+
+      <section class="control-section axis-editor">
+        <div class="editor-heading">
+          <h2 id="columns-heading" class="control-section-title">Column labels</h2>
+          <span id="column-count" class="editor-rank">0 / 12</span>
+        </div>
+
+        <div id="column-editors" class="axis-list"></div>
+
+        <button id="add-column-button" class="small-button" type="button">
+          + Add column
+        </button>
+      </section>
+
+      <section class="control-section">
+        <h2 id="values-heading">Cell values</h2>
+
+        <p id="values-description" class="section-description">
+          Enter any number. Leave a field blank to display a missing value.
+        </p>
+
+        <div id="data-grid-wrap" class="data-grid-wrap">
+          <div id="data-grid" class="data-grid"></div>
+        </div>
+      </section>
+
+      <div class="buttons">
+        <button id="reset-button" class="action-button reset-button" type="button">
+          Reset all
+        </button>
+
+        <button id="export-button" class="action-button png-button" type="button">
+          Export PNG
+        </button>
+      </div>
+
+      <p id="privacy-note" class="privacy-note">
+        All editing and image generation happens locally in your browser.
+        Values are not uploaded or stored by this page.
+      </p>
     </aside>
 
-    <section class="workspace" aria-label="Heatmap workspace">
-      <div class="preview-panel">
-        <header class="heatmap-header">
-          <div>
-            <span class="eyebrow">Weekly delivery matrix</span>
-            <h2>Project load by team</h2>
-          </div>
-          <aside class="detail-card" aria-live="polite" aria-atomic="true">
-            <span class="detail-label">Cell details</span>
-            <span id="cell-detail" class="detail-value">Hover or focus a cell</span>
-          </aside>
-        </header>
+    <main class="preview">
+      <div class="preview-header">
+        <span>Live output / 1100 × 760</span>
 
-        <div id="empty-state" class="empty-state" hidden>No valid heatmap data is available. Add row labels, column labels and at least one numeric value.</div>
-        <div id="heatmap-root" class="heatmap-scroll"></div>
-
-        <section class="legend" aria-labelledby="legend-title">
-          <h3 id="legend-title" class="legend-title">Colour scale legend</h3>
-          <div id="legend-scale" class="legend-scale"></div>
-        </section>
+        <span class="canvas-label">
+          <span id="canvas-swatch" class="canvas-swatch"></span>
+          Export canvas
+        </span>
       </div>
-    </section>
-  </main>
+
+      <div id="preview-viewport" class="preview-viewport">
+        <div id="scaled-frame" class="scaled-frame">
+          <div id="scaled-content" class="scaled-content">
+            <div id="heatmap-dashboard" class="heatmap-dashboard">
+              <div class="output-panel">
+                <header class="heatmap-header">
+                  <div>
+                    <span id="output-eyebrow" class="eyebrow"></span>
+                    <h2 id="output-title"></h2>
+                  </div>
+
+                  <aside class="detail-card" aria-live="polite" aria-atomic="true">
+                    <span class="detail-label">Cell details</span>
+                    <span id="cell-detail" class="detail-value">Hover or focus a cell</span>
+                  </aside>
+                </header>
+
+                <div id="empty-state" class="empty-state" hidden="">
+                  Add at least one row, one column and one numeric value.
+                </div>
+
+                <div id="heatmap-root" class="heatmap-scroll"></div>
+
+                <section id="legend" class="legend" aria-labelledby="legend-title">
+                  <h3 id="legend-title" class="legend-title">Colour scale legend</h3>
+                  <div id="legend-scale" class="legend-scale"></div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 
   <script>
-    const heatmapData = {
-      title: "Project load by team",
+    const OUTPUT_WIDTH = 1100;
+    const OUTPUT_HEIGHT = 760;
+    const MAX_ROWS = 12;
+    const MAX_COLUMNS = 12;
+
+    const initialSettings = {
+      title: "Performance by category",
+      eyebrow: "Comparative heatmap",
       unit: "pts",
-      rows: ["Strategy", "Insights", "Creative", "Paid Media", "Client Ops", "Production"],
-      columns: ["Mon", "Tue", "Wed", "Thu", "Fri", "Overflow"],
+      caption: "A heatmap comparing values across categories and periods.",
+      decimals: "0",
+      missingLabel: "No data",
+      showValues: true,
+      showLegend: true,
+      canvasBackground: "#10100f",
+      panelBackground: "#191917",
+      headingColor: "#f7f7f2",
+      labelColor: "#b9b9b2",
+      positiveColor: "#ff3d0a",
+      negativeColor: "#8b1e2d",
+      zeroColor: "#a8ff37",
+      missingColor: "#242421"
+    };
+
+    const initialData = {
+      rows: ["Category A", "Category B", "Category C", "Category D", "Category E"],
+      columns: ["Period 1", "Period 2", "Period 3", "Period 4", "Period 5", "Period 6"],
       values: [
         [18, 24, 31, 27, 14, -3],
         [12, 0, 28, null, 22, 7],
         [35, 42, 39, 45, 30, 12],
         [-6, 15, 21, 19, 0, 4],
-        [8, 11, NaN, 17, 13, 5],
-        [25, 33, 29, 38, 41]
+        [8, 11, null, 17, 13, 5]
       ]
     };
 
+    let settings = cloneSettings();
+    let heatmapData = cloneData();
+    let isExporting = false;
+
     const elements = {
+      settingsInputs: document.querySelectorAll("[data-setting]"),
+      dashboard: document.getElementById("heatmap-dashboard"),
       root: document.getElementById("heatmap-root"),
       empty: document.getElementById("empty-state"),
+      legendSection: document.getElementById("legend"),
+      legend: document.getElementById("legend-scale"),
       detail: document.getElementById("cell-detail"),
-      selected: document.getElementById("selected-summary"),
-      rows: document.getElementById("row-count"),
-      columns: document.getElementById("column-count"),
-      range: document.getElementById("range-summary"),
-      legend: document.getElementById("legend-scale")
+      title: document.getElementById("output-title"),
+      eyebrow: document.getElementById("output-eyebrow"),
+      rowEditors: document.getElementById("row-editors"),
+      columnEditors: document.getElementById("column-editors"),
+      rowCount: document.getElementById("row-count"),
+      columnCount: document.getElementById("column-count"),
+      addRow: document.getElementById("add-row-button"),
+      addColumn: document.getElementById("add-column-button"),
+      dataGrid: document.getElementById("data-grid"),
+      reset: document.getElementById("reset-button"),
+      export: document.getElementById("export-button"),
+      viewport: document.getElementById("preview-viewport"),
+      scaledFrame: document.getElementById("scaled-frame"),
+      scaledContent: document.getElementById("scaled-content"),
+      canvasSwatch: document.getElementById("canvas-swatch")
     };
 
-    const isValidNumber = (value) => typeof value === "number" && Number.isFinite(value);
-    const formatValue = (value) => isValidNumber(value) ? `${value} ${heatmapData.unit}` : "No data";
-    const cellName = (row, column, value) => `${row}, ${column}: ${formatValue(value)}`;
-
-    function getValueRange(values) {
-      const validValues = values.flat().filter(isValidNumber);
-      if (!validValues.length) return null;
-      return { min: Math.min(...validValues), max: Math.max(...validValues) };
+    function cloneSettings() {
+      return { ...initialSettings };
     }
 
-    function getCellStyle(value, range) {
-      if (!isValidNumber(value) || value === 0 || !range) return "";
-      if (range.min === range.max) return "--heat-hue: 14; --heat-lightness: 46%;";
+    function cloneData() {
+      return {
+        rows: [...initialData.rows],
+        columns: [...initialData.columns],
+        values: initialData.values.map((row) => [...row])
+      };
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function isValidNumber(value) {
+      return typeof value === "number" && Number.isFinite(value);
+    }
+
+    function parseCellValue(value) {
+      const trimmed = String(value).trim();
+
+      if (trimmed === "") {
+        return null;
+      }
+
+      const number = Number(trimmed);
+      return Number.isFinite(number) ? number : null;
+    }
+
+    function formatNumber(value) {
+      if (!isValidNumber(value)) {
+        return settings.missingLabel || "No data";
+      }
+
+      return value.toLocaleString(undefined, {
+        minimumFractionDigits: Number(settings.decimals),
+        maximumFractionDigits: Number(settings.decimals)
+      });
+    }
+
+    function formatValue(value) {
+      if (!isValidNumber(value)) {
+        return settings.missingLabel || "No data";
+      }
+
+      const unit = settings.unit.trim();
+      return unit ? `${formatNumber(value)} ${unit}` : formatNumber(value);
+    }
+
+    function cellName(row, column, value) {
+      return `${row}, ${column}: ${formatValue(value)}`;
+    }
+
+    function hexToRgb(hex) {
+      const normalized = hex.replace("#", "");
+      const expanded = normalized.length === 3
+        ? normalized.split("").map((character) => character + character).join("")
+        : normalized;
+
+      const number = Number.parseInt(expanded, 16);
+
+      return {
+        r: (number >> 16) & 255,
+        g: (number >> 8) & 255,
+        b: number & 255
+      };
+    }
+
+    function mixColours(baseHex, targetHex, amount) {
+      const base = hexToRgb(baseHex);
+      const target = hexToRgb(targetHex);
+      const ratio = Math.max(0, Math.min(1, amount));
+
+      const r = Math.round(base.r + (target.r - base.r) * ratio);
+      const g = Math.round(base.g + (target.g - base.g) * ratio);
+      const b = Math.round(base.b + (target.b - base.b) * ratio);
+
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function getContrastColour(hex) {
+      const rgb = hexToRgb(hex);
+      const luminance = (0.299 * rgb.r) + (0.587 * rgb.g) + (0.114 * rgb.b);
+      return luminance > 155 ? "#080808" : "#f7f7f2";
+    }
+
+    function getValueRange() {
+      const validValues = heatmapData.values.flat().filter(isValidNumber);
+
+      if (!validValues.length) {
+        return null;
+      }
+
+      return {
+        min: Math.min(...validValues),
+        max: Math.max(...validValues),
+        negativeBound: Math.max(
+          Math.abs(Math.min(...validValues.filter((value) => value < 0), -1)),
+          1
+        ),
+        positiveBound: Math.max(
+          ...validValues.filter((value) => value > 0),
+          1
+        )
+      };
+    }
+
+    function getCellColours(value, range) {
+      if (!isValidNumber(value)) {
+        return {
+          background: settings.missingColor,
+          text: settings.labelColor
+        };
+      }
+
+      if (value === 0) {
+        return {
+          background: settings.zeroColor,
+          text: getContrastColour(settings.zeroColor)
+        };
+      }
 
       const isNegative = value < 0;
-      const bound = isNegative ? Math.min(range.min, -1) : Math.max(range.max, 1);
-      const intensity = Math.min(Math.abs(value / bound), 1);
-      const hue = isNegative ? 357 : 14;
-      const lightness = 78 - (intensity * 34);
-      return `--heat-hue: ${hue}; --heat-lightness: ${lightness}%;`;
+      const bound = isNegative ? range.negativeBound : range.positiveBound;
+      const intensity = Math.max(0.18, Math.min(Math.abs(value) / bound, 1));
+      const scaleColour = isNegative ? settings.negativeColor : settings.positiveColor;
+      const background = mixColours(settings.panelBackground, scaleColour, 0.28 + intensity * 0.72);
+
+      return {
+        background,
+        text: getContrastColour(scaleColour)
+      };
+    }
+
+    function applyAppearance() {
+      const styles = {
+        "--canvas-background": settings.canvasBackground,
+        "--panel-background": settings.panelBackground,
+        "--heading-colour": settings.headingColor,
+        "--label-colour": settings.labelColor,
+        "--positive-colour": settings.positiveColor,
+        "--negative-colour": settings.negativeColor,
+        "--zero-colour": settings.zeroColor,
+        "--missing-colour": settings.missingColor
+      };
+
+      Object.entries(styles).forEach(([property, value]) => {
+        elements.dashboard.style.setProperty(property, value);
+      });
+
+      elements.canvasSwatch.style.setProperty(
+        "--swatch-colour",
+        settings.canvasBackground
+      );
+    }
+
+    function renderSettingsInputs() {
+      elements.settingsInputs.forEach((input) => {
+        const property = input.dataset.setting;
+
+        if (!(property in settings)) {
+          return;
+        }
+
+        if (input.type === "checkbox") {
+          input.checked = Boolean(settings[property]);
+        } else {
+          input.value = settings[property];
+        }
+      });
+    }
+
+    function axisItemMarkup(axis, label, index, total) {
+      return `
+        <div class="axis-item">
+          <input
+            type="text"
+            value="${escapeHTML(label)}"
+            data-axis="${axis}"
+            data-index="${index}"
+            aria-label="${axis === "rows" ? "Row" : "Column"} ${index + 1} label"
+            autocomplete="off"
+          >
+
+          <div class="row-actions">
+            <button
+              class="icon-button"
+              type="button"
+              data-axis-action="up"
+              data-axis="${axis}"
+              data-index="${index}"
+              aria-label="Move label up"
+              title="Move up"
+              ${index === 0 ? "disabled" : ""}
+            >↑</button>
+
+            <button
+              class="icon-button"
+              type="button"
+              data-axis-action="down"
+              data-axis="${axis}"
+              data-index="${index}"
+              aria-label="Move label down"
+              title="Move down"
+              ${index === total - 1 ? "disabled" : ""}
+            >↓</button>
+
+            <button
+              class="icon-button delete"
+              type="button"
+              data-axis-action="delete"
+              data-axis="${axis}"
+              data-index="${index}"
+              aria-label="Delete label"
+              title="Delete"
+            >×</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAxisEditors() {
+      elements.rowEditors.innerHTML = heatmapData.rows
+        .map((label, index) => axisItemMarkup("rows", label, index, heatmapData.rows.length))
+        .join("");
+
+      elements.columnEditors.innerHTML = heatmapData.columns
+        .map((label, index) => axisItemMarkup("columns", label, index, heatmapData.columns.length))
+        .join("");
+
+      elements.rowCount.textContent = `${heatmapData.rows.length} / ${MAX_ROWS}`;
+      elements.columnCount.textContent = `${heatmapData.columns.length} / ${MAX_COLUMNS}`;
+
+      elements.addRow.disabled = heatmapData.rows.length >= MAX_ROWS;
+      elements.addColumn.disabled = heatmapData.columns.length >= MAX_COLUMNS;
+
+      elements.addRow.textContent = heatmapData.rows.length >= MAX_ROWS
+        ? "Maximum rows reached"
+        : "+ Add row";
+
+      elements.addColumn.textContent = heatmapData.columns.length >= MAX_COLUMNS
+        ? "Maximum columns reached"
+        : "+ Add column";
+    }
+
+    function renderDataGrid() {
+      const columnCount = heatmapData.columns.length;
+      elements.dataGrid.style.setProperty("--column-count", columnCount);
+
+      if (!heatmapData.rows.length || !columnCount) {
+        elements.dataGrid.innerHTML = "";
+        return;
+      }
+
+      const header = `
+        <div class="data-grid-row">
+          <span class="data-grid-label">Row</span>
+          ${heatmapData.columns.map((column) => `
+            <span class="data-grid-header" title="${escapeHTML(column)}">
+              ${escapeHTML(column)}
+            </span>
+          `).join("")}
+        </div>
+      `;
+
+      const rows = heatmapData.rows.map((row, rowIndex) => `
+        <div class="data-grid-row">
+          <span class="data-grid-label" title="${escapeHTML(row)}">
+            ${escapeHTML(row)}
+          </span>
+
+          ${heatmapData.columns.map((column, columnIndex) => {
+            const value = heatmapData.values[rowIndex]?.[columnIndex];
+
+            return `
+              <input
+                class="data-input"
+                type="text"
+                inputmode="decimal"
+                value="${isValidNumber(value) ? escapeHTML(value) : ""}"
+                data-value-row="${rowIndex}"
+                data-value-column="${columnIndex}"
+                aria-label="${escapeHTML(row)}, ${escapeHTML(column)} value"
+                autocomplete="off"
+              >
+            `;
+          }).join("")}
+        </div>
+      `).join("");
+
+      elements.dataGrid.innerHTML = header + rows;
     }
 
     function showDetail(row, column, value) {
-      const text = cellName(row, column, value);
-      elements.detail.textContent = text;
-      elements.selected.textContent = text;
+      elements.detail.textContent = cellName(row, column, value);
     }
 
     function renderLegend(range) {
       elements.legend.replaceChildren();
-      if (!range) return;
-      const samples = range.min === range.max ? [range.min] : [range.min, range.min / 2, 0, range.max / 2, range.max];
+      elements.legendSection.hidden = !settings.showLegend || !range;
+
+      if (!settings.showLegend || !range) {
+        return;
+      }
+
+      const samples = [
+        range.min,
+        range.min < 0 ? range.min / 2 : range.min,
+        0,
+        range.max > 0 ? range.max / 2 : range.max,
+        range.max
+      ];
+
       samples.forEach((sample) => {
+        const value = Math.abs(sample) < 0.000001 ? 0 : sample;
+        const colours = getCellColours(value, range);
         const swatch = document.createElement("span");
-        swatch.className = sample === 0 ? "legend-swatch legend-zero" : "legend-swatch";
-        swatch.style.cssText = getCellStyle(sample, range);
-        swatch.textContent = formatValue(Math.round(sample));
+
+        swatch.className = "legend-swatch";
+        swatch.style.setProperty("--cell-background", colours.background);
+        swatch.style.setProperty("--cell-text", colours.text);
+        swatch.textContent = formatValue(value);
         elements.legend.append(swatch);
       });
+
       const zero = document.createElement("span");
-      zero.className = "legend-swatch legend-zero";
-      zero.textContent = "0 pts";
+      const zeroColours = getCellColours(0, range);
+      zero.className = "legend-swatch";
+      zero.style.setProperty("--cell-background", zeroColours.background);
+      zero.style.setProperty("--cell-text", zeroColours.text);
+      zero.textContent = formatValue(0);
       elements.legend.append(zero);
+
       const missing = document.createElement("span");
       missing.className = "legend-swatch legend-missing";
-      missing.textContent = "No data";
+      missing.textContent = settings.missingLabel || "No data";
       elements.legend.append(missing);
     }
 
-    function renderHeatmap(data) {
-      const range = getValueRange(data.values);
-      elements.rows.textContent = data.rows.length;
-      elements.columns.textContent = data.columns.length;
-      elements.range.textContent = range ? `${range.min} to ${range.max} ${data.unit}` : "No valid values";
+    function renderHeatmap() {
+      applyAppearance();
+
+      elements.title.textContent = settings.title || "Untitled heatmap";
+      elements.eyebrow.textContent = settings.eyebrow;
+      elements.eyebrow.hidden = !settings.eyebrow.trim();
+
+      const range = getValueRange();
       renderLegend(range);
 
-      if (!range || !data.rows.length || !data.columns.length) {
+      if (
+        !range ||
+        !heatmapData.rows.length ||
+        !heatmapData.columns.length
+      ) {
         elements.empty.hidden = false;
         elements.root.replaceChildren();
+        elements.export.disabled = true;
         return;
       }
 
       elements.empty.hidden = true;
+
+      if (!isExporting) {
+        elements.export.disabled = false;
+      }
+
       const table = document.createElement("table");
       table.className = "heatmap-table";
-      table.innerHTML = `<caption>${data.title}. Use Tab to move through each cell and reveal its row, column and value.</caption>`;
+
+      const caption = document.createElement("caption");
+      caption.textContent = settings.caption || `${settings.title}.`;
+      table.append(caption);
 
       const thead = document.createElement("thead");
       const headerRow = document.createElement("tr");
-      headerRow.append(document.createElement("th"));
-      data.columns.forEach((column) => {
+      const corner = document.createElement("th");
+      corner.setAttribute("aria-hidden", "true");
+      headerRow.append(corner);
+
+      heatmapData.columns.forEach((column) => {
         const th = document.createElement("th");
         th.scope = "col";
         th.className = "column-heading";
         th.textContent = column;
         headerRow.append(th);
       });
+
       thead.append(headerRow);
       table.append(thead);
 
       const tbody = document.createElement("tbody");
-      data.rows.forEach((row, rowIndex) => {
+
+      heatmapData.rows.forEach((row, rowIndex) => {
         const tr = document.createElement("tr");
         const th = document.createElement("th");
+
         th.scope = "row";
         th.className = "row-heading";
         th.textContent = row;
         tr.append(th);
 
-        data.columns.forEach((column, columnIndex) => {
-          const value = data.values[rowIndex]?.[columnIndex];
+        heatmapData.columns.forEach((column, columnIndex) => {
+          const value = heatmapData.values[rowIndex]?.[columnIndex];
+          const colours = getCellColours(value, range);
           const td = document.createElement("td");
+          const valueSpan = document.createElement("span");
+          const labelSpan = document.createElement("span");
+
           td.className = "heatmap-cell";
           td.tabIndex = 0;
           td.setAttribute("aria-label", cellName(row, column, value));
-          td.style.cssText = getCellStyle(value, range);
-          if (!isValidNumber(value)) td.classList.add("is-missing");
-          if (value === 0) td.classList.add("is-zero");
-          td.innerHTML = `<span class="cell-value">${isValidNumber(value) ? value : "—"}</span><span class="cell-label">${isValidNumber(value) ? data.unit : "No data"}</span>`;
+          td.style.setProperty("--cell-background", colours.background);
+          td.style.setProperty("--cell-text", colours.text);
+          td.style.setProperty("--cell-label", colours.text);
+
+          if (!isValidNumber(value)) {
+            td.classList.add("is-missing");
+          }
+
+          valueSpan.className = "cell-value";
+          valueSpan.textContent = isValidNumber(value)
+            ? settings.showValues
+              ? formatNumber(value)
+              : "•"
+            : "—";
+
+          labelSpan.className = "cell-label";
+          labelSpan.textContent = isValidNumber(value)
+            ? settings.unit || "Value"
+            : settings.missingLabel || "No data";
+
+          td.append(valueSpan, labelSpan);
           td.addEventListener("mouseenter", () => showDetail(row, column, value));
           td.addEventListener("focus", () => showDetail(row, column, value));
           tr.append(td);
         });
+
         tbody.append(tr);
       });
+
       table.append(tbody);
       elements.root.replaceChildren(table);
     }
 
-    renderHeatmap(heatmapData);
+    function fitPreview() {
+      const bounds = elements.viewport.getBoundingClientRect();
+
+      if (!bounds.width || !bounds.height) {
+        return;
+      }
+
+      const scale = Math.min(
+        Math.max(bounds.width - 4, 1) / OUTPUT_WIDTH,
+        Math.max(bounds.height - 4, 1) / OUTPUT_HEIGHT,
+        1
+      );
+
+      elements.scaledFrame.style.width = `${OUTPUT_WIDTH * scale}px`;
+      elements.scaledFrame.style.height = `${OUTPUT_HEIGHT * scale}px`;
+      elements.scaledContent.style.transform = `scale(${scale})`;
+      elements.scaledFrame.classList.add("ready");
+    }
+
+    function normaliseValues() {
+      heatmapData.values = heatmapData.rows.map((row, rowIndex) => {
+        return heatmapData.columns.map((column, columnIndex) => {
+          const value = heatmapData.values[rowIndex]?.[columnIndex];
+          return isValidNumber(value) ? value : null;
+        });
+      });
+    }
+
+    function addRow() {
+      if (heatmapData.rows.length >= MAX_ROWS) {
+        return;
+      }
+
+      heatmapData.rows.push(`Row ${heatmapData.rows.length + 1}`);
+      heatmapData.values.push(
+        heatmapData.columns.map(() => null)
+      );
+
+      renderAxisEditors();
+      renderDataGrid();
+      renderHeatmap();
+    }
+
+    function addColumn() {
+      if (heatmapData.columns.length >= MAX_COLUMNS) {
+        return;
+      }
+
+      heatmapData.columns.push(`Column ${heatmapData.columns.length + 1}`);
+
+      heatmapData.values.forEach((row) => {
+        row.push(null);
+      });
+
+      renderAxisEditors();
+      renderDataGrid();
+      renderHeatmap();
+    }
+
+    function moveAxis(axis, index, direction) {
+      const target = direction === "up" ? index - 1 : index + 1;
+      const labels = heatmapData[axis];
+
+      if (target < 0 || target >= labels.length) {
+        return;
+      }
+
+      [labels[index], labels[target]] = [labels[target], labels[index]];
+
+      if (axis === "rows") {
+        [heatmapData.values[index], heatmapData.values[target]] =
+          [heatmapData.values[target], heatmapData.values[index]];
+      } else {
+        heatmapData.values.forEach((row) => {
+          [row[index], row[target]] = [row[target], row[index]];
+        });
+      }
+
+      renderAxisEditors();
+      renderDataGrid();
+      renderHeatmap();
+    }
+
+    function deleteAxis(axis, index) {
+      heatmapData[axis].splice(index, 1);
+
+      if (axis === "rows") {
+        heatmapData.values.splice(index, 1);
+      } else {
+        heatmapData.values.forEach((row) => row.splice(index, 1));
+      }
+
+      normaliseValues();
+      renderAxisEditors();
+      renderDataGrid();
+      renderHeatmap();
+    }
+
+    function resetAll() {
+      settings = cloneSettings();
+      heatmapData = cloneData();
+
+      renderSettingsInputs();
+      renderAxisEditors();
+      renderDataGrid();
+      renderHeatmap();
+    }
+
+    function downloadDataURL(dataURL, filename) {
+      const link = document.createElement("a");
+      link.href = dataURL;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+    async function exportPNG() {
+      if (isExporting || elements.export.disabled) {
+        return;
+      }
+
+      if (!window.html2canvas) {
+        alert("The PNG export library has not loaded. Refresh the page and try again.");
+        return;
+      }
+
+      isExporting = true;
+      elements.export.disabled = true;
+      elements.export.textContent = "Exporting…";
+
+      let exportHost = null;
+
+      try {
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready;
+        }
+
+        exportHost = document.createElement("div");
+        exportHost.className = "export-host";
+
+        const clone = elements.dashboard.cloneNode(true);
+        clone.removeAttribute("id");
+        clone.style.transform = "none";
+
+        exportHost.appendChild(clone);
+        document.body.appendChild(exportHost);
+
+        await new Promise((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(resolve));
+        });
+
+        const canvas = await window.html2canvas(clone, {
+          width: OUTPUT_WIDTH,
+          height: OUTPUT_HEIGHT,
+          scale: 2,
+          backgroundColor: settings.canvasBackground,
+          logging: false,
+          useCORS: true
+        });
+
+        downloadDataURL(
+          canvas.toDataURL("image/png", 1),
+          "Custom_Heatmap.png"
+        );
+      } catch (error) {
+        console.error("PNG export failed:", error);
+        alert("The PNG could not be generated. Check the browser console for details.");
+      } finally {
+        if (exportHost) {
+          exportHost.remove();
+        }
+
+        isExporting = false;
+        elements.export.disabled = !getValueRange();
+        elements.export.textContent = "Export PNG";
+      }
+    }
+
+    elements.settingsInputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        const property = input.dataset.setting;
+
+        settings[property] = input.type === "checkbox"
+          ? input.checked
+          : input.value;
+
+        renderHeatmap();
+      });
+
+      if (input.type === "checkbox") {
+        input.addEventListener("change", () => {
+          settings[input.dataset.setting] = input.checked;
+          renderHeatmap();
+        });
+      }
+    });
+
+    function handleAxisInput(event) {
+      const input = event.target.closest("[data-axis]");
+
+      if (!input || input.dataset.axisAction) {
+        return;
+      }
+
+      const axis = input.dataset.axis;
+      const index = Number(input.dataset.index);
+
+      if (!heatmapData[axis]?.[index] && heatmapData[axis]?.[index] !== "") {
+        return;
+      }
+
+      heatmapData[axis][index] = input.value;
+      renderDataGrid();
+      renderHeatmap();
+    }
+
+    function handleAxisClick(event) {
+      const button = event.target.closest("[data-axis-action]");
+
+      if (!button) {
+        return;
+      }
+
+      const axis = button.dataset.axis;
+      const action = button.dataset.axisAction;
+      const index = Number(button.dataset.index);
+
+      if (action === "up" || action === "down") {
+        moveAxis(axis, index, action);
+      }
+
+      if (action === "delete") {
+        deleteAxis(axis, index);
+      }
+    }
+
+    elements.rowEditors.addEventListener("input", handleAxisInput);
+    elements.columnEditors.addEventListener("input", handleAxisInput);
+    elements.rowEditors.addEventListener("click", handleAxisClick);
+    elements.columnEditors.addEventListener("click", handleAxisClick);
+
+    elements.dataGrid.addEventListener("input", (event) => {
+      const input = event.target.closest("[data-value-row]");
+
+      if (!input) {
+        return;
+      }
+
+      const rowIndex = Number(input.dataset.valueRow);
+      const columnIndex = Number(input.dataset.valueColumn);
+
+      heatmapData.values[rowIndex][columnIndex] = parseCellValue(input.value);
+      renderHeatmap();
+    });
+
+    elements.addRow.addEventListener("click", addRow);
+    elements.addColumn.addEventListener("click", addColumn);
+    elements.reset.addEventListener("click", resetAll);
+    elements.export.addEventListener("click", exportPNG);
+
+    if ("ResizeObserver" in window) {
+      const resizeObserver = new ResizeObserver(fitPreview);
+      resizeObserver.observe(elements.viewport);
+    }
+
+    window.addEventListener("resize", fitPreview);
+
+    renderSettingsInputs();
+    renderAxisEditors();
+    renderDataGrid();
+    renderHeatmap();
+    fitPreview();
   </script>
+
 </body></html>
