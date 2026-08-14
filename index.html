@@ -1,10 +1,10 @@
-<html lang="en"><head>
+<html lang="en" data-type="html" data-identifier="07afb82c-73b8-4be9-94cf-04f8130e2d37" data-title="Visual Intelligence Lab" data-version="1" width="1200" height="700"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Visual Intelligence Lab</title>
 
-  <meta name="description" content="Experimental data visualisation tools for the intelligence team.">
+  <meta name="description" content="Browser-based data visualisation tools for creating custom, presentation-ready graphics.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -15,8 +15,11 @@
     :root {
       --black: #080808;
       --soft-black: #11110f;
+      --panel: #191917;
+      --panel-light: #242421;
       --white: #f7f7f2;
       --grey: #b9b9b2;
+      --dark-grey: #73736e;
       --orange: #ff3d0a;
       --lime: #a8ff37;
       --line: rgba(255, 255, 255, 0.18);
@@ -48,6 +51,11 @@
       font: inherit;
     }
 
+    a,
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
     .display {
       margin: 0;
       padding-block: 0.04em 0.08em;
@@ -57,8 +65,6 @@
       line-height: 0.98;
       text-transform: uppercase;
     }
-
-    /* Navigation */
 
     .nav {
       position: fixed;
@@ -131,7 +137,12 @@
       color: var(--lime);
     }
 
-    /* Announcement */
+    .nav-links a:focus-visible,
+    .button:focus-visible,
+    .tool-card:focus-visible {
+      outline: 3px solid var(--lime);
+      outline-offset: 4px;
+    }
 
     .announcement {
       margin-top: 72px;
@@ -169,16 +180,12 @@
       }
     }
 
-    /* Hero */
-
     .hero {
       position: relative;
       min-height: calc(100vh - 115px);
       padding: 72px 28px 32px;
       display: grid;
-      grid-template-columns:
-        minmax(0, 1.15fr)
-        minmax(380px, 0.85fr);
+      grid-template-columns: minmax(0, 1.15fr) minmax(380px, 0.85fr);
       align-items: center;
       gap: 34px;
       overflow: hidden;
@@ -272,8 +279,6 @@
       background: var(--white);
     }
 
-    /* Hero graph */
-
     .graph-card {
       position: relative;
       z-index: 2;
@@ -282,15 +287,8 @@
       overflow: hidden;
       border: 1px solid var(--line);
       background:
-        linear-gradient(
-          rgba(255, 255, 255, 0.045) 1px,
-          transparent 1px
-        ),
-        linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0.045) 1px,
-          transparent 1px
-        ),
+        linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
         var(--soft-black);
       background-size: 42px 42px;
     }
@@ -354,31 +352,31 @@
       text-transform: uppercase;
     }
 
-    /* Shared sections */
-
     .section {
       padding: 110px 28px;
     }
 
-    .section-header {
+    .section-header,
+    .tools-header {
       display: grid;
-      grid-template-columns:
-        minmax(0, 1fr)
-        minmax(280px, 430px);
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
       gap: 40px;
       align-items: end;
       margin-bottom: 54px;
     }
 
-    .section-header > * {
+    .section-header > *,
+    .tools-header > * {
       min-width: 0;
     }
 
-    .section-header > div {
+    .section-header > div,
+    .tools-header > div {
       container-type: inline-size;
     }
 
-    .section-number {
+    .section-number,
+    .tools-number {
       display: block;
       margin-bottom: 18px;
       color: var(--orange);
@@ -388,7 +386,8 @@
       text-transform: uppercase;
     }
 
-    .section-title {
+    .section-title,
+    .tools-title {
       width: 100%;
       font-size: clamp(48px, 12cqi, 112px);
     }
@@ -398,8 +397,6 @@
       font-size: 16px;
       line-height: 1.7;
     }
-
-    /* Visualisation principles */
 
     .visualisation {
       color: var(--black);
@@ -494,8 +491,6 @@
       transform: scale(1.045);
     }
 
-    /* Statement */
-
     .statement {
       position: relative;
       padding: 140px 28px;
@@ -553,46 +548,18 @@
       line-height: 1.65;
     }
 
-    /* Tools */
-
     .tools-showcase {
       padding: 110px 28px;
       color: var(--black);
       background: var(--orange);
     }
 
-    .tools-header {
-      display: grid;
-      grid-template-columns:
-        minmax(0, 1fr)
-        minmax(280px, 430px);
-      gap: 40px;
-      align-items: end;
-      margin-bottom: 54px;
-    }
-
-    .tools-header > * {
-      min-width: 0;
-    }
-
-    .tools-header > div {
-      container-type: inline-size;
-    }
-
     .tools-number {
-      display: block;
-      margin-bottom: 18px;
       color: var(--black);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
     }
 
     .tools-title {
-      width: 100%;
       color: var(--white);
-      font-size: clamp(48px, 12cqi, 112px);
     }
 
     .tools-introduction {
@@ -609,26 +576,13 @@
       gap: 10px;
     }
 
-    /*
-      Each card uses three real grid rows:
-      1. Card metadata
-      2. Chart visual
-      3. Chart name, description and button
-
-      The visual is not absolutely positioned, so it cannot overlap
-      the chart name.
-    */
-
     .tool-card {
       position: relative;
       min-width: 0;
       min-height: 690px;
       padding: 24px;
       display: grid;
-      grid-template-rows:
-        auto
-        minmax(310px, 1fr)
-        auto;
+      grid-template-rows: auto minmax(310px, 1fr) auto;
       gap: 24px;
       overflow: hidden;
       border: 1px solid rgba(0, 0, 0, 0.35);
@@ -671,7 +625,9 @@
 
     .heatmap-tool {
       color: var(--white);
-      background: var(--soft-black);
+      background:
+        radial-gradient(circle at 82% 15%, rgba(255, 61, 10, 0.16), transparent 34%),
+        var(--soft-black);
     }
 
     .tool-card-top {
@@ -737,7 +693,7 @@
 
     .tool-visual > svg,
     .tool-visual > .matrix-board,
-    .tool-visual > .heatmap-board {
+    .tool-visual > .heatmap-preview-shell {
       transition: transform 500ms ease;
     }
 
@@ -749,8 +705,8 @@
       transform: rotate(-2deg) scale(1.035);
     }
 
-    .tool-card:hover .heatmap-board {
-      transform: rotate(2deg) scale(1.035);
+    .tool-card:hover .heatmap-preview-shell {
+      transform: rotate(1.5deg) scale(1.035);
     }
 
     .tool-card-bottom {
@@ -792,11 +748,6 @@
     .butterfly-tool p,
     .matrix-tool p {
       color: rgba(0, 0, 0, 0.68);
-    }
-
-    .scatter-tool p,
-    .heatmap-tool p {
-      color: var(--grey);
     }
 
     .open-tool {
@@ -846,8 +797,6 @@
     .heatmap-tool:hover .open-tool {
       background: var(--orange);
     }
-
-    /* Venn illustration */
 
     .venn-preview {
       width: 94%;
@@ -901,7 +850,6 @@
       font-family: "Inter", sans-serif;
       font-size: 8px;
       font-weight: 800;
-      letter-spacing: 0.02em;
       text-anchor: middle;
     }
 
@@ -912,8 +860,6 @@
       stroke-dasharray: 6 7;
       opacity: 0.24;
     }
-
-    /* Butterfly illustration */
 
     .butterfly-chart-preview {
       width: 92%;
@@ -938,8 +884,6 @@
       text-anchor: middle;
     }
 
-    /* Matrix illustration */
-
     .matrix-board {
       width: 90%;
       max-width: 540px;
@@ -957,9 +901,7 @@
       min-height: 49px;
       padding: 8px 11px;
       display: grid;
-      grid-template-columns:
-        minmax(75px, 1.3fr)
-        repeat(3, minmax(35px, 0.55fr));
+      grid-template-columns: minmax(75px, 1.3fr) repeat(3, minmax(35px, 0.55fr));
       align-items: center;
       gap: 8px;
       color: var(--black);
@@ -1007,48 +949,6 @@
       color: var(--matrix-accent);
       font-size: 15px;
     }
-
-    /* Heatmap illustration */
-
-    .heatmap-board {
-      width: 90%;
-      max-width: 540px;
-      padding: 16px;
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 8px;
-      background: #11110f;
-      border: 3px solid var(--lime);
-      box-shadow: 14px 14px 0 var(--orange);
-      transform: rotate(2deg);
-    }
-
-    .heatmap-chip {
-      min-height: 52px;
-      display: grid;
-      place-items: center;
-      color: var(--white);
-      background: hsl(14 100% var(--heat-lightness));
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .heatmap-chip:nth-child(3n) {
-      background: hsl(357 100% var(--heat-lightness));
-    }
-
-    .heatmap-chip.zero {
-      color: var(--black);
-      background: var(--lime);
-    }
-
-    .heatmap-chip.missing {
-      color: var(--grey);
-      background: repeating-linear-gradient(135deg, rgba(255,255,255,0.14) 0 7px, rgba(255,255,255,0.03) 7px 14px), #242421;
-    }
-
-    /* Scatter illustration */
 
     .scatter-preview {
       width: 92%;
@@ -1099,16 +999,18 @@
       stroke-dasharray: 10 8;
     }
 
-    .scatter-preview .point {
-      stroke: none;
-    }
-
-    .scatter-preview .point-label {
+    .scatter-preview .point-label,
+    .scatter-preview .quadrant-name {
       fill: var(--black);
       font-family: "Inter", sans-serif;
       font-size: 9px;
       font-weight: 800;
       text-anchor: middle;
+    }
+
+    .scatter-preview .quadrant-name {
+      letter-spacing: 0.8px;
+      opacity: 0.68;
     }
 
     .scatter-preview .axis-label {
@@ -1118,20 +1020,211 @@
       font-weight: 800;
       letter-spacing: 1px;
       text-anchor: middle;
+    }
+
+    .heatmap-preview-shell {
+      width: 92%;
+      max-width: 560px;
+      padding: 14px;
+      background: #10100f;
+      border: 3px solid var(--lime);
+      box-shadow: 14px 14px 0 var(--orange);
+      transform: rotate(1.5deg);
+    }
+
+    .heatmap-preview-header {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .heatmap-preview-copy {
+      min-width: 0;
+    }
+
+    .heatmap-preview-eyebrow {
+      display: block;
+      color: var(--orange);
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 
-    .scatter-preview .quadrant-name {
-      fill: var(--black);
-      font-family: "Inter", sans-serif;
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-      text-anchor: middle;
-      opacity: 0.68;
+    .heatmap-preview-title {
+      display: block;
+      margin-top: 4px;
+      font-family: "Archivo Black", sans-serif;
+      font-size: clamp(15px, 4.4cqi, 27px);
+      line-height: 0.95;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
     }
 
-    /* Footer */
+    .heatmap-preview-controls {
+      display: flex;
+      gap: 4px;
+    }
+
+    .preview-control {
+      width: 17px;
+      height: 17px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+
+    .preview-control:nth-child(1) {
+      background: var(--orange);
+    }
+
+    .preview-control:nth-child(2) {
+      background: var(--lime);
+    }
+
+    .preview-control:nth-child(3) {
+      background: var(--white);
+    }
+
+    .heatmap-preview-body {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 6px;
+    }
+
+    .heatmap-row-labels {
+      padding-top: 17px;
+      display: grid;
+      grid-template-rows: repeat(4, 42px);
+      gap: 5px;
+    }
+
+    .heatmap-row-labels span {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      color: var(--grey);
+      font-size: 6px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .heatmap-chart-area {
+      min-width: 0;
+    }
+
+    .heatmap-column-labels {
+      height: 17px;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .heatmap-column-labels span {
+      overflow: hidden;
+      color: var(--grey);
+      font-size: 6px;
+      font-weight: 800;
+      text-align: center;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .heatmap-board {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .heatmap-chip {
+      min-height: 42px;
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      background: color-mix(
+        in srgb,
+        var(--orange) var(--heat-strength, 75%),
+        var(--panel-light)
+      );
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .heatmap-chip.negative {
+      background: color-mix(
+        in srgb,
+        #8b1e2d var(--heat-strength, 75%),
+        var(--panel-light)
+      );
+    }
+
+    .heatmap-chip.zero {
+      color: var(--black);
+      background: var(--lime);
+    }
+
+    .heatmap-chip.missing {
+      color: var(--grey);
+      background:
+        repeating-linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.14) 0 7px,
+          rgba(255, 255, 255, 0.03) 7px 14px
+        ),
+        #242421;
+    }
+
+    .heatmap-preview-legend {
+      margin-top: 10px;
+      padding-top: 8px;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .heatmap-preview-legend span {
+      height: 6px;
+      background: var(--orange);
+    }
+
+    .heatmap-preview-legend span:nth-child(1) {
+      background: #5c1b25;
+    }
+
+    .heatmap-preview-legend span:nth-child(2) {
+      background: #8b1e2d;
+    }
+
+    .heatmap-preview-legend span:nth-child(3) {
+      background: #bb2e24;
+    }
+
+    .heatmap-preview-legend span:nth-child(4) {
+      background: var(--lime);
+    }
+
+    .heatmap-preview-legend span:nth-child(5) {
+      background: #c73817;
+    }
+
+    .heatmap-preview-legend span:nth-child(6) {
+      background: var(--orange);
+    }
+
+    .heatmap-preview-legend span:nth-child(7) {
+      background:
+        repeating-linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.18) 0 3px,
+          transparent 3px 6px
+        ),
+        #242421;
+    }
 
     footer {
       padding: 28px;
@@ -1146,8 +1239,6 @@
       text-transform: uppercase;
     }
 
-    /* Keep the button from squeezing the chart name. */
-
     @container (max-width: 610px) {
       .tool-card-bottom {
         align-items: flex-start;
@@ -1155,8 +1246,6 @@
         gap: 22px;
       }
     }
-
-    /* Tablet */
 
     @media (max-width: 980px) {
       .hero {
@@ -1186,10 +1275,7 @@
 
       .tool-card {
         min-height: 650px;
-        grid-template-rows:
-          auto
-          minmax(280px, 1fr)
-          auto;
+        grid-template-rows: auto minmax(280px, 1fr) auto;
       }
 
       .tool-visual {
@@ -1200,8 +1286,6 @@
         font-size: clamp(35px, 8cqi, 65px);
       }
     }
-
-    /* Mobile */
 
     @media (max-width: 640px) {
       .nav,
@@ -1312,10 +1396,7 @@
       .tool-card {
         min-height: 0;
         padding: 19px;
-        grid-template-rows:
-          auto
-          260px
-          auto;
+        grid-template-rows: auto 260px auto;
         gap: 20px;
       }
 
@@ -1345,10 +1426,6 @@
         font-size: clamp(32px, 10cqi, 52px);
       }
 
-      .open-tool {
-        display: inline-flex;
-      }
-
       .matrix-board {
         width: 94%;
         padding: 10px;
@@ -1359,9 +1436,7 @@
       .matrix-row {
         min-height: 40px;
         padding: 6px 8px;
-        grid-template-columns:
-          minmax(60px, 1.2fr)
-          repeat(3, minmax(28px, 0.5fr));
+        grid-template-columns: minmax(60px, 1.2fr) repeat(3, minmax(28px, 0.5fr));
         gap: 5px;
       }
 
@@ -1372,6 +1447,25 @@
 
       .matrix-value.featured {
         font-size: 11px;
+      }
+
+      .heatmap-preview-shell {
+        width: 96%;
+        padding: 10px;
+        box-shadow: 8px 8px 0 var(--orange);
+      }
+
+      .heatmap-preview-body {
+        grid-template-columns: 39px minmax(0, 1fr);
+      }
+
+      .heatmap-row-labels {
+        grid-template-rows: repeat(4, 34px);
+      }
+
+      .heatmap-chip {
+        min-height: 34px;
+        font-size: 7px;
       }
 
       footer {
@@ -1398,10 +1492,7 @@
       }
 
       .tool-card {
-        grid-template-rows:
-          auto
-          230px
-          auto;
+        grid-template-rows: auto 230px auto;
       }
 
       .tool-visual {
@@ -1411,6 +1502,18 @@
 
       .tool-card-top {
         font-size: 8px;
+      }
+
+      .heatmap-preview-shell {
+        transform: none;
+      }
+
+      .heatmap-row-labels {
+        display: none;
+      }
+
+      .heatmap-preview-body {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -1424,6 +1527,7 @@
       *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
     }
   </style>
@@ -1452,6 +1556,7 @@
       <span>Comparison butterfly chart</span>
       <span>Brand performance matrix</span>
       <span>Scatter plot &amp; quadrant maker</span>
+      <span>Heatmap graph maker</span>
       <span>Connected data, clearly understood</span>
 
       <span>Visualisation tools now available</span>
@@ -1459,6 +1564,7 @@
       <span>Comparison butterfly chart</span>
       <span>Brand performance matrix</span>
       <span>Scatter plot &amp; quadrant maker</span>
+      <span>Heatmap graph maker</span>
       <span>Connected data, clearly understood</span>
     </div>
   </div>
@@ -1466,16 +1572,16 @@
   <main id="top">
     <section class="hero">
       <div class="hero-content">
-        <h1 class="display hero-title">
+        <h1 id="home-title" class="display hero-title">
           Complex data.<br>
           <span class="outline">Clearly</span><br>
           <span class="accent">understood.</span>
         </h1>
 
-        <p class="hero-copy">
+        <p id="hero-description" class="hero-copy">
           Data only becomes useful when people can understand it. We are
-          building visualisation tools that turn complex relationships,
-          hidden patterns and fragmented information into clear, explorable
+          building flexible visualisation tools that turn complex relationships,
+          comparisons and patterns into clear, editable and presentation-ready
           pictures.
         </p>
 
@@ -1499,8 +1605,7 @@
         <svg id="network" viewBox="0 0 600 700" role="img" aria-label="A visual network of connected entities"></svg>
 
         <div class="graph-label">
-          See the relationships that rows, reports and dashboards leave
-          hidden.
+          See the relationships that rows, reports and dashboards leave hidden.
         </div>
       </div>
     </section>
@@ -1508,17 +1613,15 @@
     <section class="section visualisation" id="why">
       <header class="section-header">
         <div>
-          <span class="section-number">
-            01 / Why visualisation matters
-          </span>
+          <span class="section-number">01 / Why visualisation matters</span>
 
-          <h2 class="display section-title">
+          <h2 id="why-title" class="display section-title">
             Seeing changes<br>
             everything.
           </h2>
         </div>
 
-        <p class="section-copy">
+        <p id="why-description" class="section-copy">
           Intelligence rarely arrives as a complete picture. It is distributed
           across people, organisations, events, locations and sources.
           Effective data visualisation brings those fragments together,
@@ -1548,7 +1651,7 @@
             </g>
           </svg>
 
-          <h3 class="principle-title">
+          <h3 id="principle-reveal-title" class="principle-title">
             Reveal hidden<br>
             relationships
           </h3>
@@ -1576,7 +1679,7 @@
             </g>
           </svg>
 
-          <h3 class="principle-title">
+          <h3 id="principle-understand-title" class="principle-title">
             Make complexity<br>
             understandable
           </h3>
@@ -1599,7 +1702,7 @@
             </g>
           </svg>
 
-          <h3 class="principle-title">
+          <h3 id="principle-investigate-title" class="principle-title">
             Follow the<br>
             evidence
           </h3>
@@ -1618,7 +1721,7 @@
             </g>
           </svg>
 
-          <h3 class="principle-title">
+          <h3 id="principle-communicate-title" class="principle-title">
             Turn analysis<br>
             into insight
           </h3>
@@ -1628,16 +1731,14 @@
 
     <section class="statement">
       <div class="statement-inner">
-        <span class="statement-kicker">
-          More than making data look good
-        </span>
+        <span class="statement-kicker">More than making data look good</span>
 
-        <h2 class="display statement-title">
+        <h2 id="statement-title" class="display statement-title">
           Visualisation is a way of
           <span>thinking.</span>
         </h2>
 
-        <p class="statement-copy">
+        <p id="statement-description" class="statement-copy">
           A useful visualisation does not decorate an answer. It creates a
           space where analysts can ask better questions, compare evidence,
           discover unexpected connections and communicate their reasoning.
@@ -1648,32 +1749,29 @@
     <section class="tools-showcase" id="tools">
       <header class="tools-header">
         <div>
-          <span class="tools-number">
-            02 / Visualisation tools
-          </span>
+          <span class="tools-number">02 / Visualisation tools</span>
 
-          <h2 class="display tools-title">
+          <h2 id="tools-title" class="display tools-title">
             Built to make<br>
             data useful.
           </h2>
         </div>
 
-        <p class="tools-introduction">
-          A collection of practical visualisation tools built for the
-          intelligence team. Each tool runs directly in the browser and
-          produces presentation-ready visual exports.
+        <p id="tools-description" class="tools-introduction">
+          A collection of flexible browser-based visualisation tools. Customise
+          content, labels, colours and data directly in each tool, then export
+          presentation-ready graphics without uploading your information.
         </p>
       </header>
 
       <div class="tools-grid">
-        <!-- Tool 01: Venn Diagram Maker -->
         <a class="tool-card venn-tool" href="tools/audience-overlap/" aria-label="Open the Venn diagram maker">
           <div class="tool-card-top">
             <span>Tool 01 / Set relationships</span>
             <span class="tool-status-label">Available now</span>
           </div>
 
-          <div class="tool-visual venn-visual" aria-hidden="true">
+          <div class="tool-visual" aria-hidden="true">
             <svg class="venn-preview" viewBox="0 0 700 400">
               <g class="relationship-line">
                 <path d="M245 235L455 235"></path>
@@ -1685,36 +1783,29 @@
               <circle class="set-circle set-b" cx="455" cy="235" r="116"></circle>
               <circle class="set-circle set-c" cx="350" cy="112" r="100"></circle>
 
-              <g>
-                <text class="set-name" x="205" y="260">Set A</text>
-                <text class="set-value" x="205" y="279">100</text>
-                <text class="set-name" x="495" y="260">Set B</text>
-                <text class="set-value" x="495" y="279">80</text>
-                <text class="set-name" x="350" y="85">Set C</text>
-                <text class="set-value" x="350" y="104">70</text>
-              </g>
+              <text class="set-name" x="205" y="260">Set A</text>
+              <text class="set-value" x="205" y="279">100</text>
+              <text class="set-name" x="495" y="260">Set B</text>
+              <text class="set-value" x="495" y="279">80</text>
+              <text class="set-name" x="350" y="85">Set C</text>
+              <text class="set-value" x="350" y="104">70</text>
 
-              <g>
-                <rect class="overlap-tag" x="318" y="239" width="64" height="23" rx="11.5"></rect>
-                <text class="overlap-text" x="350" y="254">A ∩ B · 20</text>
+              <rect class="overlap-tag" x="318" y="239" width="64" height="23" rx="11.5"></rect>
+              <text class="overlap-text" x="350" y="254">A ∩ B · 20</text>
 
-                <rect class="overlap-tag" x="251" y="154" width="72" height="23" rx="11.5"></rect>
-                <text class="overlap-text" x="287" y="169">A ∩ C · 15</text>
+              <rect class="overlap-tag" x="251" y="154" width="72" height="23" rx="11.5"></rect>
+              <text class="overlap-text" x="287" y="169">A ∩ C · 15</text>
 
-                <rect class="overlap-tag" x="377" y="154" width="72" height="23" rx="11.5"></rect>
-                <text class="overlap-text" x="413" y="169">B ∩ C · 10</text>
-              </g>
+              <rect class="overlap-tag" x="377" y="154" width="72" height="23" rx="11.5"></rect>
+              <text class="overlap-text" x="413" y="169">B ∩ C · 10</text>
             </svg>
           </div>
 
           <div class="tool-card-bottom">
             <div>
-              <h3>
-                Venn diagram<br>
-                maker
-              </h3>
+              <h3 id="venn-tool-title">Venn diagram<br>maker</h3>
 
-              <p>
+              <p id="venn-tool-description">
                 Build a proportional Venn diagram with two or three sets.
                 Enter each set size and control the overlap between every
                 pair independently.
@@ -1725,17 +1816,16 @@
           </div>
         </a>
 
-        <!-- Tool 02: Butterfly Chart -->
         <a class="tool-card butterfly-tool" href="tools/butterfly-diagrams/" aria-label="Open the comparison butterfly chart tool">
           <div class="tool-card-top">
             <span>Tool 02 / Comparison</span>
             <span class="tool-status-label">Available now</span>
           </div>
 
-          <div class="tool-visual butterfly-visual" aria-hidden="true">
+          <div class="tool-visual" aria-hidden="true">
             <svg class="butterfly-chart-preview" viewBox="0 0 700 400">
-              <text class="butterfly-heading" x="205" y="45">Brand A</text>
-              <text class="butterfly-heading" x="495" y="45">Brand B</text>
+              <text class="butterfly-heading" x="205" y="45">Dataset A</text>
+              <text class="butterfly-heading" x="495" y="45">Dataset B</text>
 
               <g fill="#080808">
                 <rect x="105" y="77" width="225" height="35"></rect>
@@ -1762,23 +1852,20 @@
               </g>
 
               <g class="butterfly-category">
-                <text x="350" y="99">Awareness</text>
-                <text x="350" y="159">Consideration</text>
-                <text x="350" y="219">Preference</text>
-                <text x="350" y="279">Intent</text>
-                <text x="350" y="339">Loyalty</text>
+                <text x="350" y="99">Measure 1</text>
+                <text x="350" y="159">Measure 2</text>
+                <text x="350" y="219">Measure 3</text>
+                <text x="350" y="279">Measure 4</text>
+                <text x="350" y="339">Measure 5</text>
               </g>
             </svg>
           </div>
 
           <div class="tool-card-bottom">
             <div>
-              <h3>
-                Comparison<br>
-                butterfly chart
-              </h3>
+              <h3 id="butterfly-tool-title">Comparison<br>butterfly chart</h3>
 
-              <p>
+              <p id="butterfly-tool-description">
                 Compare two brands, accounts, audiences or datasets across
                 fully editable categories using a mirrored butterfly chart.
               </p>
@@ -1788,14 +1875,13 @@
           </div>
         </a>
 
-        <!-- Tool 03: Brand Performance Matrix -->
         <a class="tool-card matrix-tool" href="tools/brand-performance-matrix/" aria-label="Open the brand performance matrix tool">
           <div class="tool-card-top">
             <span>Tool 03 / Brand intelligence</span>
             <span class="tool-status-label">Available now</span>
           </div>
 
-          <div class="tool-visual matrix-visual" aria-hidden="true">
+          <div class="tool-visual" aria-hidden="true">
             <div class="matrix-board">
               <div class="matrix-row">
                 <span class="matrix-name">Brand one</span>
@@ -1836,12 +1922,9 @@
 
           <div class="tool-card-bottom">
             <div>
-              <h3>
-                Brand performance<br>
-                matrix
-              </h3>
+              <h3 id="matrix-tool-title">Brand performance<br>matrix</h3>
 
-              <p>
+              <p id="matrix-tool-description">
                 Add, edit, rank and compare brand performance metrics,
                 customise every label and colour, and export a
                 presentation-ready PNG.
@@ -1852,14 +1935,13 @@
           </div>
         </a>
 
-        <!-- Tool 04: Scatter Plot & Quadrant Maker -->
         <a class="tool-card scatter-tool" href="tools/scatter-plot/" aria-label="Open the scatter plot and quadrant maker">
           <div class="tool-card-top">
             <span>Tool 04 / Positioning analysis</span>
             <span class="tool-status-label">Available now</span>
           </div>
 
-          <div class="tool-visual scatter-visual" aria-hidden="true">
+          <div class="tool-visual" aria-hidden="true">
             <svg class="scatter-preview" viewBox="0 0 700 400">
               <rect class="plot-background" x="75" y="38" width="550" height="300"></rect>
 
@@ -1882,53 +1964,41 @@
               <line class="split-line" x1="350" y1="38" x2="350" y2="338"></line>
               <line class="split-line" x1="75" y1="188" x2="625" y2="188"></line>
 
-              <g>
-                <text class="quadrant-name" x="212" y="62">BUILD RELEVANCE</text>
-                <text class="quadrant-name" x="488" y="62">PRIORITY</text>
-                <text class="quadrant-name" x="212" y="324">MONITOR</text>
-                <text class="quadrant-name" x="488" y="324">EMERGING</text>
-              </g>
+              <text class="quadrant-name" x="212" y="62">BUILD RELEVANCE</text>
+              <text class="quadrant-name" x="488" y="62">PRIORITY</text>
+              <text class="quadrant-name" x="212" y="324">MONITOR</text>
+              <text class="quadrant-name" x="488" y="324">EMERGING</text>
 
-              <g>
-                <circle class="point" cx="528" cy="95" r="13" fill="#ff3d0a"></circle>
-                <text class="point-label" x="528" y="75">Brand A</text>
+              <circle cx="528" cy="95" r="13" fill="#ff3d0a"></circle>
+              <text class="point-label" x="528" y="75">Item A</text>
 
-                <circle class="point" cx="445" cy="138" r="11" fill="#080808"></circle>
-                <text class="point-label" x="445" y="120">Brand B</text>
+              <circle cx="445" cy="138" r="11" fill="#080808"></circle>
+              <text class="point-label" x="445" y="120">Item B</text>
 
-                <circle class="point" cx="265" cy="112" r="12" fill="#ff3d0a"></circle>
-                <text class="point-label" x="265" y="93">Brand C</text>
+              <circle cx="265" cy="112" r="12" fill="#ff3d0a"></circle>
+              <text class="point-label" x="265" y="93">Item C</text>
 
-                <circle class="point" cx="490" cy="248" r="10" fill="#080808"></circle>
-                <text class="point-label" x="490" y="231">Brand D</text>
+              <circle cx="490" cy="248" r="10" fill="#080808"></circle>
+              <text class="point-label" x="490" y="231">Item D</text>
 
-                <circle class="point" cx="178" cy="270" r="9" fill="#ff3d0a"></circle>
-                <text class="point-label" x="178" y="253">Brand E</text>
+              <circle cx="178" cy="270" r="9" fill="#ff3d0a"></circle>
+              <text class="point-label" x="178" y="253">Item E</text>
 
-                <circle class="point" cx="330" cy="205" r="8" fill="#080808"></circle>
-                <circle class="point" cx="565" cy="175" r="8" fill="#ff3d0a"></circle>
-              </g>
+              <circle cx="330" cy="205" r="8" fill="#080808"></circle>
+              <circle cx="565" cy="175" r="8" fill="#ff3d0a"></circle>
 
               <rect class="plot-border" x="75" y="38" width="550" height="300"></rect>
 
-              <text class="axis-label" x="350" y="375">
-                MARKET RELEVANCE
-              </text>
-
-              <text class="axis-label" x="28" y="188" transform="rotate(-90 28 188)">
-                BRAND STRENGTH
-              </text>
+              <text class="axis-label" x="350" y="375">MEASURE X</text>
+              <text class="axis-label" x="28" y="188" transform="rotate(-90 28 188)">MEASURE Y</text>
             </svg>
           </div>
 
           <div class="tool-card-bottom">
             <div>
-              <h3>
-                Scatter plot &amp;<br>
-                quadrant maker
-              </h3>
+              <h3 id="scatter-tool-title">Scatter plot &amp;<br>quadrant maker</h3>
 
-              <p>
+              <p id="scatter-tool-description">
                 Plot and compare items across two measures. Add an X split,
                 a Y split, both or neither, then optionally divide the chart
                 into four editable quadrants.
@@ -1939,47 +2009,97 @@
           </div>
         </a>
 
-        <!-- Tool 05: Team Heatmap -->
-        <a class="tool-card heatmap-tool" href="tools/team-heatmap/" aria-label="Open the team heatmap tool">
+        <a class="tool-card heatmap-tool" href="tools/team-heatmap/" aria-label="Open the heatmap graph maker">
           <div class="tool-card-top">
-            <span>Tool 05 / Team intelligence</span>
+            <span>Tool 05 / Visual intelligence</span>
             <span class="tool-status-label">Available now</span>
           </div>
 
-          <div class="tool-visual heatmap-visual" aria-hidden="true">
-            <div class="heatmap-board">
-              <span class="heatmap-chip" style="--heat-lightness: 68%">18</span>
-              <span class="heatmap-chip" style="--heat-lightness: 60%">24</span>
-              <span class="heatmap-chip" style="--heat-lightness: 44%">-6</span>
-              <span class="heatmap-chip zero">0</span>
-              <span class="heatmap-chip" style="--heat-lightness: 48%">39</span>
-              <span class="heatmap-chip missing">—</span>
-              <span class="heatmap-chip" style="--heat-lightness: 55%">31</span>
-              <span class="heatmap-chip" style="--heat-lightness: 50%">35</span>
-              <span class="heatmap-chip" style="--heat-lightness: 67%">-3</span>
-              <span class="heatmap-chip" style="--heat-lightness: 46%">42</span>
-              <span class="heatmap-chip" style="--heat-lightness: 63%">21</span>
-              <span class="heatmap-chip zero">0</span>
-              <span class="heatmap-chip" style="--heat-lightness: 58%">27</span>
-              <span class="heatmap-chip missing">—</span>
-              <span class="heatmap-chip" style="--heat-lightness: 72%">12</span>
-              <span class="heatmap-chip" style="--heat-lightness: 51%">33</span>
-              <span class="heatmap-chip" style="--heat-lightness: 54%">28</span>
-              <span class="heatmap-chip" style="--heat-lightness: 45%">45</span>
+          <div class="tool-visual" aria-hidden="true">
+            <div class="heatmap-preview-shell">
+              <div class="heatmap-preview-header">
+                <div class="heatmap-preview-copy">
+                  <span class="heatmap-preview-eyebrow">Comparative heatmap</span>
+                  <span class="heatmap-preview-title">Performance by category</span>
+                </div>
+
+                <div class="heatmap-preview-controls">
+                  <span class="preview-control"></span>
+                  <span class="preview-control"></span>
+                  <span class="preview-control"></span>
+                </div>
+              </div>
+
+              <div class="heatmap-preview-body">
+                <div class="heatmap-row-labels">
+                  <span>Category A</span>
+                  <span>Category B</span>
+                  <span>Category C</span>
+                  <span>Category D</span>
+                </div>
+
+                <div class="heatmap-chart-area">
+                  <div class="heatmap-column-labels">
+                    <span>P1</span>
+                    <span>P2</span>
+                    <span>P3</span>
+                    <span>P4</span>
+                    <span>P5</span>
+                    <span>P6</span>
+                  </div>
+
+                  <div class="heatmap-board">
+                    <span class="heatmap-chip" style="--heat-strength: 48%">18</span>
+                    <span class="heatmap-chip" style="--heat-strength: 58%">24</span>
+                    <span class="heatmap-chip" style="--heat-strength: 72%">31</span>
+                    <span class="heatmap-chip" style="--heat-strength: 64%">27</span>
+                    <span class="heatmap-chip" style="--heat-strength: 40%">14</span>
+                    <span class="heatmap-chip negative" style="--heat-strength: 58%">-3</span>
+
+                    <span class="heatmap-chip" style="--heat-strength: 36%">12</span>
+                    <span class="heatmap-chip zero">0</span>
+                    <span class="heatmap-chip" style="--heat-strength: 66%">28</span>
+                    <span class="heatmap-chip missing">—</span>
+                    <span class="heatmap-chip" style="--heat-strength: 54%">22</span>
+                    <span class="heatmap-chip" style="--heat-strength: 30%">7</span>
+
+                    <span class="heatmap-chip" style="--heat-strength: 78%">35</span>
+                    <span class="heatmap-chip" style="--heat-strength: 94%">42</span>
+                    <span class="heatmap-chip" style="--heat-strength: 88%">39</span>
+                    <span class="heatmap-chip" style="--heat-strength: 100%">45</span>
+                    <span class="heatmap-chip" style="--heat-strength: 70%">30</span>
+                    <span class="heatmap-chip" style="--heat-strength: 36%">12</span>
+
+                    <span class="heatmap-chip negative" style="--heat-strength: 100%">-6</span>
+                    <span class="heatmap-chip" style="--heat-strength: 42%">15</span>
+                    <span class="heatmap-chip" style="--heat-strength: 52%">21</span>
+                    <span class="heatmap-chip" style="--heat-strength: 50%">19</span>
+                    <span class="heatmap-chip zero">0</span>
+                    <span class="heatmap-chip" style="--heat-strength: 25%">4</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="heatmap-preview-legend">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
             </div>
           </div>
 
           <div class="tool-card-bottom">
             <div>
-              <h3>
-                Team workload<br>
-                heatmap
-              </h3>
+              <h3 id="heatmap-tool-title">Heatmap graph<br>maker</h3>
 
-              <p>
-                Scan two-dimensional team data with accessible cells, an
-                automatic colour scale, keyboard details, zero states and
-                missing-value handling.
+              <p id="heatmap-tool-description">
+                Build a heatmap for any dataset. Edit titles, row and column
+                labels, values, units and colour scales, manage zero and
+                missing states, and export a presentation-ready PNG.
               </p>
             </div>
 
@@ -1992,7 +2112,7 @@
 
   <footer>
     <span>Visual Intelligence Lab © 2026</span>
-    <span>Experimental tools for connected thinking</span>
+    <span>Flexible tools for connected thinking</span>
     <span>Five tools available</span>
   </footer>
 
@@ -2084,9 +2204,7 @@
       label.setAttribute("font-size", "9");
       label.setAttribute("text-anchor", "middle");
       label.setAttribute("font-family", "Inter, sans-serif");
-
-      label.textContent =
-        "ENTITY " + String(index + 1).padStart(2, "0");
+      label.textContent = "ENTITY " + String(index + 1).padStart(2, "0");
 
       group.append(ring, circle, label);
       svg.appendChild(group);
@@ -2094,16 +2212,12 @@
       if (typeof group.animate === "function") {
         group.animate(
           [
-            {
-              transform: "translateY(0)"
-            },
+            { transform: "translateY(0)" },
             {
               transform:
                 "translateY(" + (index % 2 ? 7 : -7) + "px)"
             },
-            {
-              transform: "translateY(0)"
-            }
+            { transform: "translateY(0)" }
           ],
           {
             duration: 3200 + index * 180,
