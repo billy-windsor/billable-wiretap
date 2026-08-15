@@ -1,10 +1,10 @@
-<html lang="en" data-type="html" data-identifier="07afb82c-73b8-4be9-94cf-04f8130e2d37" data-title="Visual Intelligence Lab" data-version="1" width="1200" height="700"><head>
+<html lang="en" data-type="html" data-identifier="07afb82c-73b8-4be9-94cf-04f8130e2d37" data-title="Visual Intelligence Lab" data-version="2" width="1200" height="700"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Visual Intelligence Lab</title>
 
-  <meta name="description" content="Browser-based data visualisation tools for creating custom, presentation-ready graphics.">
+  <meta name="description" content="Choose an effective visual form, follow practical design principles, and create presentation-ready graphics with flexible browser-based tools.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -23,6 +23,7 @@
       --orange: #ff3d0a;
       --lime: #a8ff37;
       --line: rgba(255, 255, 255, 0.18);
+      --navigation-height: 72px;
     }
 
     * {
@@ -38,7 +39,7 @@
       overflow-x: hidden;
       color: var(--white);
       background: var(--black);
-      font-family: "Inter", sans-serif;
+      font-family: "Inter", Arial, sans-serif;
     }
 
     a {
@@ -56,15 +57,23 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--lime);
+      outline-offset: 4px;
+    }
+
     .display {
       margin: 0;
       padding-block: 0.04em 0.08em;
       font-family: "Archivo Black", sans-serif;
       font-weight: 400;
-      letter-spacing: -0.05em;
       line-height: 0.98;
+      letter-spacing: -0.05em;
       text-transform: uppercase;
     }
+
+    /* Navigation */
 
     .nav {
       position: fixed;
@@ -72,13 +81,13 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 72px;
+      height: var(--navigation-height);
       padding: 0 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--line);
-      background: rgba(8, 8, 8, 0.86);
+      background: rgba(8, 8, 8, 0.9);
       backdrop-filter: blur(16px);
     }
 
@@ -121,10 +130,10 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 28px;
+      gap: 26px;
       color: #d0d0cb;
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 10px;
+      font-weight: 800;
       letter-spacing: 0.09em;
       text-transform: uppercase;
     }
@@ -137,15 +146,10 @@
       color: var(--lime);
     }
 
-    .nav-links a:focus-visible,
-    .button:focus-visible,
-    .tool-card:focus-visible {
-      outline: 3px solid var(--lime);
-      outline-offset: 4px;
-    }
+    /* Announcement */
 
     .announcement {
-      margin-top: 72px;
+      margin-top: var(--navigation-height);
       overflow: hidden;
       color: var(--black);
       background: var(--lime);
@@ -160,7 +164,7 @@
       font-family: "Archivo Black", sans-serif;
       font-size: 14px;
       text-transform: uppercase;
-      animation: marquee 28s linear infinite;
+      animation: marquee 30s linear infinite;
     }
 
     .announcement-track span {
@@ -179,6 +183,61 @@
         transform: translateX(-50%);
       }
     }
+
+    /* Buttons */
+
+    .button {
+      min-height: 52px;
+      padding: 0 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      transition:
+        transform 180ms ease,
+        color 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-3px);
+    }
+
+    .button-primary {
+      color: var(--black);
+      background: var(--lime);
+      border-color: var(--lime);
+    }
+
+    .button-primary:hover {
+      background: var(--white);
+      border-color: var(--white);
+    }
+
+    .button-secondary:hover {
+      color: var(--black);
+      background: var(--white);
+    }
+
+    .button-dark {
+      color: var(--white);
+      background: var(--black);
+      border-color: var(--black);
+    }
+
+    .button-dark:hover {
+      color: var(--black);
+      background: var(--lime);
+      border-color: var(--lime);
+    }
+
+    /* Hero */
 
     .hero {
       position: relative;
@@ -228,55 +287,19 @@
     }
 
     .hero-copy {
-      max-width: 670px;
+      max-width: 690px;
       margin: 34px 0;
       color: #c3c3bd;
       font-size: clamp(16px, 1.25vw, 20px);
       line-height: 1.58;
     }
 
-    .hero-actions {
+    .hero-actions,
+    .gateway-actions,
+    .guide-banner-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-    }
-
-    .button {
-      min-height: 52px;
-      padding: 0 22px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      transition:
-        transform 180ms ease,
-        color 180ms ease,
-        background 180ms ease;
-    }
-
-    .button:hover {
-      transform: translateY(-3px);
-    }
-
-    .button-primary {
-      color: var(--black);
-      background: var(--lime);
-      border-color: var(--lime);
-    }
-
-    .button-primary:hover {
-      background: var(--white);
-      border-color: var(--white);
-    }
-
-    .button-secondary:hover {
-      color: var(--black);
-      background: var(--white);
     }
 
     .graph-card {
@@ -342,7 +365,7 @@
       left: 22px;
       right: 22px;
       bottom: 22px;
-      max-width: 320px;
+      max-width: 340px;
       padding: 15px;
       color: var(--black);
       background: var(--orange);
@@ -351,6 +374,8 @@
       line-height: 1.25;
       text-transform: uppercase;
     }
+
+    /* Shared sections */
 
     .section {
       padding: 110px 28px;
@@ -398,18 +423,20 @@
       line-height: 1.7;
     }
 
+    /* Why visualisation */
+
     .visualisation {
       color: var(--black);
       background: var(--white);
     }
 
-    .principles-grid {
+    .why-grid {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
       gap: 10px;
     }
 
-    .principle {
+    .why-card {
       position: relative;
       min-width: 0;
       min-height: 430px;
@@ -419,33 +446,32 @@
       justify-content: space-between;
       overflow: hidden;
       border: 1px solid #c7c7c0;
-      background: #e7e7df;
       container-type: inline-size;
     }
 
-    .principle:nth-child(1) {
+    .why-card:nth-child(1) {
       grid-column: span 7;
       background: var(--orange);
     }
 
-    .principle:nth-child(2) {
+    .why-card:nth-child(2) {
       grid-column: span 5;
       color: var(--white);
       background: #131313;
     }
 
-    .principle:nth-child(3) {
+    .why-card:nth-child(3) {
       grid-column: span 4;
       background: var(--lime);
     }
 
-    .principle:nth-child(4) {
+    .why-card:nth-child(4) {
       grid-column: span 8;
       color: var(--white);
-      background: #242421;
+      background: var(--panel-light);
     }
 
-    .principle-meta {
+    .why-meta {
       position: relative;
       z-index: 3;
       display: flex;
@@ -454,21 +480,14 @@
       font-size: 9px;
       font-weight: 800;
       letter-spacing: 0.13em;
-      line-height: 1.35;
       text-transform: uppercase;
     }
 
-    .principle-meta span:last-child {
-      text-align: right;
-    }
-
-    .principle-title {
+    .why-title {
       position: relative;
       z-index: 3;
-      width: 100%;
       max-width: 700px;
       margin: 0;
-      padding-block: 0.04em 0.08em;
       font-family: "Archivo Black", sans-serif;
       font-size: clamp(30px, 10.5cqi, 68px);
       font-weight: 400;
@@ -487,9 +506,218 @@
       transition: transform 500ms ease;
     }
 
-    .principle:hover .mini-graph {
+    .why-card:hover .mini-graph {
       transform: scale(1.045);
     }
+
+    .why-guide-link {
+      margin-top: 10px;
+      padding: 25px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 24px;
+      color: var(--white);
+      background: var(--black);
+    }
+
+    .why-guide-link h3 {
+      margin: 0;
+      font-family: "Archivo Black", sans-serif;
+      font-size: clamp(25px, 4vw, 48px);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
+
+    .why-guide-link p {
+      max-width: 720px;
+      margin: 10px 0 0;
+      color: var(--grey);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .inline-arrow {
+      color: var(--lime);
+      font-family: "Archivo Black", sans-serif;
+      font-size: 46px;
+      transition: transform 180ms ease;
+    }
+
+    .why-guide-link:hover .inline-arrow {
+      transform: translateX(6px);
+    }
+
+    /* Principles gateway */
+
+    .principles-gateway {
+      position: relative;
+      overflow: hidden;
+      background: var(--soft-black);
+    }
+
+    .principles-gateway::before {
+      content: "";
+      position: absolute;
+      top: -150px;
+      right: -80px;
+      width: 520px;
+      height: 520px;
+      background: var(--orange);
+      border-radius: 50%;
+      filter: blur(180px);
+      opacity: 0.14;
+    }
+
+    .gateway-layout {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+      gap: 50px;
+      align-items: center;
+    }
+
+    .gateway-copy {
+      min-width: 0;
+      container-type: inline-size;
+    }
+
+    .gateway-copy .section-number {
+      margin-bottom: 20px;
+    }
+
+    .gateway-title {
+      font-size: clamp(48px, 11cqi, 106px);
+    }
+
+    .gateway-description {
+      max-width: 650px;
+      margin: 28px 0;
+      color: var(--grey);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .gateway-board {
+      min-height: 560px;
+      padding: 25px;
+      display: grid;
+      grid-template-rows: auto minmax(260px, 1fr) auto;
+      gap: 22px;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        var(--panel);
+      background-size: 36px 36px;
+      border: 1px solid var(--line);
+    }
+
+    .gateway-board-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .gateway-flow {
+      position: relative;
+      min-height: 280px;
+    }
+
+    .gateway-flow svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .gateway-line {
+      fill: none;
+      stroke: var(--grey);
+      stroke-width: 2;
+      stroke-dasharray: 7 7;
+      marker-end: url("#gateway-arrow");
+    }
+
+    .gateway-node {
+      position: absolute;
+      z-index: 2;
+      min-width: 120px;
+      padding: 13px;
+      color: var(--black);
+      background: var(--white);
+      border: 2px solid var(--black);
+      font-size: 9px;
+      font-weight: 800;
+      line-height: 1.3;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .gateway-node.task {
+      top: 4px;
+      left: 50%;
+      background: var(--lime);
+      transform: translateX(-50%);
+    }
+
+    .gateway-node.form {
+      top: 118px;
+      left: 5%;
+      background: var(--orange);
+    }
+
+    .gateway-node.structure {
+      top: 118px;
+      right: 5%;
+    }
+
+    .gateway-node.result {
+      bottom: 2px;
+      left: 50%;
+      color: var(--white);
+      background: var(--panel-light);
+      border-color: var(--lime);
+      transform: translateX(-50%);
+    }
+
+    .gateway-principles {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .gateway-principle {
+      min-height: 76px;
+      padding: 9px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--black);
+      border: 1px solid var(--line);
+    }
+
+    .gateway-principle strong {
+      color: var(--orange);
+      font-size: 9px;
+    }
+
+    .gateway-principle span {
+      color: var(--grey);
+      font-size: 8px;
+      font-weight: 800;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    /* Statement */
 
     .statement {
       position: relative;
@@ -531,9 +759,7 @@
     }
 
     .statement-title {
-      width: 100%;
       font-size: clamp(50px, 10.5cqi, 130px);
-      overflow-wrap: break-word;
     }
 
     .statement-title span {
@@ -541,12 +767,14 @@
     }
 
     .statement-copy {
-      max-width: 670px;
+      max-width: 700px;
       margin: 35px auto 0;
       color: var(--grey);
       font-size: 17px;
       line-height: 1.65;
     }
+
+    /* Tools */
 
     .tools-showcase {
       padding: 110px 28px;
@@ -568,6 +796,46 @@
       font-size: 16px;
       font-weight: 600;
       line-height: 1.7;
+    }
+
+    .guide-banner {
+      margin-bottom: 10px;
+      padding: 25px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 30px;
+      color: var(--white);
+      background: var(--black);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .guide-banner-label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--lime);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .guide-banner h3 {
+      margin: 0;
+      font-family: "Archivo Black", sans-serif;
+      font-size: clamp(31px, 5vw, 60px);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+    }
+
+    .guide-banner p {
+      max-width: 720px;
+      margin: 13px 0 0;
+      color: var(--grey);
+      font-size: 12px;
+      line-height: 1.6;
     }
 
     .tools-grid {
@@ -620,7 +888,7 @@
 
     .scatter-tool {
       color: var(--white);
-      background: #242421;
+      background: var(--panel-light);
     }
 
     .heatmap-tool {
@@ -633,7 +901,6 @@
     .tool-card-top {
       position: relative;
       z-index: 3;
-      min-width: 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -641,12 +908,7 @@
       font-size: 9px;
       font-weight: 800;
       letter-spacing: 0.12em;
-      line-height: 1.35;
       text-transform: uppercase;
-    }
-
-    .tool-card-top > span:first-child {
-      min-width: 0;
     }
 
     .tool-status-label {
@@ -664,13 +926,11 @@
     }
 
     .matrix-tool .tool-status-label {
-      color: var(--black);
       background: var(--orange);
     }
 
     .scatter-tool .tool-status-label,
     .heatmap-tool .tool-status-label {
-      color: var(--black);
       background: var(--lime);
     }
 
@@ -685,28 +945,12 @@
       overflow: hidden;
     }
 
-    .tool-visual svg {
-      width: 92%;
-      height: 100%;
-      max-height: 370px;
-    }
-
-    .tool-visual > svg,
-    .tool-visual > .matrix-board,
-    .tool-visual > .heatmap-preview-shell {
+    .tool-visual > * {
       transition: transform 500ms ease;
     }
 
-    .tool-card:hover .tool-visual > svg {
+    .tool-card:hover .tool-visual > * {
       transform: scale(1.035);
-    }
-
-    .tool-card:hover .matrix-board {
-      transform: rotate(-2deg) scale(1.035);
-    }
-
-    .tool-card:hover .heatmap-preview-shell {
-      transform: rotate(1.5deg) scale(1.035);
     }
 
     .tool-card-bottom {
@@ -721,13 +965,11 @@
 
     .tool-card-bottom > div {
       min-width: 0;
-      flex: 1 1 auto;
+      flex: 1;
     }
 
     .tool-card h3 {
-      width: 100%;
       margin: 0;
-      padding-block: 0.04em 0.08em;
       font-family: "Archivo Black", sans-serif;
       font-size: clamp(32px, 8.5cqi, 66px);
       font-weight: 400;
@@ -737,9 +979,30 @@
       text-transform: uppercase;
     }
 
+    .tool-best-for {
+      display: block;
+      margin-top: 17px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    .venn-tool .tool-best-for,
+    .scatter-tool .tool-best-for,
+    .heatmap-tool .tool-best-for {
+      color: var(--lime);
+    }
+
+    .butterfly-tool .tool-best-for,
+    .matrix-tool .tool-best-for {
+      color: var(--orange);
+    }
+
     .tool-card p {
       max-width: 460px;
-      margin: 20px 0 0;
+      margin: 10px 0 0;
       color: var(--grey);
       font-size: 12px;
       line-height: 1.55;
@@ -759,12 +1022,9 @@
       font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.07em;
-      line-height: 1.2;
       text-transform: uppercase;
       white-space: nowrap;
-      transition:
-        color 180ms ease,
-        background 180ms ease;
+      transition: background 180ms ease, color 180ms ease;
     }
 
     .venn-tool:hover .open-tool {
@@ -789,7 +1049,6 @@
 
     .scatter-tool .open-tool,
     .heatmap-tool .open-tool {
-      color: var(--black);
       background: var(--lime);
     }
 
@@ -798,88 +1057,20 @@
       background: var(--orange);
     }
 
-    .venn-preview {
-      width: 94%;
-      max-width: 570px;
+    /* Tool previews */
+
+    .venn-preview,
+    .butterfly-preview,
+    .scatter-preview {
+      width: 92%;
+      max-width: 590px;
+      max-height: 370px;
       overflow: visible;
     }
 
-    .venn-preview .set-circle {
-      stroke: var(--black);
-      stroke-width: 5;
-    }
-
-    .venn-preview .set-a {
-      fill: var(--orange);
-      fill-opacity: 0.9;
-    }
-
-    .venn-preview .set-b {
-      fill: var(--lime);
-      fill-opacity: 0.9;
-    }
-
-    .venn-preview .set-c {
-      fill: var(--white);
-      fill-opacity: 0.9;
-    }
-
-    .venn-preview .set-name {
-      fill: var(--black);
+    .preview-text {
       font-family: "Inter", sans-serif;
-      font-size: 13px;
-      font-weight: 800;
-      text-anchor: middle;
-    }
-
-    .venn-preview .set-value {
-      fill: var(--black);
-      font-family: "Inter", sans-serif;
-      font-size: 9px;
-      font-weight: 800;
-      text-anchor: middle;
-      opacity: 0.67;
-    }
-
-    .venn-preview .overlap-tag {
-      fill: var(--black);
-    }
-
-    .venn-preview .overlap-text {
-      fill: var(--white);
-      font-family: "Inter", sans-serif;
-      font-size: 8px;
-      font-weight: 800;
-      text-anchor: middle;
-    }
-
-    .venn-preview .relationship-line {
-      fill: none;
-      stroke: var(--white);
-      stroke-width: 2;
-      stroke-dasharray: 6 7;
-      opacity: 0.24;
-    }
-
-    .butterfly-chart-preview {
-      width: 92%;
-      max-width: 570px;
-    }
-
-    .butterfly-heading {
-      fill: var(--black);
-      font-family: "Inter", sans-serif;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-anchor: middle;
-      text-transform: uppercase;
-    }
-
-    .butterfly-category {
-      fill: var(--black);
-      font-family: "Inter", sans-serif;
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 800;
       text-anchor: middle;
     }
@@ -888,13 +1079,16 @@
       width: 90%;
       max-width: 540px;
       padding: 18px;
-      display: flex;
-      flex-direction: column;
+      display: grid;
       gap: 10px;
-      background: #ffffff;
+      background: #fff;
       border: 3px solid var(--black);
       box-shadow: 14px 14px 0 var(--orange);
       transform: rotate(-2deg);
+    }
+
+    .tool-card:hover .matrix-board {
+      transform: rotate(-2deg) scale(1.035);
     }
 
     .matrix-row {
@@ -950,101 +1144,25 @@
       font-size: 15px;
     }
 
-    .scatter-preview {
-      width: 92%;
-      max-width: 590px;
-      overflow: visible;
-    }
-
-    .scatter-preview .plot-background {
-      fill: var(--white);
-    }
-
-    .scatter-preview .quadrant-fill-one {
-      fill: var(--lime);
-      fill-opacity: 0.28;
-    }
-
-    .scatter-preview .quadrant-fill-two {
-      fill: var(--orange);
-      fill-opacity: 0.26;
-    }
-
-    .scatter-preview .quadrant-fill-three {
-      fill: var(--white);
-      fill-opacity: 0.1;
-    }
-
-    .scatter-preview .quadrant-fill-four {
-      fill: var(--lime);
-      fill-opacity: 0.1;
-    }
-
-    .scatter-preview .plot-border {
-      fill: none;
-      stroke: var(--white);
-      stroke-width: 4;
-    }
-
-    .scatter-preview .grid-line {
-      stroke: var(--black);
-      stroke-width: 1.5;
-      stroke-dasharray: 5 6;
-      opacity: 0.22;
-    }
-
-    .scatter-preview .split-line {
-      stroke: var(--black);
-      stroke-width: 4;
-      stroke-dasharray: 10 8;
-    }
-
-    .scatter-preview .point-label,
-    .scatter-preview .quadrant-name {
-      fill: var(--black);
-      font-family: "Inter", sans-serif;
-      font-size: 9px;
-      font-weight: 800;
-      text-anchor: middle;
-    }
-
-    .scatter-preview .quadrant-name {
-      letter-spacing: 0.8px;
-      opacity: 0.68;
-    }
-
-    .scatter-preview .axis-label {
-      fill: var(--white);
-      font-family: "Inter", sans-serif;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-anchor: middle;
-    }
-
-    .heatmap-preview-shell {
+    .heatmap-preview {
       width: 92%;
       max-width: 560px;
-      padding: 14px;
+      padding: 15px;
       background: #10100f;
       border: 3px solid var(--lime);
       box-shadow: 14px 14px 0 var(--orange);
       transform: rotate(1.5deg);
     }
 
+    .tool-card:hover .heatmap-preview {
+      transform: rotate(1.5deg) scale(1.035);
+    }
+
     .heatmap-preview-header {
       margin-bottom: 12px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 12px;
     }
 
-    .heatmap-preview-copy {
-      min-width: 0;
-    }
-
-    .heatmap-preview-eyebrow {
+    .heatmap-preview-header span {
       display: block;
       color: var(--orange);
       font-size: 7px;
@@ -1053,84 +1171,14 @@
       text-transform: uppercase;
     }
 
-    .heatmap-preview-title {
+    .heatmap-preview-header strong {
       display: block;
       margin-top: 4px;
       font-family: "Archivo Black", sans-serif;
-      font-size: clamp(15px, 4.4cqi, 27px);
-      line-height: 0.95;
-      letter-spacing: -0.045em;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: -0.04em;
       text-transform: uppercase;
-    }
-
-    .heatmap-preview-controls {
-      display: flex;
-      gap: 4px;
-    }
-
-    .preview-control {
-      width: 17px;
-      height: 17px;
-      border: 1px solid rgba(255, 255, 255, 0.28);
-    }
-
-    .preview-control:nth-child(1) {
-      background: var(--orange);
-    }
-
-    .preview-control:nth-child(2) {
-      background: var(--lime);
-    }
-
-    .preview-control:nth-child(3) {
-      background: var(--white);
-    }
-
-    .heatmap-preview-body {
-      display: grid;
-      grid-template-columns: 48px minmax(0, 1fr);
-      gap: 6px;
-    }
-
-    .heatmap-row-labels {
-      padding-top: 17px;
-      display: grid;
-      grid-template-rows: repeat(4, 42px);
-      gap: 5px;
-    }
-
-    .heatmap-row-labels span {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      color: var(--grey);
-      font-size: 6px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-align: right;
-      text-transform: uppercase;
-    }
-
-    .heatmap-chart-area {
-      min-width: 0;
-    }
-
-    .heatmap-column-labels {
-      height: 17px;
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 5px;
-    }
-
-    .heatmap-column-labels span {
-      overflow: hidden;
-      color: var(--grey);
-      font-size: 6px;
-      font-weight: 800;
-      text-align: center;
-      text-overflow: ellipsis;
-      text-transform: uppercase;
-      white-space: nowrap;
     }
 
     .heatmap-board {
@@ -1140,13 +1188,13 @@
     }
 
     .heatmap-chip {
-      min-height: 42px;
+      min-height: 43px;
       display: grid;
       place-items: center;
       color: var(--white);
       background: color-mix(
         in srgb,
-        var(--orange) var(--heat-strength, 75%),
+        var(--orange) var(--heat-strength, 72%),
         var(--panel-light)
       );
       border: 1px solid rgba(255, 255, 255, 0.18);
@@ -1157,7 +1205,7 @@
     .heatmap-chip.negative {
       background: color-mix(
         in srgb,
-        #8b1e2d var(--heat-strength, 75%),
+        #8b1e2d var(--heat-strength, 72%),
         var(--panel-light)
       );
     }
@@ -1175,56 +1223,10 @@
           rgba(255, 255, 255, 0.14) 0 7px,
           rgba(255, 255, 255, 0.03) 7px 14px
         ),
-        #242421;
+        var(--panel-light);
     }
 
-    .heatmap-preview-legend {
-      margin-top: 10px;
-      padding-top: 8px;
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 4px;
-      border-top: 1px solid rgba(255, 255, 255, 0.16);
-    }
-
-    .heatmap-preview-legend span {
-      height: 6px;
-      background: var(--orange);
-    }
-
-    .heatmap-preview-legend span:nth-child(1) {
-      background: #5c1b25;
-    }
-
-    .heatmap-preview-legend span:nth-child(2) {
-      background: #8b1e2d;
-    }
-
-    .heatmap-preview-legend span:nth-child(3) {
-      background: #bb2e24;
-    }
-
-    .heatmap-preview-legend span:nth-child(4) {
-      background: var(--lime);
-    }
-
-    .heatmap-preview-legend span:nth-child(5) {
-      background: #c73817;
-    }
-
-    .heatmap-preview-legend span:nth-child(6) {
-      background: var(--orange);
-    }
-
-    .heatmap-preview-legend span:nth-child(7) {
-      background:
-        repeating-linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.18) 0 3px,
-          transparent 3px 6px
-        ),
-        #242421;
-    }
+    /* Footer */
 
     footer {
       padding: 28px;
@@ -1243,51 +1245,49 @@
       .tool-card-bottom {
         align-items: flex-start;
         flex-direction: column;
-        gap: 22px;
       }
     }
 
-    @media (max-width: 980px) {
-      .hero {
+    @media (max-width: 1050px) {
+      .hero,
+      .gateway-layout {
         grid-template-columns: 1fr;
       }
 
-      .hero-title {
-        font-size: clamp(58px, 14cqi, 122px);
-      }
-
-      .graph-card {
+      .gateway-board {
         min-height: 520px;
-      }
-
-      .section-header,
-      .tools-header {
-        grid-template-columns: 1fr;
-      }
-
-      .principle:nth-child(n) {
-        grid-column: span 6;
       }
 
       .tools-grid {
         grid-template-columns: 1fr;
       }
+    }
 
-      .tool-card {
-        min-height: 650px;
-        grid-template-rows: auto minmax(280px, 1fr) auto;
+    @media (max-width: 850px) {
+      .section-header,
+      .tools-header {
+        grid-template-columns: 1fr;
       }
 
-      .tool-visual {
-        min-height: 280px;
+      .why-card:nth-child(n) {
+        grid-column: span 6;
       }
 
-      .tool-card h3 {
-        font-size: clamp(35px, 8cqi, 65px);
+      .guide-banner,
+      .why-guide-link {
+        grid-template-columns: 1fr;
+      }
+
+      .guide-banner-actions {
+        justify-content: flex-start;
       }
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 680px) {
+      :root {
+        --navigation-height: 66px;
+      }
+
       .nav,
       .hero,
       .section,
@@ -1297,21 +1297,13 @@
         padding-right: 18px;
       }
 
-      .nav {
-        height: 66px;
-      }
-
-      .announcement {
-        margin-top: 66px;
-      }
-
       .brand-name span {
         display: none;
       }
 
       .nav-links {
-        gap: 15px;
-        font-size: 9px;
+        gap: 13px;
+        font-size: 8px;
       }
 
       .nav-links a:first-child {
@@ -1330,7 +1322,8 @@
         -webkit-text-stroke-width: 1px;
       }
 
-      .hero-actions {
+      .hero-actions,
+      .gateway-actions {
         align-items: stretch;
         flex-direction: column;
       }
@@ -1347,32 +1340,34 @@
         font-size: 7px;
       }
 
-      .graph-label {
-        max-width: calc(100% - 44px);
-        font-size: 11px;
-      }
-
-      .section {
+      .section,
+      .tools-showcase {
         padding-top: 80px;
         padding-bottom: 80px;
       }
 
-      .section-header {
-        margin-bottom: 38px;
-      }
-
       .section-title,
-      .tools-title {
+      .tools-title,
+      .gateway-title {
         font-size: clamp(44px, 14cqi, 76px);
       }
 
-      .principle:nth-child(n) {
+      .why-card:nth-child(n) {
         grid-column: span 12;
         min-height: 370px;
       }
 
-      .principle-title {
-        font-size: clamp(32px, 11.5cqi, 54px);
+      .gateway-board {
+        min-height: 470px;
+        padding: 18px;
+      }
+
+      .gateway-principles {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .gateway-principle:last-child {
+        grid-column: span 2;
       }
 
       .statement {
@@ -1384,83 +1379,36 @@
         font-size: clamp(44px, 13.5cqi, 76px);
       }
 
-      .tools-showcase {
-        padding-top: 80px;
-        padding-bottom: 80px;
-      }
-
-      .tools-header {
-        margin-bottom: 38px;
-      }
-
       .tool-card {
         min-height: 0;
         padding: 19px;
         grid-template-rows: auto 260px auto;
-        gap: 20px;
-      }
-
-      .tool-card-top {
-        align-items: flex-start;
-        gap: 10px;
-      }
-
-      .tool-status-label {
-        padding: 7px 9px;
-        font-size: 8px;
       }
 
       .tool-visual {
-        width: 100%;
-        height: 260px;
         min-height: 260px;
       }
 
       .tool-card-bottom {
         align-items: flex-start;
         flex-direction: column;
-        gap: 22px;
       }
 
-      .tool-card h3 {
-        font-size: clamp(32px, 10cqi, 52px);
-      }
-
-      .matrix-board {
-        width: 94%;
+      .matrix-board,
+      .heatmap-preview {
+        width: 95%;
         padding: 10px;
-        gap: 7px;
         box-shadow: 8px 8px 0 var(--orange);
       }
 
       .matrix-row {
         min-height: 40px;
         padding: 6px 8px;
-        grid-template-columns: minmax(60px, 1.2fr) repeat(3, minmax(28px, 0.5fr));
-        gap: 5px;
       }
 
       .matrix-name,
       .matrix-value {
         font-size: 8px;
-      }
-
-      .matrix-value.featured {
-        font-size: 11px;
-      }
-
-      .heatmap-preview-shell {
-        width: 96%;
-        padding: 10px;
-        box-shadow: 8px 8px 0 var(--orange);
-      }
-
-      .heatmap-preview-body {
-        grid-template-columns: 39px minmax(0, 1fr);
-      }
-
-      .heatmap-row-labels {
-        grid-template-rows: repeat(4, 34px);
       }
 
       .heatmap-chip {
@@ -1469,51 +1417,9 @@
       }
 
       footer {
+        padding-right: 18px;
+        padding-left: 18px;
         flex-direction: column;
-      }
-    }
-
-    @media (max-width: 390px) {
-      .nav-links {
-        gap: 10px;
-      }
-
-      .hero-title {
-        font-size: clamp(44px, 15cqi, 64px);
-      }
-
-      .principle {
-        padding: 19px;
-      }
-
-      .principle-meta {
-        gap: 10px;
-        font-size: 8px;
-      }
-
-      .tool-card {
-        grid-template-rows: auto 230px auto;
-      }
-
-      .tool-visual {
-        height: 230px;
-        min-height: 230px;
-      }
-
-      .tool-card-top {
-        font-size: 8px;
-      }
-
-      .heatmap-preview-shell {
-        transform: none;
-      }
-
-      .heatmap-row-labels {
-        display: none;
-      }
-
-      .heatmap-preview-body {
-        grid-template-columns: 1fr;
       }
     }
 
@@ -1545,13 +1451,15 @@
 
     <div class="nav-links">
       <a href="#why">Why visualisation</a>
+      <a href="visualisation-principles/">Principles</a>
       <a href="#tools">Tools</a>
     </div>
   </nav>
 
-  <div class="announcement" aria-label="Visualisation tools available">
+  <div class="announcement" aria-label="Visualisation resources available">
     <div class="announcement-track">
-      <span>Visualisation tools now available</span>
+      <span>Visualisation resources now available</span>
+      <span>Visualisation principles guide</span>
       <span>Venn diagram maker</span>
       <span>Comparison butterfly chart</span>
       <span>Brand performance matrix</span>
@@ -1559,7 +1467,8 @@
       <span>Heatmap graph maker</span>
       <span>Connected data, clearly understood</span>
 
-      <span>Visualisation tools now available</span>
+      <span>Visualisation resources now available</span>
+      <span>Visualisation principles guide</span>
       <span>Venn diagram maker</span>
       <span>Comparison butterfly chart</span>
       <span>Brand performance matrix</span>
@@ -1579,19 +1488,18 @@
         </h1>
 
         <p id="hero-description" class="hero-copy">
-          Data only becomes useful when people can understand it. We are
-          building flexible visualisation tools that turn complex relationships,
-          comparisons and patterns into clear, editable and presentation-ready
-          pictures.
+          Turn comparisons, relationships and patterns into clear visual
+          outputs. Start with the principles to choose an effective form,
+          or open a tool and begin creating.
         </p>
 
         <div class="hero-actions">
-          <a class="button button-primary" href="#tools">
-            Explore the tools ↓
+          <a class="button button-primary" href="visualisation-principles/">
+            Choose the right visual →
           </a>
 
-          <a class="button button-secondary" href="#why">
-            Why visualisation matters ↓
+          <a class="button button-secondary" href="#tools">
+            Explore all tools ↓
           </a>
         </div>
       </div>
@@ -1605,7 +1513,8 @@
         <svg id="network" viewBox="0 0 600 700" role="img" aria-label="A visual network of connected entities"></svg>
 
         <div class="graph-label">
-          See the relationships that rows, reports and dashboards leave hidden.
+          Start with the viewer’s task. Then choose the form that makes the
+          important structure easiest to see.
         </div>
       </div>
     </section>
@@ -1622,17 +1531,15 @@
         </div>
 
         <p id="why-description" class="section-copy">
-          Intelligence rarely arrives as a complete picture. It is distributed
-          across people, organisations, events, locations and sources.
-          Effective data visualisation brings those fragments together,
-          making complicated information easier to investigate, explain and
-          act upon.
+          Intelligence rarely arrives as a complete picture. Effective
+          visualisation brings fragmented information together, making
+          relationships easier to investigate, explain and act upon.
         </p>
       </header>
 
-      <div class="principles-grid">
-        <article class="principle">
-          <div class="principle-meta">
+      <div class="why-grid">
+        <article class="why-card">
+          <div class="why-meta">
             <span>01 / Reveal</span>
             <span>Hidden structure</span>
           </div>
@@ -1651,14 +1558,14 @@
             </g>
           </svg>
 
-          <h3 id="principle-reveal-title" class="principle-title">
+          <h3 id="why-reveal-title" class="why-title">
             Reveal hidden<br>
             relationships
           </h3>
         </article>
 
-        <article class="principle">
-          <div class="principle-meta">
+        <article class="why-card">
+          <div class="why-meta">
             <span>02 / Understand</span>
             <span>Complex networks</span>
           </div>
@@ -1679,14 +1586,14 @@
             </g>
           </svg>
 
-          <h3 id="principle-understand-title" class="principle-title">
+          <h3 id="why-understand-title" class="why-title">
             Make complexity<br>
             understandable
           </h3>
         </article>
 
-        <article class="principle">
-          <div class="principle-meta">
+        <article class="why-card">
+          <div class="why-meta">
             <span>03 / Investigate</span>
             <span>Faster discovery</span>
           </div>
@@ -1702,14 +1609,14 @@
             </g>
           </svg>
 
-          <h3 id="principle-investigate-title" class="principle-title">
+          <h3 id="why-investigate-title" class="why-title">
             Follow the<br>
             evidence
           </h3>
         </article>
 
-        <article class="principle">
-          <div class="principle-meta">
+        <article class="why-card">
+          <div class="why-meta">
             <span>04 / Communicate</span>
             <span>Shared understanding</span>
           </div>
@@ -1721,11 +1628,108 @@
             </g>
           </svg>
 
-          <h3 id="principle-communicate-title" class="principle-title">
+          <h3 id="why-communicate-title" class="why-title">
             Turn analysis<br>
             into insight
           </h3>
         </article>
+      </div>
+
+      <a class="why-guide-link" href="visualisation-principles/" aria-label="Read the visualisation principles guide">
+        <div>
+          <h3 id="why-guide-title">Not sure how to turn an idea into a visual?</h3>
+
+          <p id="why-guide-description">
+            Explore five practical principles for choosing an effective form,
+            revealing structure, representing information honestly and
+            protecting accessibility.
+          </p>
+        </div>
+
+        <span class="inline-arrow" aria-hidden="true">→</span>
+      </a>
+    </section>
+
+    <section class="section principles-gateway" id="principles">
+      <div class="gateway-layout">
+        <div class="gateway-copy">
+          <span class="section-number">02 / Before you build</span>
+
+          <h2 id="gateway-title" class="display gateway-title">
+            Choose with<br>
+            purpose.
+          </h2>
+
+          <p id="gateway-description" class="gateway-description">
+            A useful visual begins with the viewer’s task—not a favourite chart
+            type. Learn five practical rules for choosing a form, revealing
+            structure and representing information clearly.
+          </p>
+
+          <div class="gateway-actions">
+            <a class="button button-primary" href="visualisation-principles/">
+              Explore the principles →
+            </a>
+
+            <a class="button button-secondary" href="#tools">
+              Jump to the tools ↓
+            </a>
+          </div>
+        </div>
+
+        <div class="gateway-board" aria-label="Task-first visualisation design process">
+          <div class="gateway-board-meta">
+            <span>Task-first design</span>
+            <span>Five practical principles</span>
+          </div>
+
+          <div class="gateway-flow">
+            <svg viewBox="0 0 500 300" aria-hidden="true">
+              <defs>
+                <marker id="gateway-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                  <path d="M0,0 L8,4 L0,8 Z" fill="#b9b9b2"></path>
+                </marker>
+              </defs>
+
+              <path class="gateway-line" d="M250 48 C250 85 120 85 120 120"></path>
+              <path class="gateway-line" d="M250 48 C250 85 380 85 380 120"></path>
+              <path class="gateway-line" d="M120 165 C120 230 250 215 250 260"></path>
+              <path class="gateway-line" d="M380 165 C380 230 250 215 250 260"></path>
+            </svg>
+
+            <div class="gateway-node task">Viewer task</div>
+            <div class="gateway-node form">Visual form</div>
+            <div class="gateway-node structure">Clear structure</div>
+            <div class="gateway-node result">Understanding</div>
+          </div>
+
+          <div class="gateway-principles">
+            <div class="gateway-principle">
+              <strong>01</strong>
+              <span>Start with the task</span>
+            </div>
+
+            <div class="gateway-principle">
+              <strong>02</strong>
+              <span>Choose the right form</span>
+            </div>
+
+            <div class="gateway-principle">
+              <strong>03</strong>
+              <span>Make structure visible</span>
+            </div>
+
+            <div class="gateway-principle">
+              <strong>04</strong>
+              <span>Encode honestly</span>
+            </div>
+
+            <div class="gateway-principle">
+              <strong>05</strong>
+              <span>Design for everyone</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1739,9 +1743,9 @@
         </h2>
 
         <p id="statement-description" class="statement-copy">
-          A useful visualisation does not decorate an answer. It creates a
-          space where analysts can ask better questions, compare evidence,
-          discover unexpected connections and communicate their reasoning.
+          Choosing, simplifying and arranging information are part of the
+          analytical process. A useful visual helps people ask better questions,
+          compare evidence and communicate their reasoning.
         </p>
       </div>
     </section>
@@ -1749,7 +1753,7 @@
     <section class="tools-showcase" id="tools">
       <header class="tools-header">
         <div>
-          <span class="tools-number">02 / Visualisation tools</span>
+          <span class="tools-number">03 / Visualisation tools</span>
 
           <h2 id="tools-title" class="display tools-title">
             Built to make<br>
@@ -1758,11 +1762,30 @@
         </div>
 
         <p id="tools-description" class="tools-introduction">
-          A collection of flexible browser-based visualisation tools. Customise
-          content, labels, colours and data directly in each tool, then export
-          presentation-ready graphics without uploading your information.
+          Customise content, labels, colours and data directly in each
+          browser-based tool, then export presentation-ready graphics without
+          uploading your information.
         </p>
       </header>
+
+      <aside class="guide-banner">
+        <div>
+          <span class="guide-banner-label">Not sure which tool fits?</span>
+
+          <h3 id="guide-banner-title">Start with the task.</h3>
+
+          <p id="guide-banner-description">
+            Compare, trace, explain or reveal a pattern—the right visual depends
+            on what your viewer needs to understand.
+          </p>
+        </div>
+
+        <div class="guide-banner-actions">
+          <a class="button button-primary" href="visualisation-principles/">
+            Use the visual guide →
+          </a>
+        </div>
+      </aside>
 
       <div class="tools-grid">
         <a class="tool-card venn-tool" href="tools/audience-overlap/" aria-label="Open the Venn diagram maker">
@@ -1773,31 +1796,18 @@
 
           <div class="tool-visual" aria-hidden="true">
             <svg class="venn-preview" viewBox="0 0 700 400">
-              <g class="relationship-line">
-                <path d="M245 235L455 235"></path>
-                <path d="M245 235L350 112"></path>
-                <path d="M455 235L350 112"></path>
+              <circle cx="245" cy="235" r="130" fill="#ff3d0a" fill-opacity=".9" stroke="#080808" stroke-width="5"></circle>
+              <circle cx="455" cy="235" r="116" fill="#a8ff37" fill-opacity=".9" stroke="#080808" stroke-width="5"></circle>
+              <circle cx="350" cy="112" r="100" fill="#f7f7f2" fill-opacity=".9" stroke="#080808" stroke-width="5"></circle>
+
+              <g class="preview-text" fill="#080808">
+                <text x="205" y="260">SET A</text>
+                <text x="495" y="260">SET B</text>
+                <text x="350" y="88">SET C</text>
               </g>
 
-              <circle class="set-circle set-a" cx="245" cy="235" r="130"></circle>
-              <circle class="set-circle set-b" cx="455" cy="235" r="116"></circle>
-              <circle class="set-circle set-c" cx="350" cy="112" r="100"></circle>
-
-              <text class="set-name" x="205" y="260">Set A</text>
-              <text class="set-value" x="205" y="279">100</text>
-              <text class="set-name" x="495" y="260">Set B</text>
-              <text class="set-value" x="495" y="279">80</text>
-              <text class="set-name" x="350" y="85">Set C</text>
-              <text class="set-value" x="350" y="104">70</text>
-
-              <rect class="overlap-tag" x="318" y="239" width="64" height="23" rx="11.5"></rect>
-              <text class="overlap-text" x="350" y="254">A ∩ B · 20</text>
-
-              <rect class="overlap-tag" x="251" y="154" width="72" height="23" rx="11.5"></rect>
-              <text class="overlap-text" x="287" y="169">A ∩ C · 15</text>
-
-              <rect class="overlap-tag" x="377" y="154" width="72" height="23" rx="11.5"></rect>
-              <text class="overlap-text" x="413" y="169">B ∩ C · 10</text>
+              <rect x="316" y="235" width="68" height="25" rx="12.5" fill="#080808"></rect>
+              <text class="preview-text" x="350" y="252" fill="#f7f7f2">A ∩ B</text>
             </svg>
           </div>
 
@@ -1805,10 +1815,11 @@
             <div>
               <h3 id="venn-tool-title">Venn diagram<br>maker</h3>
 
+              <span class="tool-best-for">Best for / Set overlap</span>
+
               <p id="venn-tool-description">
-                Build a proportional Venn diagram with two or three sets.
-                Enter each set size and control the overlap between every
-                pair independently.
+                Build a proportional Venn diagram with two or three sets and
+                control the overlap between every pair independently.
               </p>
             </div>
 
@@ -1816,16 +1827,16 @@
           </div>
         </a>
 
-        <a class="tool-card butterfly-tool" href="tools/butterfly-diagrams/" aria-label="Open the comparison butterfly chart tool">
+        <a class="tool-card butterfly-tool" href="tools/butterfly-diagrams/" aria-label="Open the comparison butterfly chart">
           <div class="tool-card-top">
             <span>Tool 02 / Comparison</span>
             <span class="tool-status-label">Available now</span>
           </div>
 
           <div class="tool-visual" aria-hidden="true">
-            <svg class="butterfly-chart-preview" viewBox="0 0 700 400">
-              <text class="butterfly-heading" x="205" y="45">Dataset A</text>
-              <text class="butterfly-heading" x="495" y="45">Dataset B</text>
+            <svg class="butterfly-preview" viewBox="0 0 700 400">
+              <text class="preview-text" x="205" y="45" fill="#080808">DATASET A</text>
+              <text class="preview-text" x="495" y="45" fill="#080808">DATASET B</text>
 
               <g fill="#080808">
                 <rect x="105" y="77" width="225" height="35"></rect>
@@ -1850,14 +1861,6 @@
                 <rect x="330" y="257" width="40" height="35"></rect>
                 <rect x="330" y="317" width="40" height="35"></rect>
               </g>
-
-              <g class="butterfly-category">
-                <text x="350" y="99">Measure 1</text>
-                <text x="350" y="159">Measure 2</text>
-                <text x="350" y="219">Measure 3</text>
-                <text x="350" y="279">Measure 4</text>
-                <text x="350" y="339">Measure 5</text>
-              </g>
             </svg>
           </div>
 
@@ -1865,9 +1868,11 @@
             <div>
               <h3 id="butterfly-tool-title">Comparison<br>butterfly chart</h3>
 
+              <span class="tool-best-for">Best for / Two-sided comparison</span>
+
               <p id="butterfly-tool-description">
-                Compare two brands, accounts, audiences or datasets across
-                fully editable categories using a mirrored butterfly chart.
+                Compare two brands, audiences or datasets across fully editable
+                categories using a mirrored chart.
               </p>
             </div>
 
@@ -1875,7 +1880,7 @@
           </div>
         </a>
 
-        <a class="tool-card matrix-tool" href="tools/brand-performance-matrix/" aria-label="Open the brand performance matrix tool">
+        <a class="tool-card matrix-tool" href="tools/brand-performance-matrix/" aria-label="Open the brand performance matrix">
           <div class="tool-card-top">
             <span>Tool 03 / Brand intelligence</span>
             <span class="tool-status-label">Available now</span>
@@ -1924,10 +1929,11 @@
             <div>
               <h3 id="matrix-tool-title">Brand performance<br>matrix</h3>
 
+              <span class="tool-best-for">Best for / Multi-metric comparison</span>
+
               <p id="matrix-tool-description">
-                Add, edit, rank and compare brand performance metrics,
-                customise every label and colour, and export a
-                presentation-ready PNG.
+                Add, edit, rank and compare brand metrics, customise every
+                label and colour, and export a presentation-ready PNG.
               </p>
             </div>
 
@@ -1943,54 +1949,25 @@
 
           <div class="tool-visual" aria-hidden="true">
             <svg class="scatter-preview" viewBox="0 0 700 400">
-              <rect class="plot-background" x="75" y="38" width="550" height="300"></rect>
+              <rect x="75" y="38" width="550" height="300" fill="#f7f7f2"></rect>
+              <rect x="350" y="38" width="275" height="150" fill="#a8ff37" fill-opacity=".28"></rect>
+              <rect x="350" y="188" width="275" height="150" fill="#ff3d0a" fill-opacity=".26"></rect>
 
-              <rect class="quadrant-fill-three" x="75" y="38" width="275" height="150"></rect>
-              <rect class="quadrant-fill-one" x="350" y="38" width="275" height="150"></rect>
-              <rect class="quadrant-fill-four" x="75" y="188" width="275" height="150"></rect>
-              <rect class="quadrant-fill-two" x="350" y="188" width="275" height="150"></rect>
-
-              <g>
-                <line class="grid-line" x1="185" y1="38" x2="185" y2="338"></line>
-                <line class="grid-line" x1="295" y1="38" x2="295" y2="338"></line>
-                <line class="grid-line" x1="405" y1="38" x2="405" y2="338"></line>
-                <line class="grid-line" x1="515" y1="38" x2="515" y2="338"></line>
-                <line class="grid-line" x1="75" y1="98" x2="625" y2="98"></line>
-                <line class="grid-line" x1="75" y1="158" x2="625" y2="158"></line>
-                <line class="grid-line" x1="75" y1="218" x2="625" y2="218"></line>
-                <line class="grid-line" x1="75" y1="278" x2="625" y2="278"></line>
+              <g stroke="#080808" stroke-width="2" stroke-dasharray="7 7" opacity=".32">
+                <line x1="350" y1="38" x2="350" y2="338"></line>
+                <line x1="75" y1="188" x2="625" y2="188"></line>
               </g>
 
-              <line class="split-line" x1="350" y1="38" x2="350" y2="338"></line>
-              <line class="split-line" x1="75" y1="188" x2="625" y2="188"></line>
+              <g>
+                <circle cx="528" cy="95" r="13" fill="#ff3d0a"></circle>
+                <circle cx="445" cy="138" r="11" fill="#080808"></circle>
+                <circle cx="265" cy="112" r="12" fill="#ff3d0a"></circle>
+                <circle cx="490" cy="248" r="10" fill="#080808"></circle>
+                <circle cx="178" cy="270" r="9" fill="#ff3d0a"></circle>
+              </g>
 
-              <text class="quadrant-name" x="212" y="62">BUILD RELEVANCE</text>
-              <text class="quadrant-name" x="488" y="62">PRIORITY</text>
-              <text class="quadrant-name" x="212" y="324">MONITOR</text>
-              <text class="quadrant-name" x="488" y="324">EMERGING</text>
-
-              <circle cx="528" cy="95" r="13" fill="#ff3d0a"></circle>
-              <text class="point-label" x="528" y="75">Item A</text>
-
-              <circle cx="445" cy="138" r="11" fill="#080808"></circle>
-              <text class="point-label" x="445" y="120">Item B</text>
-
-              <circle cx="265" cy="112" r="12" fill="#ff3d0a"></circle>
-              <text class="point-label" x="265" y="93">Item C</text>
-
-              <circle cx="490" cy="248" r="10" fill="#080808"></circle>
-              <text class="point-label" x="490" y="231">Item D</text>
-
-              <circle cx="178" cy="270" r="9" fill="#ff3d0a"></circle>
-              <text class="point-label" x="178" y="253">Item E</text>
-
-              <circle cx="330" cy="205" r="8" fill="#080808"></circle>
-              <circle cx="565" cy="175" r="8" fill="#ff3d0a"></circle>
-
-              <rect class="plot-border" x="75" y="38" width="550" height="300"></rect>
-
-              <text class="axis-label" x="350" y="375">MEASURE X</text>
-              <text class="axis-label" x="28" y="188" transform="rotate(-90 28 188)">MEASURE Y</text>
+              <rect x="75" y="38" width="550" height="300" fill="none" stroke="#f7f7f2" stroke-width="4"></rect>
+              <text class="preview-text" x="350" y="375" fill="#f7f7f2">MEASURE X</text>
             </svg>
           </div>
 
@@ -1998,10 +1975,11 @@
             <div>
               <h3 id="scatter-tool-title">Scatter plot &amp;<br>quadrant maker</h3>
 
+              <span class="tool-best-for">Best for / Positioning and relationships</span>
+
               <p id="scatter-tool-description">
-                Plot and compare items across two measures. Add an X split,
-                a Y split, both or neither, then optionally divide the chart
-                into four editable quadrants.
+                Plot items across two measures, add optional split lines and
+                divide the chart into editable quadrants.
               </p>
             </div>
 
@@ -2016,78 +1994,40 @@
           </div>
 
           <div class="tool-visual" aria-hidden="true">
-            <div class="heatmap-preview-shell">
+            <div class="heatmap-preview">
               <div class="heatmap-preview-header">
-                <div class="heatmap-preview-copy">
-                  <span class="heatmap-preview-eyebrow">Comparative heatmap</span>
-                  <span class="heatmap-preview-title">Performance by category</span>
-                </div>
-
-                <div class="heatmap-preview-controls">
-                  <span class="preview-control"></span>
-                  <span class="preview-control"></span>
-                  <span class="preview-control"></span>
-                </div>
+                <span>Comparative heatmap</span>
+                <strong>Performance by category</strong>
               </div>
 
-              <div class="heatmap-preview-body">
-                <div class="heatmap-row-labels">
-                  <span>Category A</span>
-                  <span>Category B</span>
-                  <span>Category C</span>
-                  <span>Category D</span>
-                </div>
+              <div class="heatmap-board">
+                <span class="heatmap-chip" style="--heat-strength:48%">18</span>
+                <span class="heatmap-chip" style="--heat-strength:58%">24</span>
+                <span class="heatmap-chip" style="--heat-strength:72%">31</span>
+                <span class="heatmap-chip" style="--heat-strength:64%">27</span>
+                <span class="heatmap-chip" style="--heat-strength:40%">14</span>
+                <span class="heatmap-chip negative" style="--heat-strength:58%">-3</span>
 
-                <div class="heatmap-chart-area">
-                  <div class="heatmap-column-labels">
-                    <span>P1</span>
-                    <span>P2</span>
-                    <span>P3</span>
-                    <span>P4</span>
-                    <span>P5</span>
-                    <span>P6</span>
-                  </div>
+                <span class="heatmap-chip" style="--heat-strength:36%">12</span>
+                <span class="heatmap-chip zero">0</span>
+                <span class="heatmap-chip" style="--heat-strength:66%">28</span>
+                <span class="heatmap-chip missing">—</span>
+                <span class="heatmap-chip" style="--heat-strength:54%">22</span>
+                <span class="heatmap-chip" style="--heat-strength:30%">7</span>
 
-                  <div class="heatmap-board">
-                    <span class="heatmap-chip" style="--heat-strength: 48%">18</span>
-                    <span class="heatmap-chip" style="--heat-strength: 58%">24</span>
-                    <span class="heatmap-chip" style="--heat-strength: 72%">31</span>
-                    <span class="heatmap-chip" style="--heat-strength: 64%">27</span>
-                    <span class="heatmap-chip" style="--heat-strength: 40%">14</span>
-                    <span class="heatmap-chip negative" style="--heat-strength: 58%">-3</span>
+                <span class="heatmap-chip" style="--heat-strength:78%">35</span>
+                <span class="heatmap-chip" style="--heat-strength:94%">42</span>
+                <span class="heatmap-chip" style="--heat-strength:88%">39</span>
+                <span class="heatmap-chip" style="--heat-strength:100%">45</span>
+                <span class="heatmap-chip" style="--heat-strength:70%">30</span>
+                <span class="heatmap-chip" style="--heat-strength:36%">12</span>
 
-                    <span class="heatmap-chip" style="--heat-strength: 36%">12</span>
-                    <span class="heatmap-chip zero">0</span>
-                    <span class="heatmap-chip" style="--heat-strength: 66%">28</span>
-                    <span class="heatmap-chip missing">—</span>
-                    <span class="heatmap-chip" style="--heat-strength: 54%">22</span>
-                    <span class="heatmap-chip" style="--heat-strength: 30%">7</span>
-
-                    <span class="heatmap-chip" style="--heat-strength: 78%">35</span>
-                    <span class="heatmap-chip" style="--heat-strength: 94%">42</span>
-                    <span class="heatmap-chip" style="--heat-strength: 88%">39</span>
-                    <span class="heatmap-chip" style="--heat-strength: 100%">45</span>
-                    <span class="heatmap-chip" style="--heat-strength: 70%">30</span>
-                    <span class="heatmap-chip" style="--heat-strength: 36%">12</span>
-
-                    <span class="heatmap-chip negative" style="--heat-strength: 100%">-6</span>
-                    <span class="heatmap-chip" style="--heat-strength: 42%">15</span>
-                    <span class="heatmap-chip" style="--heat-strength: 52%">21</span>
-                    <span class="heatmap-chip" style="--heat-strength: 50%">19</span>
-                    <span class="heatmap-chip zero">0</span>
-                    <span class="heatmap-chip" style="--heat-strength: 25%">4</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="heatmap-preview-legend">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
+                <span class="heatmap-chip negative" style="--heat-strength:100%">-6</span>
+                <span class="heatmap-chip" style="--heat-strength:42%">15</span>
+                <span class="heatmap-chip" style="--heat-strength:52%">21</span>
+                <span class="heatmap-chip" style="--heat-strength:50%">19</span>
+                <span class="heatmap-chip zero">0</span>
+                <span class="heatmap-chip" style="--heat-strength:25%">4</span>
               </div>
             </div>
           </div>
@@ -2096,10 +2036,11 @@
             <div>
               <h3 id="heatmap-tool-title">Heatmap graph<br>maker</h3>
 
+              <span class="tool-best-for">Best for / Two-dimensional patterns</span>
+
               <p id="heatmap-tool-description">
-                Build a heatmap for any dataset. Edit titles, row and column
-                labels, values, units and colour scales, manage zero and
-                missing states, and export a presentation-ready PNG.
+                Edit titles, axes, values, units and colour scales, manage
+                zero and missing states, and export a custom PNG.
               </p>
             </div>
 
@@ -2112,8 +2053,8 @@
 
   <footer>
     <span>Visual Intelligence Lab © 2026</span>
-    <span>Flexible tools for connected thinking</span>
-    <span>Five tools available</span>
+    <span>Five tools · One visualisation guide · All browser-based</span>
+    <span>Task-first · Flexible · Privacy-conscious</span>
   </footer>
 
   <script>
