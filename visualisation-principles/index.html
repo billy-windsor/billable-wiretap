@@ -1,0 +1,1602 @@
+<html lang="en" data-type="html" data-identifier="f5dc619a-df60-4f13-bf29-51be95cd0d56" data-title="Visualisation Principles — Visual Intelligence Lab" data-version="3" width="1200" height="700"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Visualisation Principles — Visual Intelligence Lab</title>
+
+  <meta name="description" content="Five practical principles for creating clear, accurate and accessible diagrams and data visualisations.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --black: #080808;
+      --soft-black: #11110f;
+      --panel: #191917;
+      --panel-light: #242421;
+      --white: #f7f7f2;
+      --grey: #b9b9b2;
+      --dark-grey: #73736e;
+      --orange: #ff3d0a;
+      --lime: #a8ff37;
+      --line: rgba(255, 255, 255, 0.16);
+      --navigation-height: 72px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--white);
+      background: var(--black);
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      cursor: pointer;
+      font: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid var(--lime);
+      outline-offset: 4px;
+    }
+
+    .display {
+      margin: 0;
+      padding-block: 0.04em 0.08em;
+      font-family: "Archivo Black", sans-serif;
+      font-weight: 400;
+      line-height: 0.94;
+      letter-spacing: -0.055em;
+      text-transform: uppercase;
+    }
+
+    /* Navigation */
+
+    .nav {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--navigation-height);
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: var(--black);
+      background: var(--lime);
+      border-radius: 50%;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 18px;
+    }
+
+    .brand-name {
+      font-family: "Archivo Black", sans-serif;
+      font-size: 17px;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+    }
+
+    .brand-name span {
+      color: var(--grey);
+      font-family: "Inter", sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .nav-meta,
+    .nav-links {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-meta {
+      gap: 24px;
+    }
+
+    .nav-links {
+      gap: 22px;
+      color: var(--grey);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .nav-links a {
+      transition: color 180ms ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--lime);
+    }
+
+    .home-link {
+      min-height: 40px;
+      padding: 0 17px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--black);
+      background: var(--orange);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: transform 180ms ease, background 180ms ease;
+    }
+
+    .home-link:hover {
+      background: var(--lime);
+      transform: translateY(-2px);
+    }
+
+    /* Hero */
+
+    .hero {
+      position: relative;
+      min-height: 760px;
+      padding: calc(var(--navigation-height) + 76px) 28px 76px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(390px, 0.88fr);
+      gap: 46px;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 3%;
+      right: 10%;
+      width: 560px;
+      height: 560px;
+      background: var(--orange);
+      border-radius: 50%;
+      filter: blur(185px);
+      opacity: 0.14;
+      pointer-events: none;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      min-width: 0;
+      container-type: inline-size;
+    }
+
+    .hero-kicker {
+      display: block;
+      margin-bottom: 22px;
+      color: var(--orange);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .hero-title {
+      max-width: 940px;
+      font-size: clamp(58px, 12cqi, 132px);
+    }
+
+    .hero-title .outline {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--white);
+    }
+
+    .hero-title .accent {
+      color: var(--lime);
+    }
+
+    .hero-description {
+      max-width: 650px;
+      margin: 32px 0;
+      color: var(--grey);
+      font-size: clamp(15px, 1.4vw, 19px);
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px;
+    }
+
+    .button {
+      min-height: 50px;
+      padding: 0 21px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      transition: transform 180ms ease, color 180ms ease, background 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-3px);
+    }
+
+    .button-primary {
+      color: var(--black);
+      background: var(--lime);
+      border-color: var(--lime);
+    }
+
+    .button-primary:hover {
+      background: var(--white);
+      border-color: var(--white);
+    }
+
+    .button-secondary:hover {
+      color: var(--black);
+      background: var(--white);
+    }
+
+    /* Hero diagram */
+
+    .hero-diagram {
+      position: relative;
+      z-index: 2;
+      min-height: 560px;
+      padding: 27px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        var(--soft-black);
+      background-size: 38px 38px;
+      border: 1px solid var(--line);
+    }
+
+    .diagram-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--grey);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .diagram-canvas {
+      position: relative;
+      height: 365px;
+      margin: 16px 0;
+    }
+
+    .diagram-canvas svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .diagram-line {
+      fill: none;
+      stroke: var(--grey);
+      stroke-width: 2;
+      stroke-dasharray: 7 7;
+      marker-end: url("#hero-arrow");
+    }
+
+    .diagram-node {
+      position: absolute;
+      z-index: 2;
+      min-width: 112px;
+      padding: 13px;
+      color: var(--black);
+      background: var(--white);
+      border: 2px solid var(--black);
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.3;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .diagram-node.start {
+      top: 12px;
+      left: 50%;
+      background: var(--lime);
+      transform: translateX(-50%);
+    }
+
+    .diagram-node.left {
+      top: 135px;
+      left: 7%;
+      background: var(--orange);
+    }
+
+    .diagram-node.right {
+      top: 135px;
+      right: 7%;
+    }
+
+    .diagram-node.end {
+      bottom: 18px;
+      left: 50%;
+      color: var(--white);
+      background: var(--panel-light);
+      border-color: var(--lime);
+      transform: translateX(-50%);
+    }
+
+    .design-test {
+      margin: 0;
+      padding: 16px;
+      color: var(--black);
+      background: var(--orange);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.45;
+      text-transform: uppercase;
+    }
+
+    /* Shared sections */
+
+    .section {
+      padding: 105px 28px;
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
+      gap: 40px;
+      align-items: end;
+      margin-bottom: 50px;
+    }
+
+    .section-header > * {
+      min-width: 0;
+    }
+
+    .section-header > div {
+      container-type: inline-size;
+    }
+
+    .section-number {
+      display: block;
+      margin-bottom: 18px;
+      color: var(--orange);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-size: clamp(48px, 11cqi, 104px);
+    }
+
+    .section-introduction {
+      margin: 0;
+      color: var(--grey);
+      font-size: 15px;
+      line-height: 1.72;
+    }
+
+    /* Principles */
+
+    .principles {
+      color: var(--black);
+      background: var(--white);
+    }
+
+    .principles .section-introduction {
+      color: #575752;
+    }
+
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .principle-card {
+      position: relative;
+      min-width: 0;
+      min-height: 360px;
+      padding: 23px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      border: 1px solid rgba(8, 8, 8, 0.25);
+      container-type: inline-size;
+    }
+
+    .principle-card:nth-child(1) {
+      grid-column: span 7;
+      background: var(--orange);
+    }
+
+    .principle-card:nth-child(2) {
+      grid-column: span 5;
+      color: var(--white);
+      background: var(--black);
+    }
+
+    .principle-card:nth-child(3) {
+      grid-column: span 4;
+      background: var(--lime);
+    }
+
+    .principle-card:nth-child(4) {
+      grid-column: span 4;
+      color: var(--white);
+      background: var(--panel-light);
+    }
+
+    .principle-card:nth-child(5) {
+      grid-column: span 4;
+      background: #e8e8e1;
+    }
+
+    .principle-card::after {
+      content: attr(data-number);
+      position: absolute;
+      right: -4px;
+      bottom: -30px;
+      color: rgba(8, 8, 8, 0.06);
+      font-family: "Archivo Black", sans-serif;
+      font-size: 160px;
+      line-height: 1;
+    }
+
+    .principle-card:nth-child(2)::after,
+    .principle-card:nth-child(4)::after {
+      color: rgba(255, 255, 255, 0.04);
+    }
+
+    .principle-meta {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .principle-card h3 {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      margin: 38px 0 15px;
+      font-family: "Archivo Black", sans-serif;
+      font-size: clamp(30px, 8cqi, 59px);
+      font-weight: 400;
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+    }
+
+    .principle-card p {
+      position: relative;
+      z-index: 2;
+      max-width: 590px;
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .principle-card:nth-child(2) p,
+    .principle-card:nth-child(4) p {
+      color: var(--grey);
+    }
+
+    .principle-question {
+      position: relative;
+      z-index: 2;
+      margin-top: 22px;
+      padding-top: 14px;
+      border-top: 1px solid currentColor;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      line-height: 1.45;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+
+    /* Selector */
+
+    .selector {
+      color: var(--black);
+      background: var(--orange);
+    }
+
+    .selector .section-number {
+      color: var(--black);
+    }
+
+    .selector .section-introduction {
+      color: rgba(0, 0, 0, 0.72);
+      font-weight: 600;
+    }
+
+    .task-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .task-tab {
+      min-height: 42px;
+      padding: 0 15px;
+      color: var(--black);
+      background: transparent;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      transition: transform 180ms ease, color 180ms ease, background 180ms ease;
+    }
+
+    .task-tab:hover {
+      transform: translateY(-2px);
+    }
+
+    .task-tab.is-active {
+      color: var(--white);
+      background: var(--black);
+    }
+
+    .selector-panel {
+      min-height: 430px;
+      padding: 30px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+      gap: 38px;
+      background: var(--white);
+      border: 2px solid var(--black);
+      box-shadow: 15px 15px 0 var(--black);
+    }
+
+    .selector-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .selector-label {
+      display: block;
+      margin-bottom: 14px;
+      color: #666660;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .selector-copy h3 {
+      margin: 0;
+      font-family: "Archivo Black", sans-serif;
+      font-size: clamp(38px, 5vw, 70px);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+      text-transform: uppercase;
+    }
+
+    .selector-copy p {
+      max-width: 500px;
+      margin: 22px 0 0;
+      color: #575752;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .selector-warning {
+      margin-top: 24px;
+      padding: 14px;
+      color: var(--white);
+      background: var(--black);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .selector-visual {
+      min-height: 350px;
+      padding: 22px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(8, 8, 8, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(8, 8, 8, 0.06) 1px, transparent 1px),
+        #edede7;
+      background-size: 28px 28px;
+      border: 1px solid #c7c7c0;
+    }
+
+    .selector-visual svg {
+      width: 100%;
+      max-width: 570px;
+      max-height: 330px;
+    }
+
+    .demo-bars {
+      width: 100%;
+      max-width: 570px;
+      display: grid;
+      gap: 13px;
+    }
+
+    .demo-bar-row {
+      display: grid;
+      grid-template-columns: 78px minmax(0, 1fr) 38px;
+      gap: 10px;
+      align-items: center;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .demo-bar-track {
+      height: 33px;
+      background: rgba(8, 8, 8, 0.08);
+    }
+
+    .demo-bar-fill {
+      width: var(--bar-width);
+      height: 100%;
+      background: var(--black);
+    }
+
+    .demo-bar-row.highlight .demo-bar-fill {
+      background: var(--orange);
+    }
+
+    /* Warning signs */
+
+    .warnings {
+      background: var(--soft-black);
+    }
+
+    .warning-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .warning-card {
+      min-height: 290px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .warning-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: var(--black);
+      background: var(--orange);
+      font-size: 23px;
+      font-weight: 800;
+    }
+
+    .warning-card h3 {
+      margin: 28px 0 11px;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
+
+    .warning-card p {
+      margin: 0;
+      color: var(--grey);
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    /* Final statement */
+
+    .final-statement {
+      position: relative;
+      padding: 135px 28px;
+      overflow: hidden;
+      text-align: center;
+      background: var(--black);
+    }
+
+    .final-statement::before {
+      content: "CLARITY → STRUCTURE → UNDERSTANDING";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.06);
+      font-family: "Archivo Black", sans-serif;
+      font-size: 9vw;
+      white-space: nowrap;
+      transform: translate(-50%, -50%);
+    }
+
+    .final-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 1120px;
+      margin: 0 auto;
+      container-type: inline-size;
+    }
+
+    .final-kicker {
+      display: block;
+      margin-bottom: 26px;
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .final-title {
+      font-size: clamp(48px, 10.5cqi, 118px);
+    }
+
+    .final-title span {
+      color: var(--orange);
+    }
+
+    .final-description {
+      max-width: 690px;
+      margin: 30px auto 0;
+      color: var(--grey);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .research-note {
+      margin: 0;
+      padding: 20px 28px;
+      color: var(--dark-grey);
+      background: var(--soft-black);
+      border-top: 1px solid var(--line);
+      font-size: 9px;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    footer {
+      padding: 28px;
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      color: var(--dark-grey);
+      border-top: 1px solid var(--line);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      line-height: 1.5;
+      text-transform: uppercase;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 1050px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-diagram {
+        min-height: 520px;
+      }
+
+      .warning-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 850px) {
+      .nav-links {
+        display: none;
+      }
+
+      .section-header,
+      .selector-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .principle-card:nth-child(n) {
+        grid-column: span 12;
+      }
+    }
+
+    @media (max-width: 640px) {
+      :root {
+        --navigation-height: 66px;
+      }
+
+      .nav,
+      .hero,
+      .section,
+      .final-statement {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .nav {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      .brand-name span {
+        display: none;
+      }
+
+      .home-link {
+        min-height: 38px;
+        padding: 0 13px;
+        font-size: 9px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: calc(var(--navigation-height) + 58px);
+      }
+
+      .hero-title {
+        font-size: clamp(48px, 15cqi, 82px);
+      }
+
+      .hero-title .outline {
+        -webkit-text-stroke-width: 1px;
+      }
+
+      .hero-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .hero-diagram {
+        min-height: 440px;
+        padding: 18px;
+      }
+
+      .diagram-canvas {
+        height: 295px;
+      }
+
+      .diagram-node {
+        min-width: 86px;
+        padding: 9px;
+        font-size: 7px;
+      }
+
+      .section {
+        padding-top: 78px;
+        padding-bottom: 78px;
+      }
+
+      .section-header {
+        margin-bottom: 36px;
+      }
+
+      .section-title {
+        font-size: clamp(43px, 14cqi, 72px);
+      }
+
+      .principle-card {
+        min-height: 320px;
+      }
+
+      .selector-panel {
+        padding: 19px;
+        box-shadow: 9px 9px 0 var(--black);
+      }
+
+      .selector-visual {
+        min-height: 290px;
+        padding: 14px;
+      }
+
+      .warning-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .warning-card {
+        min-height: 240px;
+      }
+
+      .final-statement {
+        padding-top: 100px;
+        padding-bottom: 100px;
+      }
+
+      .research-note {
+        padding-right: 18px;
+        padding-left: 18px;
+      }
+
+      footer {
+        padding-right: 18px;
+        padding-left: 18px;
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav">
+    <a class="brand" href="../../" aria-label="Return to the Visual Intelligence Lab homepage">
+      <span class="brand-mark">G</span>
+
+      <span class="brand-name">
+        goat <span>/ Visual Intelligence Lab</span>
+      </span>
+    </a>
+
+    <div class="nav-meta">
+      <div class="nav-links">
+        <a href="#principles">Principles</a>
+        <a href="#choose">Choose a visual</a>
+        <a href="#warnings">Warning signs</a>
+      </div>
+
+      <a class="home-link" href="../../">← Back home</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="hero-kicker">Practical visual design guide</span>
+
+        <h1 id="hero-title" class="display hero-title">
+          Make the<br>
+          <span class="outline">structure</span><br>
+          <span class="accent">obvious.</span>
+        </h1>
+
+        <p id="hero-description" class="hero-description">
+          A good diagram helps someone compare, trace, understand or decide
+          without unnecessary effort. Start with the viewer’s task, make the
+          important pattern clear, then remove anything that competes with it.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button button-primary" href="#principles">
+            Explore five principles ↓
+          </a>
+
+          <a class="button button-secondary" href="#choose">
+            Choose a visual ↓
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-diagram" aria-label="A task-first diagram design process">
+        <div class="diagram-meta">
+          <span>Task-first process</span>
+          <span>Clarity before decoration</span>
+        </div>
+
+        <div class="diagram-canvas">
+          <svg viewBox="0 0 500 365" role="img" aria-label="A process moving from viewer task to a clear visual">
+            <defs>
+              <marker id="hero-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#b9b9b2"></path>
+              </marker>
+            </defs>
+
+            <path class="diagram-line" d="M250 58 C250 100 128 96 128 136"></path>
+            <path class="diagram-line" d="M250 58 C250 100 372 96 372 136"></path>
+            <path class="diagram-line" d="M128 182 C128 251 250 236 250 305"></path>
+            <path class="diagram-line" d="M372 182 C372 251 250 236 250 305"></path>
+          </svg>
+
+          <div class="diagram-node start">What must the viewer do?</div>
+          <div class="diagram-node left">Choose the form</div>
+          <div class="diagram-node right">Reveal the structure</div>
+          <div class="diagram-node end">Make the answer clear</div>
+        </div>
+
+        <p id="design-test" class="design-test">
+          Design test: what task does this element help the viewer perform?
+        </p>
+      </div>
+    </section>
+
+    <section class="section principles" id="principles">
+      <header class="section-header">
+        <div>
+          <span class="section-number">01 / Essential principles</span>
+
+          <h2 id="principles-title" class="display section-title">
+            Five rules for<br>
+            useful visuals.
+          </h2>
+        </div>
+
+        <p id="principles-introduction" class="section-introduction">
+          These five ideas carry most of the practical value in the full
+          research. Use them before worrying about polish, novelty or animation.
+        </p>
+      </header>
+
+      <div class="principles-grid">
+        <article class="principle-card" data-number="1">
+          <div class="principle-meta">
+            <span>01 / Purpose</span>
+            <span>Begin here</span>
+          </div>
+
+          <div>
+            <h3 id="principle-task-title">Start with the task</h3>
+
+            <p id="principle-task-description">
+              Decide what the viewer must compare, trace, explain, monitor,
+              find or remember before selecting a visual form.
+            </p>
+
+            <div class="principle-question">
+              Ask: what should someone be able to answer?
+            </div>
+          </div>
+        </article>
+
+        <article class="principle-card" data-number="2">
+          <div class="principle-meta">
+            <span>02 / Form</span>
+            <span>Match the purpose</span>
+          </div>
+
+          <div>
+            <h3 id="principle-form-title">Choose the right form</h3>
+
+            <p id="principle-form-description">
+              Use bars for comparison, lines for time, flowcharts for process,
+              trees for hierarchy and networks or matrices for connections.
+            </p>
+
+            <div class="principle-question">
+              Ask: does this form make the task easier?
+            </div>
+          </div>
+        </article>
+
+        <article class="principle-card" data-number="3">
+          <div class="principle-meta">
+            <span>03 / Layout</span>
+            <span>Show relationships</span>
+          </div>
+
+          <div>
+            <h3 id="principle-structure-title">Make structure visible</h3>
+
+            <p id="principle-structure-description">
+              Use alignment, proximity, grouping, whitespace and clear
+              direction to show what belongs together and what happens next.
+            </p>
+
+            <div class="principle-question">
+              Ask: can the groups be seen before they are read?
+            </div>
+          </div>
+        </article>
+
+        <article class="principle-card" data-number="4">
+          <div class="principle-meta">
+            <span>04 / Integrity</span>
+            <span>Represent honestly</span>
+          </div>
+
+          <div>
+            <h3 id="principle-integrity-title">Encode honestly</h3>
+
+            <p id="principle-integrity-description">
+              Prefer aligned position and length for important quantities.
+              Avoid misleading scales, decorative 3D and precision the data
+              cannot support.
+            </p>
+
+            <div class="principle-question">
+              Ask: does the geometry preserve the information?
+            </div>
+          </div>
+        </article>
+
+        <article class="principle-card" data-number="5">
+          <div class="principle-meta">
+            <span>05 / Access</span>
+            <span>Protect the meaning</span>
+          </div>
+
+          <div>
+            <h3 id="principle-access-title">Design for everyone</h3>
+
+            <p id="principle-access-description">
+              Do not make essential meaning depend on colour, hover, animation,
+              tiny text or a large screen. Use labels, contrast, shape and order.
+            </p>
+
+            <div class="principle-question">
+              Ask: does the message survive common constraints?
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section selector" id="choose">
+      <header class="section-header">
+        <div>
+          <span class="section-number">02 / Choose by task</span>
+
+          <h2 id="selector-title" class="display section-title">
+            What must the<br>
+            viewer see?
+          </h2>
+        </div>
+
+        <p id="selector-introduction" class="section-introduction">
+          Choose the primary task to see a strong default. These are starting
+          points rather than rigid rules; always test the result against the
+          actual data and audience.
+        </p>
+      </header>
+
+      <div class="task-tabs" role="tablist" aria-label="Choose a visualisation task">
+        <button class="task-tab is-active" type="button" data-task="compare" role="tab" aria-selected="true">
+          Compare
+        </button>
+
+        <button class="task-tab" type="button" data-task="time" role="tab" aria-selected="false">
+          Change over time
+        </button>
+
+        <button class="task-tab" type="button" data-task="process" role="tab" aria-selected="false">
+          Process
+        </button>
+
+        <button class="task-tab" type="button" data-task="hierarchy" role="tab" aria-selected="false">
+          Hierarchy
+        </button>
+
+        <button class="task-tab" type="button" data-task="relationships" role="tab" aria-selected="false">
+          Relationships
+        </button>
+      </div>
+
+      <div class="selector-panel">
+        <div class="selector-copy">
+          <span id="selector-label" class="selector-label">Strong default</span>
+
+          <h3 id="selector-recommendation">Sorted bars</h3>
+
+          <p id="selector-explanation">
+            Use aligned bars or dot plots when the viewer needs to compare
+            discrete values accurately. Sort them when the original order is
+            not meaningful.
+          </p>
+
+          <div id="selector-warning" class="selector-warning">
+            Use pie or donut charts carefully when precise comparison matters.
+          </div>
+        </div>
+
+        <div id="selector-visual" class="selector-visual" aria-live="polite">
+          <div class="demo-bars">
+            <div class="demo-bar-row">
+              <span>Item A</span>
+              <div class="demo-bar-track">
+                <div class="demo-bar-fill" style="--bar-width: 92%"></div>
+              </div>
+              <span>92</span>
+            </div>
+
+            <div class="demo-bar-row highlight">
+              <span>Item B</span>
+              <div class="demo-bar-track">
+                <div class="demo-bar-fill" style="--bar-width: 76%"></div>
+              </div>
+              <span>76</span>
+            </div>
+
+            <div class="demo-bar-row">
+              <span>Item C</span>
+              <div class="demo-bar-track">
+                <div class="demo-bar-fill" style="--bar-width: 58%"></div>
+              </div>
+              <span>58</span>
+            </div>
+
+            <div class="demo-bar-row">
+              <span>Item D</span>
+              <div class="demo-bar-track">
+                <div class="demo-bar-fill" style="--bar-width: 37%"></div>
+              </div>
+              <span>37</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section warnings" id="warnings">
+      <header class="section-header">
+        <div>
+          <span class="section-number">03 / Warning signs</span>
+
+          <h2 id="warnings-title" class="display section-title">
+            Four things<br>
+            to remove.
+          </h2>
+        </div>
+
+        <p id="warnings-introduction" class="section-introduction">
+          Most weak visuals do not need more styling. They need fewer competing
+          signals, clearer relationships and enough context to support a correct
+          interpretation.
+        </p>
+      </header>
+
+      <div class="warning-grid">
+        <article class="warning-card">
+          <span class="warning-mark">×</span>
+
+          <div>
+            <h3 id="warning-colours-title">Too many colours</h3>
+
+            <p id="warning-colours-description">
+              A large palette destroys hierarchy and is difficult to remember.
+              Keep colours few, stable and meaningful.
+            </p>
+          </div>
+        </article>
+
+        <article class="warning-card">
+          <span class="warning-mark">×</span>
+
+          <div>
+            <h3 id="warning-weight-title">Equal visual weight</h3>
+
+            <p id="warning-weight-description">
+              If every node, border and label shouts, the viewer cannot tell
+              what matters first. Mute context and emphasise the focal point.
+            </p>
+          </div>
+        </article>
+
+        <article class="warning-card">
+          <span class="warning-mark">×</span>
+
+          <div>
+            <h3 id="warning-arrows-title">Ambiguous connections</h3>
+
+            <p id="warning-arrows-description">
+              Every line should have a meaning. Reserve arrowheads for real
+              direction and minimise crossings that make tracing difficult.
+            </p>
+          </div>
+        </article>
+
+        <article class="warning-card">
+          <span class="warning-mark">×</span>
+
+          <div>
+            <h3 id="warning-context-title">Missing context</h3>
+
+            <p id="warning-context-description">
+              Include the units, timeframe, source or assumptions required to
+              understand a number, status or relationship correctly.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="final-statement">
+      <div class="final-inner">
+        <span class="final-kicker">Final principle</span>
+
+        <h2 id="final-title" class="display final-title">
+          Clarity is the deliberate
+          <span>arrangement</span>
+          of information.
+        </h2>
+
+        <p id="final-description" class="final-description">
+          The goal is not to remove information indiscriminately. It is to make
+          the important structure visible before the viewer is burdened by the rest.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <p id="research-note" class="research-note">
+    Guidance informed by Cleveland and McGill, Munzner, Tufte, Shneiderman,
+    WCAG 2.2, Gestalt research and IBM Design Language.
+  </p>
+
+  <footer>
+    <span>Visual Intelligence Lab © 2026</span>
+    <span>Practical guidance for clear visual communication</span>
+    <span>Task-first · Truthful · Accessible</span>
+  </footer>
+
+  <script>
+    const taskContent = {
+      compare: {
+        label: "Strong default",
+        title: "Sorted bars",
+        explanation:
+          "Use aligned bars or dot plots when the viewer needs to compare discrete values accurately. Sort them when the original order is not meaningful.",
+        warning:
+          "Use pie or donut charts carefully when precise comparison matters.",
+        visual: `
+          <div class="demo-bars">
+            <div class="demo-bar-row">
+              <span>Item A</span>
+              <div class="demo-bar-track"><div class="demo-bar-fill" style="--bar-width: 92%"></div></div>
+              <span>92</span>
+            </div>
+            <div class="demo-bar-row highlight">
+              <span>Item B</span>
+              <div class="demo-bar-track"><div class="demo-bar-fill" style="--bar-width: 76%"></div></div>
+              <span>76</span>
+            </div>
+            <div class="demo-bar-row">
+              <span>Item C</span>
+              <div class="demo-bar-track"><div class="demo-bar-fill" style="--bar-width: 58%"></div></div>
+              <span>58</span>
+            </div>
+            <div class="demo-bar-row">
+              <span>Item D</span>
+              <div class="demo-bar-track"><div class="demo-bar-fill" style="--bar-width: 37%"></div></div>
+              <span>37</span>
+            </div>
+          </div>
+        `
+      },
+
+      time: {
+        label: "Strong default",
+        title: "Line chart",
+        explanation:
+          "Use a line chart for continuous change over time. Preserve chronological order and annotate important peaks or changes directly.",
+        warning:
+          "Do not connect unrelated categories as though they form a continuous sequence.",
+        visual: `
+          <svg viewBox="0 0 560 320" role="img" aria-label="Example line chart">
+            <g stroke="#080808" stroke-opacity=".14">
+              <line x1="55" y1="55" x2="520" y2="55"></line>
+              <line x1="55" y1="120" x2="520" y2="120"></line>
+              <line x1="55" y1="185" x2="520" y2="185"></line>
+              <line x1="55" y1="250" x2="520" y2="250"></line>
+            </g>
+
+            <path
+              d="M55 238 L130 205 L205 220 L280 138 L355 162 L430 82 L520 46"
+              fill="none"
+              stroke="#080808"
+              stroke-width="7"
+            ></path>
+
+            <g fill="#ff3d0a">
+              <circle cx="280" cy="138" r="10"></circle>
+              <circle cx="430" cy="82" r="10"></circle>
+              <circle cx="520" cy="46" r="12"></circle>
+            </g>
+          </svg>
+        `
+      },
+
+      process: {
+        label: "Strong default",
+        title: "Flowchart",
+        explanation:
+          "Use a flowchart for sequence and decision logic. Choose one reading direction and make actions, decisions, branches and loops visibly distinct.",
+        warning:
+          "Avoid generic arrows with no defined meaning or connectors crossing unrelated nodes.",
+        visual: `
+          <svg viewBox="0 0 560 320" role="img" aria-label="Example process flow">
+            <defs>
+              <marker id="process-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="#080808"></path>
+              </marker>
+            </defs>
+
+            <g fill="none" stroke="#080808" stroke-width="4" marker-end="url(#process-arrow)">
+              <path d="M145 82 H230"></path>
+              <path d="M330 82 H415"></path>
+              <path d="M465 112 V222 H340"></path>
+              <path d="M230 242 H145"></path>
+            </g>
+
+            <g stroke="#080808" stroke-width="3">
+              <rect x="45" y="52" width="100" height="60" fill="#a8ff37"></rect>
+              <polygon points="280,35 330,82 280,129 230,82" fill="#ff3d0a"></polygon>
+              <rect x="415" y="52" width="100" height="60" fill="#f7f7f2"></rect>
+              <rect x="235" y="212" width="105" height="60" fill="#080808"></rect>
+              <rect x="45" y="212" width="100" height="60" fill="#f7f7f2"></rect>
+            </g>
+          </svg>
+        `
+      },
+
+      hierarchy: {
+        label: "Strong default",
+        title: "Tree",
+        explanation:
+          "Use a tree or indented hierarchy when parent-child structure is central. Align levels and keep the visual treatment of equivalent nodes consistent.",
+        warning:
+          "Use radial layouts carefully when they make reading order or level comparison ambiguous.",
+        visual: `
+          <svg viewBox="0 0 560 320" role="img" aria-label="Example hierarchy tree">
+            <g fill="none" stroke="#080808" stroke-width="3">
+              <path d="M280 78 V122 H140 V162"></path>
+              <path d="M280 122 H420 V162"></path>
+              <path d="M140 212 V246 H80 V270"></path>
+              <path d="M140 246 H200 V270"></path>
+              <path d="M420 212 V246 H360 V270"></path>
+              <path d="M420 246 H480 V270"></path>
+            </g>
+
+            <g stroke="#080808" stroke-width="3">
+              <rect x="225" y="28" width="110" height="50" fill="#ff3d0a"></rect>
+              <rect x="85" y="162" width="110" height="50" fill="#a8ff37"></rect>
+              <rect x="365" y="162" width="110" height="50" fill="#a8ff37"></rect>
+              <rect x="40" y="270" width="80" height="34" fill="#f7f7f2"></rect>
+              <rect x="160" y="270" width="80" height="34" fill="#f7f7f2"></rect>
+              <rect x="320" y="270" width="80" height="34" fill="#f7f7f2"></rect>
+              <rect x="440" y="270" width="80" height="34" fill="#f7f7f2"></rect>
+            </g>
+          </svg>
+        `
+      },
+
+      relationships: {
+        label: "Choose by density",
+        title: "Network or matrix",
+        explanation:
+          "Use a node-link diagram for a small, traceable network. Use grouping, filtering or an adjacency matrix when connection density increases.",
+        warning:
+          "If the links form a hairball, showing every relationship is no longer revealing the structure.",
+        visual: `
+          <svg viewBox="0 0 560 320" role="img" aria-label="Example relationship network">
+            <g stroke="#080808" stroke-width="3" stroke-opacity=".55">
+              <line x1="280" y1="155" x2="95" y2="70"></line>
+              <line x1="280" y1="155" x2="455" y2="65"></line>
+              <line x1="280" y1="155" x2="470" y2="245"></line>
+              <line x1="280" y1="155" x2="105" y2="250"></line>
+              <line x1="95" y1="70" x2="105" y2="250"></line>
+              <line x1="455" y1="65" x2="470" y2="245"></line>
+            </g>
+
+            <g stroke="#080808" stroke-width="3">
+              <circle cx="280" cy="155" r="45" fill="#ff3d0a"></circle>
+              <circle cx="95" cy="70" r="24" fill="#a8ff37"></circle>
+              <circle cx="455" cy="65" r="32" fill="#f7f7f2"></circle>
+              <circle cx="470" cy="245" r="23" fill="#a8ff37"></circle>
+              <circle cx="105" cy="250" r="29" fill="#f7f7f2"></circle>
+            </g>
+          </svg>
+        `
+      }
+    };
+
+    const taskTabs = document.querySelectorAll(".task-tab");
+    const selectorLabel = document.getElementById("selector-label");
+    const selectorRecommendation = document.getElementById("selector-recommendation");
+    const selectorExplanation = document.getElementById("selector-explanation");
+    const selectorWarning = document.getElementById("selector-warning");
+    const selectorVisual = document.getElementById("selector-visual");
+
+    function selectTask(taskName) {
+      const content = taskContent[taskName];
+
+      if (!content) {
+        return;
+      }
+
+      taskTabs.forEach((tab) => {
+        const active = tab.dataset.task === taskName;
+
+        tab.classList.toggle("is-active", active);
+        tab.setAttribute("aria-selected", String(active));
+      });
+
+      selectorLabel.textContent = content.label;
+      selectorRecommendation.textContent = content.title;
+      selectorExplanation.textContent = content.explanation;
+      selectorWarning.textContent = content.warning;
+      selectorVisual.innerHTML = content.visual;
+    }
+
+    taskTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        selectTask(tab.dataset.task);
+      });
+    });
+  </script>
+
+</body></html>
