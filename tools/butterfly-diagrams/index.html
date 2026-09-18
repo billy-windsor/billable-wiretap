@@ -387,8 +387,8 @@
                 const source = new XMLSerializer().serializeToString(copy);
                 const blob = new Blob([source], {type: 'image/svg+xml;charset=utf-8'});
                 const previous = this.dataset.downloadUrl;
-                if (previous) URL.revokeObjectURL(previous);
-                const url = URL.createObjectURL(blob);
+                if (previous) window.URL.revokeObjectURL(previous);
+                const url = window.URL.createObjectURL(blob);
                 this.dataset.downloadUrl = url;
                 const link = document.createElement('a');
                 const name = document.getElementById('chart-title').value.trim() || 'butterfly-chart';
