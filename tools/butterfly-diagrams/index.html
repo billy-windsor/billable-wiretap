@@ -398,8 +398,10 @@
                 link.click();
                 link.remove();
                 document.getElementById('export-status').textContent = 'SVG download requested — ' + svg.getAttribute('width') + ' × ' + svg.getAttribute('height') + ' px.';
-              } catch (error) {
-                document.getElementById('export-status').textContent = 'The download could not start. Try opening this page directly in your browser.';
+                } catch (error) {
+               console.error('SVG export failed:', error);
+               document.getElementById('export-status').textContent =
+              'SVG export failed: ' + error.name + ' — ' + error.message;
               }
             ">Download SVG ↓</button>
             <button id="print-chart" class="export-button secondary-button" type="button" disabled="" onclick="window.print();">Print / PDF</button>
