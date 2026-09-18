@@ -1,18 +1,8 @@
-<html lang="en"><head>
+<html lang="en" data-type="html" data-identifier="98b49dfd-fe4b-4c76-b6e7-821dfb3e56fa" data-title="Customizable Butterfly Chart Maker" data-version="1" width="1200" height="600"><head>
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>Comparison Butterfly Chart — Visual Intelligence Lab</title>
-
-  <meta name="description" content="Create and export a custom category comparison butterfly chart.">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-
+  <meta name="description" content="Create, customize, and export comparison butterfly charts locally in your browser.">
+  <title>Butterfly Chart Maker — Visual Intelligence Lab</title>
   <style>
     :root {
       --black: #080808;
@@ -20,1823 +10,812 @@
       --panel: #191917;
       --white: #f7f7f2;
       --grey: #b9b9b2;
-      --dark-grey: #73736e;
+      --muted: #93938b;
       --orange: #ff3d0a;
       --lime: #a8ff37;
-      --error: #ff7777;
-      --line: rgba(255, 255, 255, 0.16);
+      --error: #ff9999;
+      --line: rgba(255,255,255,.16);
       --nav-height: 72px;
     }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      height: 100%;
-    }
-
-    body {
-      min-height: 100%;
-      margin: 0;
-      overflow: hidden;
-      color: var(--white);
-      background: var(--black);
-      font-family: "Inter", Arial, sans-serif;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    button,
-    a,
-    input {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    button:disabled {
-      cursor: not-allowed;
-      opacity: 0.35;
-    }
-
-    /* Navigation */
-
-    .nav {
-      position: fixed;
-      z-index: 100;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: var(--nav-height);
-      padding: 0 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--line);
-      background: rgba(8, 8, 8, 0.92);
-      backdrop-filter: blur(16px);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-    }
-
-    .brand-mark {
-      width: 40px;
-      height: 40px;
-      display: grid;
-      place-items: center;
-      flex: 0 0 auto;
-      color: var(--black);
-      background: var(--lime);
-      border-radius: 50%;
-      font-family: "Archivo Black", sans-serif;
-      font-size: 18px;
-    }
-
-    .brand-name {
-      font-family: "Archivo Black", sans-serif;
-      font-size: 17px;
-      letter-spacing: -0.04em;
-      text-transform: lowercase;
-    }
-
-    .brand-name span {
-      color: var(--grey);
-      font-family: "Inter", sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-    }
-
-    .nav-meta {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
-    .tool-status {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      color: var(--grey);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--lime);
-      border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(168, 255, 55, 0.5);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      70% {
-        box-shadow: 0 0 0 10px rgba(168, 255, 55, 0);
-      }
-    }
-
-    .home-link {
-      min-height: 40px;
-      padding: 0 17px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--black);
-      background: var(--orange);
-      border-radius: 999px;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition:
-        transform 180ms ease,
-        background 180ms ease;
-    }
-
-    .home-link:hover {
-      background: var(--lime);
-      transform: translateY(-2px);
-    }
-
-    /* Application layout */
-
-    .application {
-      height: 100vh;
-      padding-top: var(--nav-height);
-      display: grid;
-      grid-template-columns: 390px minmax(0, 1fr);
-      overflow: hidden;
-    }
-
-    /* Controls */
-
-    .controls {
-      height: calc(100vh - var(--nav-height));
-      padding: 28px 24px 36px;
-      overflow-y: auto;
-      background: var(--soft-black);
-      border-right: 1px solid var(--line);
-      scrollbar-color: var(--orange) var(--soft-black);
-      scrollbar-width: thin;
-    }
-
-    .controls::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .controls::-webkit-scrollbar-track {
-      background: var(--soft-black);
-    }
-
-    .controls::-webkit-scrollbar-thumb {
-      background: var(--orange);
-    }
-
-    .tool-number {
-      display: block;
-      margin-bottom: 14px;
-      color: var(--orange);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-
-    .controls h1 {
-      max-width: 330px;
-      margin: 0;
-      font-family: "Archivo Black", sans-serif;
-      font-size: 32px;
-      font-weight: 400;
-      line-height: 0.94;
-      letter-spacing: -0.05em;
-      text-transform: uppercase;
-    }
-
-    .controls-intro {
-      margin: 18px 0 28px;
-      color: var(--grey);
-      font-size: 12px;
-      line-height: 1.6;
-    }
-
-    .control-section {
-      margin-bottom: 12px;
-      padding: 18px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-    }
-
-    .control-section:first-of-type {
-      border-top: 3px solid var(--orange);
-    }
-
-    .control-section h2 {
-      margin: 0 0 17px;
-      color: var(--lime);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-    }
-
-    .section-description {
-      margin: -8px 0 17px;
-      color: var(--dark-grey);
-      font-size: 9px;
-      line-height: 1.5;
-    }
-
-    .field {
-      margin-bottom: 16px;
-    }
-
-    .field:last-child {
-      margin-bottom: 0;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      color: var(--grey);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="color"] {
-      width: 100%;
-      height: 44px;
-      min-width: 0;
-      padding: 9px 11px;
-      color: var(--white);
-      background: var(--soft-black);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 0;
-      outline: none;
-      transition:
-        border-color 180ms ease,
-        background 180ms ease;
-    }
-
-    input:hover {
-      border-color: rgba(255, 255, 255, 0.45);
+    * { box-sizing: border-box; }
+    html { height: 100%; color-scheme: dark; }
+    body { margin: 0; padding-top: var(--nav-height); background: var(--black); color: var(--white); font-family: Inter, Arial, sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+    button, summary, select, input[type="color"], input[type="checkbox"] { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .38; }
+    input:disabled, select:disabled { opacity: .45; cursor: not-allowed; }
+    button, a, input, select, summary { -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    .skip-link { position: fixed; top: -60px; left: 16px; z-index: 200; padding: 12px 18px; background: var(--lime); color: var(--black); }
+    .skip-link:focus { top: 12px; }
+
+    .nav { position: fixed; inset: 0 0 auto; height: var(--nav-height); z-index: 100; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 28px; background: rgba(8,8,8,.96); border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 13px; }
+    .brand-mark { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; background: var(--lime); color: var(--black); border-radius: 50%; font-size: 22px; font-weight: 900; }
+    .brand-name { font-family: "Arial Black", Arial, sans-serif; font-size: 20px; font-weight: 900; letter-spacing: -.05em; }
+    .brand-name span { margin-left: 5px; font-family: Arial, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .12em; color: var(--grey); text-transform: uppercase; }
+    .nav-meta { display: flex; align-items: center; gap: 24px; }
+    .tool-status { display: flex; align-items: center; gap: 8px; color: var(--grey); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
+    .home-link { padding: 13px 18px; border-radius: 999px; background: var(--orange); color: var(--black); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+    .home-link:hover { background: var(--lime); }
+
+    .application { display: grid; grid-template-columns: 390px minmax(0,1fr); height: calc(100vh - var(--nav-height)); height: calc(100dvh - var(--nav-height)); }
+    .controls { padding: 28px 24px 32px; overflow-y: auto; background: var(--soft-black); border-right: 1px solid var(--line); scrollbar-color: var(--orange) var(--soft-black); scrollbar-width: thin; }
+    .tool-number { display: block; margin-bottom: 14px; color: var(--orange); font-size: 10px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+    .controls h1 { margin: 0; font-family: "Arial Black", Impact, Arial, sans-serif; font-size: 32px; font-weight: 900; line-height: .98; letter-spacing: -.055em; text-transform: uppercase; }
+    .controls-intro { margin: 17px 0 24px; color: var(--grey); font-size: 12px; line-height: 1.65; }
+
+    .control-section { margin-bottom: 11px; padding: 0 16px; background: var(--panel); border: 1px solid var(--line); }
+    .control-section:first-of-type { border-top: 3px solid var(--orange); }
+    .control-section > summary { padding: 17px 0; color: var(--lime); font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .control-section[open] > summary { margin-bottom: 3px; }
+    .section-body { padding-bottom: 18px; }
+    .section-description { margin: 0 0 15px; color: var(--muted); font-size: 11px; line-height: 1.55; }
+    .field { margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+    label { display: block; margin-bottom: 7px; color: var(--grey); font-size: 11px; font-weight: 600; }
+    input[type="text"], input[type="number"], select { width: 100%; min-width: 0; min-height: 42px; padding: 9px 10px; border: 1px solid rgba(255,255,255,.25); border-radius: 4px; color: var(--white); background: var(--soft-black); font-size: 12px; }
+    input:hover, select:hover { border-color: rgba(255,255,255,.5); }
+    input:focus, select:focus { border-color: var(--lime); }
+    input[aria-invalid="true"] { border-color: var(--error); background: #301b1b; }
+    input[type="color"] { display: block; width: 100%; height: 42px; padding: 4px; background: var(--soft-black); border: 1px solid rgba(255,255,255,.25); border-radius: 4px; }
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 2px; }
+    input[type="color"]::-moz-color-swatch { border: 0; border-radius: 2px; }
+    input[type="range"] { width: 100%; margin: 5px 0 0; accent-color: var(--lime); }
+    .range-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .range-label output { color: var(--white); font-size: 11px; font-variant-numeric: tabular-nums; }
+    .colour-grid, .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .colour-grid { row-gap: 15px; }
+    .colour-grid .field, .two-columns .field { margin-bottom: 0; }
+    .option-row { display: flex; align-items: center; gap: 9px; margin-bottom: 13px; }
+    .option-row:last-child { margin-bottom: 0; }
+    .option-row input { width: 17px; height: 17px; margin: 0; flex-shrink: 0; accent-color: var(--lime); }
+    .option-row label { margin: 0; line-height: 1.5; cursor: pointer; }
+    .small-note { margin: 9px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+
+    .category-inputs-header, .category-input-row { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,.8fr) minmax(0,.8fr) 28px; gap: 6px; align-items: center; }
+    .category-inputs-header { margin-bottom: 8px; color: var(--muted); font-size: 10px; font-weight: 700; }
+    .category-inputs-header span:nth-child(2), .category-inputs-header span:nth-child(3) { text-align: center; }
+    .category-input-row { margin-bottom: 8px; }
+    .category-input-row input { height: 38px; min-height: 38px; padding: 6px; font-size: 11px; }
+    .category-input-row input[type="number"] { text-align: right; appearance: textfield; -moz-appearance: textfield; }
+    .category-input-row input[type="number"]::-webkit-inner-spin-button, .category-input-row input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .remove-row { width: 28px; height: 38px; padding: 0; border: 1px solid transparent; border-radius: 4px; background: transparent; color: var(--grey); font-size: 21px; }
+    .remove-row:hover:not(:disabled) { color: var(--error); background: rgba(255,119,119,.1); border-color: rgba(255,119,119,.3); }
+    .data-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+    .add-row { min-height: 36px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 5px; background: transparent; color: var(--lime); font-size: 11px; font-weight: 700; }
+    .add-row:hover:not(:disabled) { background: rgba(168,255,55,.07); border-color: var(--lime); }
+    .row-count { font-size: 10px; color: var(--muted); }
+    .error { margin: 12px 0; padding: 12px; border-left: 3px solid var(--error); background: rgba(255,119,119,.09); color: var(--error); font-size: 11px; line-height: 1.6; }
+
+    .export-panel { margin-top: 22px; padding-top: 19px; border-top: 1px solid var(--line); }
+    .export-panel h2 { margin: 0 0 8px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+    .export-dimensions { color: var(--grey); font-size: 11px; font-variant-numeric: tabular-nums; }
+    .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 14px; }
+    .export-button { min-height: 45px; padding: 10px; border: 1px solid var(--lime); border-radius: 999px; background: var(--lime); color: var(--black); font-size: 11px; font-weight: 800; }
+    .export-button:hover:not(:disabled) { background: var(--orange); border-color: var(--orange); }
+    .secondary-button { background: transparent; color: var(--white); border-color: rgba(255,255,255,.35); }
+    .secondary-button:hover:not(:disabled) { background: var(--white); border-color: var(--white); color: var(--black); }
+    .export-status { min-height: 16px; margin: 10px 0 0; color: var(--lime); font-size: 11px; line-height: 1.5; }
+    .export-note { margin: 10px 0 0; color: var(--grey); font-size: 11px; line-height: 1.6; }
+    .privacy-note { margin: 20px 0 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .delivery-note { margin-top: 14px; color: #c6b78e; font-size: 10px; line-height: 1.6; }
+    .delivery-note summary { font-weight: 700; }
+    .delivery-note p { margin: 7px 0 0; }
+
+    .preview { min-width: 0; overflow: auto; background: #20201d; }
+    .preview-toolbar { position: sticky; top: 0; left: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding: 18px 24px; border-bottom: 1px solid var(--line); background: #141412; }
+    .preview-toolbar h2 { margin: 0 0 5px; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
+    .preview-state { color: var(--grey); font-size: 11px; }
+    .preview-state[data-state="error"] { color: var(--error); }
+    .preview-tools { display: flex; align-items: end; gap: 10px; }
+    .preview-tools label { margin-bottom: 5px; font-size: 10px; }
+    .preview-tools select { min-height: 33px; width: auto; max-width: 150px; padding: 5px 8px; font-size: 11px; }
+    .preview-stage { min-height: calc(100% - 89px); padding: 42px 28px; background-color: #e9e9e3; }
+    .preview-stage[data-backdrop="dark"] { background-color: #252522; }
+    .preview-stage[data-backdrop="checker"] { background-color: #ededeb; background-image: linear-gradient(45deg,#d9d9d5 25%,transparent 25%),linear-gradient(-45deg,#d9d9d5 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d9d9d5 75%),linear-gradient(-45deg,transparent 75%,#d9d9d5 75%); background-size: 24px 24px; background-position: 0 0,0 12px,12px -12px,-12px 0; }
+    .chart-frame { width: 100%; max-width: 1200px; margin: 0 auto; transition: opacity .15s ease; }
+    .chart-frame.actual-size { width: 1200px; min-width: 1200px; max-width: none; }
+    .chart-frame.is-stale { opacity: .45; }
+    #butterfly-svg { display: block; width: 100%; height: auto; overflow: hidden; }
+    .data-table-details { margin: 0; padding: 18px 24px 24px; border-top: 1px solid var(--line); background: #141412; }
+    .data-table-details summary { font-size: 12px; color: var(--grey); }
+    .data-table-wrap { margin-top: 15px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    caption { padding: 0 0 12px; text-align: left; color: var(--muted); font-size: 11px; }
+    th, td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: right; }
+    th:first-child, td:first-child { text-align: left; overflow-wrap: anywhere; }
+    th { color: var(--lime); font-size: 11px; }
+    td { color: var(--grey); font-variant-numeric: tabular-nums; }
+    .noscript-note { padding: 16px; background: #3b2420; color: var(--white); }
+
+    @media (max-width: 1000px) {
+      .application { grid-template-columns: 360px minmax(0,1fr); }
+      .controls { padding-left: 18px; padding-right: 18px; }
+      .preview-toolbar { padding: 16px; }
     }
-
-    input:focus {
-      background: var(--black);
-      border-color: var(--lime);
-    }
-
-    input[type="color"] {
-      height: 50px;
-      padding: 5px;
-      cursor: pointer;
-    }
-
-    input[type="color"]::-webkit-color-swatch-wrapper {
-      padding: 0;
-    }
-
-    input[type="color"]::-webkit-color-swatch {
-      border: 0;
-    }
-
-    input[type="color"]::-moz-color-swatch {
-      border: 0;
-    }
-
-    .colour-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .colour-grid + .colour-grid {
-      margin-top: 13px;
-    }
-
-    .colour-grid .field {
-      margin-bottom: 0;
-    }
-
-    /* Category data table */
-
-    .category-inputs-header {
-      display: grid;
-      grid-template-columns: minmax(92px, 1.25fr) 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 8px;
-      color: var(--dark-grey);
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-align: center;
-      text-transform: uppercase;
-    }
-
-    .category-input-row {
-      display: grid;
-      grid-template-columns: minmax(92px, 1.25fr) 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .category-input-row:last-child {
-      margin-bottom: 0;
-    }
-
-    .category-input-row input[type="text"],
-    .category-input-row input[type="number"] {
-      min-width: 0;
-      height: 37px;
-      padding: 6px 7px;
-      font-size: 11px;
-    }
-
-    .category-input-row input[type="number"] {
-      text-align: right;
-    }
-
-    /* Checkboxes */
-
-    .option-row {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      margin-bottom: 12px;
-    }
-
-    .option-row:last-child {
-      margin-bottom: 0;
-    }
-
-    .option-row input[type="checkbox"] {
-      width: 17px;
-      height: 17px;
-      margin: 0;
-      accent-color: var(--lime);
-      cursor: pointer;
-    }
-
-    .option-row label {
-      margin: 0;
-      color: #d0d0cb;
-      font-size: 10px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    /* Error */
-
-    .error {
-      display: none;
-      margin: 13px 0 0;
-      padding: 11px;
-      color: var(--error);
-      background: rgba(255, 119, 119, 0.08);
-      border-left: 2px solid var(--error);
-      font-size: 10px;
-      font-weight: 700;
-      line-height: 1.45;
-    }
-
-    .error.visible {
-      display: block;
-    }
-
-    /* Export buttons */
-
-    .buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 20px;
-    }
-
-    button {
-      min-height: 46px;
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 999px;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      transition:
-        transform 180ms ease,
-        background 180ms ease,
-        color 180ms ease;
-    }
-
-    button:hover:not(:disabled) {
-      transform: translateY(-2px);
-    }
-
-    .svg-button {
-      color: var(--white);
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-    }
-
-    .svg-button:hover:not(:disabled) {
-      color: var(--black);
-      background: var(--white);
-    }
-
-    .png-button {
-      color: var(--black);
-      background: var(--lime);
-      border: 1px solid var(--lime);
-    }
-
-    .png-button:hover:not(:disabled) {
-      background: var(--orange);
-      border-color: var(--orange);
-    }
-
-    .privacy-note {
-      margin: 18px 2px 0;
-      color: var(--dark-grey);
-      font-size: 9px;
-      line-height: 1.5;
-    }
-
-    /* Preview */
-
-    .preview {
-      position: relative;
-      min-width: 0;
-      height: calc(100vh - var(--nav-height));
-      padding: 76px 42px 42px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: auto;
-
-      background:
-        linear-gradient(45deg, #1c1c1a 25%, transparent 25%),
-        linear-gradient(-45deg, #1c1c1a 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #1c1c1a 75%),
-        linear-gradient(-45deg, transparent 75%, #1c1c1a 75%),
-        #242421;
-
-      background-size: 26px 26px;
-      background-position:
-        0 0,
-        0 13px,
-        13px -13px,
-        -13px 0;
-    }
-
-    .preview-header {
-      position: absolute;
-      top: 22px;
-      left: 28px;
-      right: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: var(--grey);
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-    }
-
-    .transparent-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .transparent-swatch {
-      width: 13px;
-      height: 13px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      background:
-        linear-gradient(45deg, #777 25%, transparent 25%),
-        linear-gradient(-45deg, #777 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #777 75%),
-        linear-gradient(-45deg, transparent 75%, #777 75%),
-        #aaa;
-      background-size: 6px 6px;
-    }
-
-    .diagram-frame {
-      width: min(100%, 1080px);
-      aspect-ratio: 16 / 9;
-    }
-
-    #butterfly-svg {
-      display: block;
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-      filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.22));
-    }
-
-    /* Responsive */
-
     @media (max-width: 900px) {
-      body {
-        overflow: auto;
-      }
-
-      .application {
-        height: auto;
-        display: block;
-        overflow: visible;
-      }
-
-      .controls {
-        width: 100%;
-        height: auto;
-        overflow: visible;
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .controls h1 {
-        max-width: none;
-      }
-
-      .preview {
-        min-height: 650px;
-        height: auto;
-      }
+      .application { display: block; height: auto; }
+      .controls { height: auto; overflow: visible; border-right: 0; border-bottom: 1px solid var(--line); padding: 26px 22px; }
+      .preview { overflow: auto; }
+      .preview-toolbar { position: relative; }
+      .preview-stage { min-height: 360px; }
+      .control-section { max-width: none; }
+      .controls h1 br { display: none; }
+      .controls h1 { font-size: 30px; }
     }
-
     @media (max-width: 580px) {
-      :root {
-        --nav-height: 66px;
-      }
-
-      .nav {
-        padding: 0 16px;
-      }
-
-      .brand-name span,
-      .tool-status {
-        display: none;
-      }
-
-      .home-link {
-        min-height: 38px;
-        padding: 0 13px;
-        font-size: 9px;
-      }
-
-      .controls {
-        padding: 26px 18px 30px;
-      }
-
-      .controls h1 {
-        font-size: 29px;
-      }
-
-      .preview {
-        min-height: 470px;
-        padding: 65px 16px 20px;
-      }
-
-      .preview-header {
-        top: 20px;
-        left: 18px;
-        right: 18px;
-      }
-
-      .preview-header > span:first-child {
-        display: none;
-      }
-
-      .buttons {
-        grid-template-columns: 1fr;
-      }
+      :root { --nav-height: 66px; }
+      .nav { padding: 0 16px; }
+      .brand-name span, .tool-status { display: none; }
+      .home-link { padding: 12px 14px; font-size: 10px; }
+      .controls { padding: 24px 16px; }
+      .controls h1 { font-size: 28px; }
+      .preview-stage { min-height: 260px; padding: 26px 12px; }
+      .preview-toolbar { gap: 15px; }
+      .preview-tools { width: 100%; justify-content: space-between; }
+      .preview-tools select { max-width: none; }
     }
-
-    @media (max-width: 400px) {
-      .category-inputs-header,
-      .category-input-row {
-        grid-template-columns: minmax(76px, 1.15fr) 1fr 1fr;
-        gap: 5px;
-      }
-    }
-
     @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-      }
+      *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
+    }
+    @media print {
+      @page { size: landscape; margin: 10mm; }
+      html, body { height: auto; margin: 0; padding: 0; background: white; }
+      .nav, .controls, .preview-toolbar, .data-table-details, .skip-link, .noscript-note { display: none !important; }
+      .application, .preview { display: block; height: auto; overflow: visible; background: transparent; }
+      .preview-stage { min-height: 0; padding: 0; background: transparent !important; }
+      .chart-frame, .chart-frame.actual-size { width: 100%; min-width: 0; max-width: none; margin: 0; opacity: 1; }
+      #butterfly-svg { width: 100%; height: auto; max-height: 180mm; }
     }
   </style>
 </head>
 
-<body>
-  <nav class="nav">
-    <a class="brand" href="../../" aria-label="Return to the Visual Intelligence Lab homepage">
-      <span class="brand-mark">G</span>
+<body onload="
+  const defaults = [
+    ['Awareness',32,26],
+    ['Consideration',24,37],
+    ['Preference',46,41],
+    ['Purchase intent',29,35],
+    ['Loyalty',18,23],
+    ['Advocacy',12,15]
+  ];
+  const container = document.getElementById('category-input-container');
+  if (!container.children.length) {
+    defaults.forEach(item =&gt; {
+      const fragment = document.getElementById('category-row-template').content.cloneNode(true);
+      fragment.querySelector('.category-label-input').value = item[0];
+      fragment.querySelector('.left-value-input').value = item[1];
+      fragment.querySelector('.right-value-input').value = item[2];
+      container.appendChild(fragment);
+    });
+  }
+  document.getElementById('refresh-chart').click();
+">
+  <a class="skip-link" href="#preview">Skip to chart preview</a>
 
-      <span class="brand-name">
-        goat <span>/ Visual Intelligence Lab</span>
-      </span>
+  <nav class="nav" aria-label="Main navigation">
+    <a class="brand" href="../../" aria-label="Visual Intelligence Lab homepage">
+      <span class="brand-mark" aria-hidden="true">G</span>
+      <span class="brand-name">goat <span>/ Visual Intelligence Lab</span></span>
     </a>
-
     <div class="nav-meta">
-      <span class="tool-status">
-        <span class="status-dot"></span>
-        Tool online
-      </span>
-
-      <a class="home-link" href="../../">
-        ← Back home
-      </a>
+      <span class="tool-status"><span class="status-dot" aria-hidden="true"></span>Browser tool</span>
+      <a class="home-link" href="../../">← Back home</a>
     </div>
   </nav>
 
+  <noscript>
+    <div class="noscript-note">JavaScript must be enabled to edit and export charts. Open this HTML file in a modern browser or publish it on GitHub Pages.</div>
+  </noscript>
+
   <div class="application">
-    <aside class="controls">
-      <span class="tool-number">
-        Tool 02 / Comparison
-      </span>
+    <aside class="controls" aria-labelledby="tool-title">
+      <span class="tool-number">Tool 02 / Comparison</span>
+      <h1 id="tool-title">Comparison<br> butterfly chart</h1>
+      <p id="controls-intro" class="controls-intro">Your data. Your styling. Compare two sides, fine-tune the chart, and download an editable SVG.</p>
 
-      <h1>
-        Comparison<br>
-        butterfly chart
-      </h1>
-
-      <p class="controls-intro">
-        Compare two brands, accounts, audiences or datasets across a shared
-        set of categories. Enter a percentage for each side and the bars will
-        extend outwards from the centre.
-      </p>
-
-      <section class="control-section">
-        <h2>Comparison names</h2>
-
-        <div class="field">
-          <label for="left-series-name">
-            Left side
-          </label>
-
-          <input id="left-series-name" type="text" value="Brand A" autocomplete="off">
-        </div>
-
-        <div class="field">
-          <label for="right-series-name">
-            Right side
-          </label>
-
-          <input id="right-series-name" type="text" value="Brand B" autocomplete="off">
-        </div>
-
-        <div class="field">
-          <label for="heading-subtitle">
-            Heading subtitle
-          </label>
-
-          <input id="heading-subtitle" type="text" value="CATEGORY SHARE" autocomplete="off">
-        </div>
-      </section>
-
-      <section class="control-section">
-        <h2>Category values</h2>
-
-        <p class="section-description">
-          Category names and values are fully editable. Values represent
-          percentages from 0 to 100.
-        </p>
-
-        <div class="category-inputs-header" aria-hidden="true">
-          <span>Category</span>
-          <span>Left %</span>
-          <span>Right %</span>
-        </div>
-
-        <div id="category-input-container">
-          <div class="category-input-row">
-            <input class="category-label-input" type="text" value="Awareness" aria-label="First category name">
-
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="32" aria-label="Left value for Awareness">
-
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="26" aria-label="Right value for Awareness">
+      <form id="chart-controls" novalidate="" onsubmit="event.preventDefault();" oninput="document.getElementById('refresh-chart').click();">
+        <details class="control-section" open="">
+          <summary>Chart text</summary>
+          <div class="section-body">
+            <div class="field">
+              <label for="chart-title">Chart title <span style="font-weight:400;">· optional</span></label>
+              <input id="chart-title" type="text" value="Brand comparison" maxlength="100" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="heading-subtitle">Subtitle <span style="font-weight:400;">· optional</span></label>
+              <input id="heading-subtitle" type="text" value="CATEGORY SHARE" maxlength="140" autocomplete="off">
+            </div>
+            <div class="two-columns">
+              <div class="field">
+                <label for="left-series-name">Left side</label>
+                <input id="left-series-name" type="text" value="Brand A" maxlength="60" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="right-series-name">Right side</label>
+                <input id="right-series-name" type="text" value="Brand B" maxlength="60" autocomplete="off">
+              </div>
+            </div>
           </div>
+        </details>
 
-          <div class="category-input-row">
-            <input class="category-label-input" type="text" value="Consideration" aria-label="Second category name">
+        <details class="control-section" open="">
+          <summary>Category values</summary>
+          <div class="section-body">
+            <p id="category-help" class="section-description">Use percentages from 0–100, with up to two decimal places. The two sides do not need to total 100%.</p>
+            <div class="category-inputs-header" aria-hidden="true">
+              <span>Category</span><span>Left %</span><span>Right %</span><span></span>
+            </div>
 
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="24" aria-label="Left value for Consideration">
+            <div id="category-input-container"></div>
 
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="37" aria-label="Right value for Consideration">
+            <div class="data-actions">
+              <button id="add-category" class="add-row" type="button" onclick="
+                const container = document.getElementById('category-input-container');
+                if (container.children.length &gt;= 30) return;
+                const fragment = document.getElementById('category-row-template').content.cloneNode(true);
+                fragment.querySelector('.category-label-input').value = 'Category ' + (container.children.length + 1);
+                fragment.querySelector('.left-value-input').value = 25;
+                fragment.querySelector('.right-value-input').value = 25;
+                container.appendChild(fragment);
+                document.getElementById('refresh-chart').click();
+                const input = container.lastElementChild.querySelector('.category-label-input');
+                input.focus();
+                input.select();
+              ">+ Add category</button>
+              <output id="category-count" class="row-count">6 / 30 categories</output>
+            </div>
           </div>
+        </details>
 
-          <div class="category-input-row">
-            <input class="category-label-input" type="text" value="Preference" aria-label="Third category name">
-
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="46" aria-label="Left value for Preference">
-
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="41" aria-label="Right value for Preference">
+        <details class="control-section">
+          <summary>Scale &amp; layout</summary>
+          <div class="section-body">
+            <div class="option-row">
+              <input id="auto-scale" type="checkbox" checked="">
+              <label for="auto-scale">Automatically fit the axis to my data</label>
+            </div>
+            <div class="field">
+              <label for="chart-maximum">Manual axis maximum (%)</label>
+              <input id="chart-maximum" type="number" min="1" max="100" step="1" value="50" disabled="" aria-describedby="axis-help value-error">
+              <p id="axis-help" class="small-note">Both sides always use the same scale. <span id="axis-readout">Automatic: 50%.</span></p>
+            </div>
+            <div class="field">
+              <label class="range-label" for="bar-thickness"><span>Bar thickness</span><output id="bar-thickness-output" for="bar-thickness">34 px</output></label>
+              <input id="bar-thickness" type="range" min="16" max="64" value="34">
+            </div>
+            <div class="field">
+              <label class="range-label" for="row-spacing"><span>Space between rows</span><output id="row-spacing-output" for="row-spacing">22 px</output></label>
+              <input id="row-spacing" type="range" min="8" max="48" value="22">
+            </div>
+            <div class="field">
+              <label class="range-label" for="label-width"><span>Centre label width</span><output id="label-width-output" for="label-width">208 px</output></label>
+              <input id="label-width" type="range" min="160" max="340" step="4" value="208">
+            </div>
+            <div class="field">
+              <label class="range-label" for="bar-radius"><span>Rounded bar corners</span><output id="bar-radius-output" for="bar-radius">3 px</output></label>
+              <input id="bar-radius" type="range" min="0" max="24" value="3">
+            </div>
+            <p id="layout-help" class="small-note">Output width stays at 1200 px. Height adapts to your rows and wrapped labels.</p>
           </div>
+        </details>
 
-          <div class="category-input-row">
-            <input class="category-label-input" type="text" value="Purchase intent" aria-label="Fourth category name">
-
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="29" aria-label="Left value for Purchase intent">
-
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="35" aria-label="Right value for Purchase intent">
+        <details class="control-section">
+          <summary>Typography &amp; values</summary>
+          <div class="section-body">
+            <div class="field">
+              <label for="chart-font">Chart font</label>
+              <select id="chart-font">
+                <option value="Arial, Helvetica, sans-serif">Arial / Helvetica</option>
+                <option value="Verdana, Geneva, sans-serif">Verdana</option>
+                <option value="Georgia, Times New Roman, serif">Georgia</option>
+                <option value="Courier New, Courier, monospace">Courier</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="range-label" for="title-size"><span>Title size</span><output id="title-size-output" for="title-size">32 px</output></label>
+              <input id="title-size" type="range" min="20" max="48" value="32">
+            </div>
+            <div class="field">
+              <label class="range-label" for="category-font-size"><span>Category label size</span><output id="category-font-size-output" for="category-font-size">16 px</output></label>
+              <input id="category-font-size" type="range" min="12" max="26" value="16">
+            </div>
+            <div class="field">
+              <label class="range-label" for="value-font-size"><span>Percentage label size</span><output id="value-font-size-output" for="value-font-size">16 px</output></label>
+              <input id="value-font-size" type="range" min="12" max="26" value="16">
+            </div>
+            <div class="field">
+              <label for="value-position">Percentage placement</label>
+              <select id="value-position">
+                <option value="auto">Automatic — inside when space allows</option>
+                <option value="outside">Outside bars</option>
+              </select>
+            </div>
+            <p id="typography-help" class="small-note">Inside-bar values automatically use black or white for contrast. Font sizes are measured at export size.</p>
           </div>
+        </details>
 
-          <div class="category-input-row">
-            <input class="category-label-input" type="text" value="Loyalty" aria-label="Fifth category name">
-
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="18" aria-label="Left value for Loyalty">
-
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="23" aria-label="Right value for Loyalty">
+        <details class="control-section">
+          <summary>Colours</summary>
+          <div class="section-body">
+            <div class="colour-grid">
+              <div class="field"><label for="left-colour">Left bars</label><input id="left-colour" type="color" value="#ff3d0a"></div>
+              <div class="field"><label for="right-colour">Right bars</label><input id="right-colour" type="color" value="#f7f7f2"></div>
+              <div class="field"><label for="text-colour">Headings, axes &amp; values</label><input id="text-colour" type="color" value="#080808"></div>
+              <div class="field"><label for="outline-colour">Bar outlines</label><input id="outline-colour" type="color" value="#080808"></div>
+              <div class="field"><label for="label-background-colour">Category backgrounds</label><input id="label-background-colour" type="color" value="#f7f7f2"></div>
+              <div class="field"><label for="label-text-colour">Category text</label><input id="label-text-colour" type="color" value="#080808"></div>
+            </div>
           </div>
+        </details>
 
-          <div class="category-input-row">
-            <input class="category-label-input" type="text" value="Advocacy" aria-label="Sixth category name">
-
-            <input class="left-value-input" type="number" min="0" max="100" step="0.01" value="12" aria-label="Left value for Advocacy">
-
-            <input class="right-value-input" type="number" min="0" max="100" step="0.01" value="15" aria-label="Right value for Advocacy">
+        <details class="control-section">
+          <summary>Display &amp; background</summary>
+          <div class="section-body">
+            <div class="option-row"><input id="show-headings" type="checkbox" checked=""><label for="show-headings">Show comparison headings</label></div>
+            <div class="option-row"><input id="show-values" type="checkbox" checked=""><label for="show-values">Show percentage labels</label></div>
+            <div class="option-row"><input id="show-gridlines" type="checkbox" checked=""><label for="show-gridlines">Show gridlines</label></div>
+            <div class="option-row"><input id="show-outlines" type="checkbox" checked=""><label for="show-outlines">Show bar outlines</label></div>
+            <div class="option-row"><input id="transparent-background" type="checkbox" checked=""><label for="transparent-background">Export with a transparent background</label></div>
+            <div class="field">
+              <label for="chart-background">Solid chart background</label>
+              <input id="chart-background" type="color" value="#ffffff" disabled="">
+            </div>
+            <p id="background-help" class="small-note">The preview backdrop is separate from your chart. It is never included in the SVG.</p>
           </div>
-        </div>
+        </details>
 
-        <p id="value-error" class="error" role="alert">
-          Each value must be between 0% and 100%.
-        </p>
-      </section>
+        <p id="value-error" class="error" role="alert" hidden=""></p>
 
-      <section class="control-section">
-        <h2>Scale and colours</h2>
-
-        <div class="field">
-          <label for="chart-maximum">
-            Maximum axis value (%)
-          </label>
-
-          <input id="chart-maximum" type="number" min="1" max="100" step="1" value="50">
-        </div>
-
-        <div class="colour-grid">
-          <div class="field">
-            <label for="left-colour">
-              Left bars
-            </label>
-
-            <input id="left-colour" type="color" value="#ff3d0a">
+        <section class="export-panel" aria-labelledby="export-title">
+          <h2 id="export-title">Take your chart with you</h2>
+          <span id="export-dimensions" class="export-dimensions">Preparing chart…</span>
+          <div class="buttons">
+            <button id="export-svg" class="export-button" type="button" disabled="" onclick="
+              try {
+                const svg = document.getElementById('butterfly-svg');
+                const copy = svg.cloneNode(true);
+                copy.removeAttribute('id');
+                copy.removeAttribute('class');
+                copy.removeAttribute('style');
+                copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                const source = new XMLSerializer().serializeToString(copy);
+                const blob = new Blob([source], {type: 'image/svg+xml;charset=utf-8'});
+                const previous = this.dataset.downloadUrl;
+                if (previous) URL.revokeObjectURL(previous);
+                const url = URL.createObjectURL(blob);
+                this.dataset.downloadUrl = url;
+                const link = document.createElement('a');
+                const name = document.getElementById('chart-title').value.trim() || 'butterfly-chart';
+                link.href = url;
+                link.download = (name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'butterfly-chart') + '.svg';
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                document.getElementById('export-status').textContent = 'SVG download requested — ' + svg.getAttribute('width') + ' × ' + svg.getAttribute('height') + ' px.';
+              } catch (error) {
+                document.getElementById('export-status').textContent = 'The download could not start. Try opening this page directly in your browser.';
+              }
+            ">Download SVG ↓</button>
+            <button id="print-chart" class="export-button secondary-button" type="button" disabled="" onclick="window.print();">Print / PDF</button>
           </div>
+          <p id="export-status" class="export-status" role="status" aria-live="polite"></p>
+          <p id="export-note" class="export-note">SVG is editable and scales without losing quality. <strong>Direct PNG export is not included in this version</strong>; export SVG and convert it in your design app.</p>
+        </section>
 
-          <div class="field">
-            <label for="right-colour">
-              Right bars
-            </label>
+        <button id="refresh-chart" type="button" hidden="" aria-hidden="true" tabindex="-1" onclick="
+          try {
+            const get = id =&gt; document.getElementById(id);
+            const rows = Array.from(get('category-input-container').children);
+            const errors = [];
+            const format = value =&gt; new Intl.NumberFormat('en', {maximumFractionDigits: 2}).format(value);
+            const percent = value =&gt; format(value) + '%';
+            const fail = (input, message) =&gt; {
+              input.setAttribute('aria-invalid', 'true');
+              input.setAttribute('aria-errormessage', 'value-error');
+              errors.push(message);
+            };
 
-            <input id="right-colour" type="color" value="#f7f7f2">
-          </div>
-        </div>
+            get('chart-controls').querySelectorAll('[aria-invalid]').forEach(input =&gt; {
+              input.removeAttribute('aria-invalid');
+              input.removeAttribute('aria-errormessage');
+            });
 
-        <div class="colour-grid">
-          <div class="field">
-            <label for="outline-colour">
-              Outlines
-            </label>
+            ['bar-thickness','row-spacing','label-width','bar-radius','title-size','category-font-size','value-font-size'].forEach(id =&gt; {
+              get(id + '-output').value = get(id).value + ' px';
+            });
 
-            <input id="outline-colour" type="color" value="#080808">
-          </div>
+            const automatic = get('auto-scale').checked;
+            const transparent = get('transparent-background').checked;
+            get('chart-maximum').disabled = automatic;
+            get('chart-background').disabled = transparent;
+            get('value-position').disabled = !get('show-values').checked;
+            get('add-category').disabled = rows.length &gt;= 30;
+            get('category-count').value = rows.length + ' / 30 categories';
+            get('export-status').textContent = '';
 
-          <div class="field">
-            <label for="text-colour">
-              Text
-            </label>
+            const data = rows.map((row, index) =&gt; {
+              const labelInput = row.querySelector('.category-label-input');
+              const leftInput = row.querySelector('.left-value-input');
+              const rightInput = row.querySelector('.right-value-input');
+              const label = labelInput.value.trim();
+              const labelForError = label || 'Category ' + (index + 1);
+              labelInput.setAttribute('aria-label', 'Category ' + (index + 1) + ' name');
+              leftInput.setAttribute('aria-label', 'Left percentage for ' + labelForError);
+              rightInput.setAttribute('aria-label', 'Right percentage for ' + labelForError);
+              const remove = row.querySelector('.remove-row');
+              remove.disabled = rows.length === 1;
+              remove.setAttribute('aria-label', 'Remove ' + labelForError);
+              if (!label) fail(labelInput, 'Category ' + (index + 1) + ' needs a name.');
+              [leftInput,rightInput].forEach((input, side) =&gt; {
+                const value = input.valueAsNumber;
+                const prefix = labelForError + ' (' + (side ? 'right' : 'left') + '): ';
+                if (input.value.trim() === '' || !Number.isFinite(value)) {
+                  fail(input, prefix + 'enter a percentage; use 0 for zero.');
+                } else if (value &lt; 0 || value &gt; 100) {
+                  fail(input, prefix + 'use a value from 0 to 100.');
+                } else if (input.validity.stepMismatch) {
+                  fail(input, prefix + 'use no more than two decimal places.');
+                }
+              });
+              return {label, left: leftInput.valueAsNumber, right: rightInput.valueAsNumber};
+            });
 
-            <input id="text-colour" type="color" value="#080808">
-          </div>
-        </div>
+            if (!rows.length) errors.push('Add at least one category.');
 
-        <div class="colour-grid">
-          <div class="field">
-            <label for="label-background-colour">
-              Category labels
-            </label>
+            const validNumbers = data.flatMap(item =&gt; [item.left,item.right]).filter(Number.isFinite);
+            const largest = Math.max(0,...validNumbers);
+            let maximum;
+            if (automatic) {
+              maximum = largest === 0 ? 10 : ([1,2,5,10,20,25,50,75,100].find(value =&gt; value &gt;= largest) || 100);
+            } else {
+              maximum = get('chart-maximum').valueAsNumber;
+              if (!Number.isInteger(maximum) || maximum &lt; 1 || maximum &gt; 100) {
+                fail(get('chart-maximum'), 'Axis maximum must be a whole number from 1 to 100.');
+              } else if (maximum &lt; largest) {
+                fail(get('chart-maximum'), 'Axis maximum must be at least ' + percent(largest) + ', or enable automatic scaling.');
+              }
+            }
 
-            <input id="label-background-colour" type="color" value="#f7f7f2">
-          </div>
+            const invalid = errors.length &gt; 0;
+            get('value-error').hidden = !invalid;
+            get('value-error').textContent = errors.slice(0,3).join(' ') + (errors.length &gt; 3 ? ' Plus ' + (errors.length - 3) + ' more highlighted fields.' : '');
+            get('export-svg').disabled = invalid;
+            get('print-chart').disabled = invalid;
+            get('chart-frame').classList.toggle('is-stale', invalid);
 
-          <div class="field">
-            <label for="label-text-colour">
-              Category text
-            </label>
+            const state = get('preview-state');
+            const statusMessage = invalid ? 'Fix highlighted fields · previous valid chart shown' : 'Up to date · ' + (transparent ? 'transparent export' : 'solid background');
+            if (state.textContent !== statusMessage) state.textContent = statusMessage;
+            state.dataset.state = invalid ? 'error' : 'ready';
+            if (invalid) return;
 
-            <input id="label-text-colour" type="color" value="#080808">
-          </div>
-        </div>
-      </section>
+            get('axis-readout').textContent = (automatic ? 'Automatic: ' : 'Manual: ') + percent(maximum) + '.';
 
-      <section class="control-section">
-        <h2>Display options</h2>
+            const svg = get('butterfly-svg');
+            const ns = 'http://www.w3.org/2000/svg';
+            const family = get('chart-font').value;
+            const colours = {
+              left: get('left-colour').value,
+              right: get('right-colour').value,
+              text: get('text-colour').value,
+              outline: get('outline-colour').value,
+              label: get('label-background-colour').value,
+              labelText: get('label-text-colour').value,
+              background: get('chart-background').value
+            };
+            const width = 1200;
+            const outer = 96;
+            const centreWidth = Number(get('label-width').value);
+            const leftOrigin = width / 2 - centreWidth / 2 - 18;
+            const rightOrigin = width / 2 + centreWidth / 2 + 18;
+            const plotWidth = leftOrigin - outer;
+            const thickness = Number(get('bar-thickness').value);
+            const gap = Number(get('row-spacing').value);
+            const radius = Number(get('bar-radius').value);
+            const labelSize = Number(get('category-font-size').value);
+            const valueSize = Number(get('value-font-size').value);
+            const titleSize = Number(get('title-size').value);
+            const labelLineHeight = labelSize * 1.25;
+            const title = get('chart-title').value.trim();
+            const subtitle = get('heading-subtitle').value.trim();
+            const leftName = get('left-series-name').value.trim() || 'Left series';
+            const rightName = get('right-series-name').value.trim() || 'Right series';
 
-        <div class="option-row">
-          <input id="show-headings" type="checkbox" checked="">
+            svg.replaceChildren();
 
-          <label for="show-headings">
-            Show comparison headings
-          </label>
-        </div>
+            const make = (tag, attributes = {}, parent = svg) =&gt; {
+              const element = document.createElementNS(ns, tag);
+              Object.entries(attributes).forEach(([key,value]) =&gt; element.setAttribute(key, String(value)));
+              parent.appendChild(element);
+              return element;
+            };
+            const text = (content, x, y, size, colour, weight = 400, anchor = 'start', parent = svg) =&gt; {
+              const element = make('text', {
+                x, y, fill: colour, 'font-family': family,
+                'font-size': size, 'font-weight': weight,
+                'text-anchor': anchor
+              }, parent);
+              element.textContent = content;
+              return element;
+            };
 
-        <div class="option-row">
-          <input id="show-values" type="checkbox" checked="">
+            make('title', {id: 'chart-svg-title'}).textContent = title || leftName + ' versus ' + rightName;
+            make('desc', {id: 'chart-svg-description'}).textContent =
+              'Butterfly chart comparing ' + leftName + ' and ' + rightName +
+              '. Both sides use a scale from 0 to ' + maximum + ' percent. ' +
+              data.map(item =&gt; item.label + ': ' + leftName + ' ' + percent(item.left) + ', ' + rightName + ' ' + percent(item.right) + '.').join(' ');
 
-          <label for="show-values">
-            Show percentage labels
-          </label>
-        </div>
+            const probe = text('', 0, 0, labelSize, colours.text);
+            probe.setAttribute('visibility', 'hidden');
+            probe.setAttribute('aria-hidden', 'true');
+            const measure = (content, size, weight = 400) =&gt; {
+              probe.setAttribute('font-size', size);
+              probe.setAttribute('font-weight', weight);
+              probe.textContent = content;
+              return probe.getComputedTextLength() || content.length * size * .62;
+            };
+            const wrap = (content, available, size, weight = 400) =&gt; {
+              if (!content) return [];
+              const lines = [];
+              let current = '';
+              content.split(/\s+/).forEach(word =&gt; {
+                if (measure(word, size, weight) &gt; available) {
+                  if (current) { lines.push(current); current = ''; }
+                  let part = '';
+                  Array.from(word).forEach(character =&gt; {
+                    if (part &amp;&amp; measure(part + character, size, weight) &gt; available) {
+                      lines.push(part);
+                      part = character;
+                    } else {
+                      part += character;
+                    }
+                  });
+                  current = part;
+                } else {
+                  const candidate = current ? current + ' ' + word : word;
+                  if (current &amp;&amp; measure(candidate, size, weight) &gt; available) {
+                    lines.push(current);
+                    current = word;
+                  } else {
+                    current = candidate;
+                  }
+                }
+              });
+              if (current) lines.push(current);
+              return lines;
+            };
+            const contrastText = hex =&gt; {
+              const channels = [1,3,5].map(index =&gt; parseInt(hex.slice(index,index + 2),16) / 255).map(value =&gt; value &lt;= .04045 ? value / 12.92 : Math.pow((value + .055) / 1.055,2.4));
+              const luminance = channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
+              return (luminance + .05) / .05 &gt;= 1.05 / (luminance + .05) ? '#000000' : '#ffffff';
+            };
 
-        <div class="option-row">
-          <input id="show-gridlines" type="checkbox" checked="">
+            let cursor = 38;
+            const titleLines = wrap(title,width - outer * 2,titleSize,700);
+            const titleY = cursor;
+            if (titleLines.length) cursor += titleLines.length * titleSize * 1.2 + 12;
+            const subtitleLines = wrap(subtitle,width - outer * 2,15,400);
+            const subtitleY = cursor;
+            if (subtitleLines.length) cursor += subtitleLines.length * 20 + 16;
 
-          <label for="show-gridlines">
-            Show gridlines
-          </label>
-        </div>
+            const headingSize = 24;
+            const leftHeadingLines = wrap(leftName,plotWidth - 16,headingSize,700);
+            const rightHeadingLines = wrap(rightName,plotWidth - 16,headingSize,700);
+            const headingsY = cursor;
+            let headingHeight = 0;
+            if (get('show-headings').checked) {
+              headingHeight = Math.max(leftHeadingLines.length,rightHeadingLines.length) * 29;
+              cursor += headingHeight + 35;
+            } else {
+              cursor += 12;
+            }
 
-        <div class="option-row">
-          <input id="show-outlines" type="checkbox" checked="">
+            const plotTop = cursor;
+            data.forEach(item =&gt; {
+              item.lines = wrap(item.label,centreWidth - 24,labelSize,600);
+              item.labelHeight = item.lines.length * labelLineHeight + 16;
+              item.rowHeight = Math.max(thickness,item.labelHeight);
+              item.cy = cursor + item.rowHeight / 2;
+              cursor += item.rowHeight + gap;
+            });
+            const plotBottom = cursor - gap;
+            const height = Math.ceil(Math.max(280,plotBottom + 76));
 
-          <label for="show-outlines">
-            Show bar outlines
-          </label>
-        </div>
-      </section>
+            svg.setAttribute('viewBox','0 0 ' + width + ' ' + height);
+            svg.setAttribute('width',width);
+            svg.setAttribute('height',height);
 
-      <div class="buttons">
-        <button id="export-svg" class="svg-button" type="button">
-          Export SVG
-        </button>
+            if (!transparent) make('rect',{x:0,y:0,width,height,fill:colours.background});
 
-        <button id="export-png" class="png-button" type="button">
-          Export PNG
-        </button>
-      </div>
+            if (get('show-gridlines').checked) {
+              const grid = make('g',{'aria-hidden':'true'});
+              for (let index = 0; index &lt;= 5; index++) {
+                const offset = plotWidth * index / 5;
+                [leftOrigin - offset,rightOrigin + offset].forEach(x =&gt; {
+                  make('line',{
+                    x1:x,x2:x,y1:plotTop - 9,y2:plotBottom + 10,
+                    stroke:colours.text,'stroke-opacity':index === 0 ? .4 : .2,
+                    'stroke-width':1,'stroke-dasharray':index === 0 ? 'none' : '3 6'
+                  },grid);
+                });
+              }
+            }
 
-      <p class="privacy-note">
-        All calculations and exports happen locally in your browser. Values
-        are not uploaded or stored by this page.
-      </p>
+            titleLines.forEach((line,index) =&gt; text(line,width / 2,titleY + titleSize + index * titleSize * 1.2,titleSize,colours.text,700,'middle'));
+            subtitleLines.forEach((line,index) =&gt; text(line,width / 2,subtitleY + 15 + index * 20,15,colours.text,400,'middle'));
+
+            if (get('show-headings').checked) {
+              [
+                {lines:leftHeadingLines,x:leftOrigin - plotWidth / 2,colour:colours.left},
+                {lines:rightHeadingLines,x:rightOrigin + plotWidth / 2,colour:colours.right}
+              ].forEach(side =&gt; {
+                side.lines.forEach((line,index) =&gt; text(line,side.x,headingsY + headingSize + index * 29,headingSize,colours.text,700,'middle'));
+                make('rect',{
+                  x:side.x - 24,y:headingsY + headingHeight + 11,width:48,height:5,rx:2.5,
+                  fill:side.colour,stroke:get('show-outlines').checked ? colours.outline : 'none','stroke-width':.7
+                });
+              });
+            }
+
+            const showValues = get('show-values').checked;
+            const showOutlines = get('show-outlines').checked;
+            const automaticPlacement = get('value-position').value === 'auto';
+            const bars = make('g');
+            const labels = make('g');
+
+            data.forEach(item =&gt; {
+              ['left','right'].forEach(side =&gt; {
+                const isLeft = side === 'left';
+                const value = item[side];
+                const barWidth = value / maximum * plotWidth;
+                const origin = isLeft ? leftOrigin : rightOrigin;
+                const barX = isLeft ? origin - barWidth : origin;
+                if (barWidth &gt; 0) {
+                  const bar = make('rect',{
+                    x:barX,y:item.cy - thickness / 2,width:barWidth,height:thickness,
+                    rx:Math.min(radius,thickness / 2,barWidth / 2),
+                    fill:colours[side],stroke:showOutlines ? colours.outline : 'none','stroke-width':1.25
+                  },bars);
+                  make('title',{},bar).textContent = item.label + ' — ' + (isLeft ? leftName : rightName) + ': ' + percent(value);
+                }
+                if (showValues) {
+                  const valueText = percent(value);
+                  const fits = automaticPlacement &amp;&amp; barWidth &gt;= measure(valueText,valueSize,700) + 22 &amp;&amp; thickness &gt;= valueSize + 8;
+                  const x = isLeft
+                    ? (fits ? origin - barWidth + 10 : origin - barWidth - 10)
+                    : (fits ? origin + barWidth - 10 : origin + barWidth + 10);
+                  const anchor = isLeft ? (fits ? 'start' : 'end') : (fits ? 'end' : 'start');
+                  text(valueText,x,item.cy + valueSize * .35,valueSize,fits ? contrastText(colours[side]) : colours.text,700,anchor,labels);
+                }
+              });
+
+              make('rect',{
+                x:width / 2 - centreWidth / 2,
+                y:item.cy - item.labelHeight / 2,
+                width:centreWidth,height:item.labelHeight,
+                rx:4,fill:colours.label
+              },labels);
+
+              item.lines.forEach((line,index) =&gt; {
+                const y = item.cy - (item.lines.length - 1) * labelLineHeight / 2 + index * labelLineHeight + labelSize * .35;
+                text(line,width / 2,y,labelSize,colours.labelText,600,'middle',labels);
+              });
+            });
+
+            for (let index = 0; index &lt;= 5; index++) {
+              const offset = plotWidth * index / 5;
+              const tick = percent(maximum * index / 5);
+              [leftOrigin - offset,rightOrigin + offset].forEach(x =&gt; {
+                text(tick,x,plotBottom + 36,12,colours.text,400,'middle');
+              });
+            }
+
+            probe.remove();
+
+            get('export-dimensions').textContent = width + ' × ' + height + ' px · ' + data.length + (data.length === 1 ? ' category' : ' categories');
+            get('table-left-heading').textContent = leftName;
+            get('table-right-heading').textContent = rightName;
+            const tableBody = get('chart-data-body');
+            const fragment = document.createDocumentFragment();
+            data.forEach(item =&gt; {
+              const row = document.createElement('tr');
+              [item.label,percent(item.left),percent(item.right)].forEach((value,index) =&gt; {
+                const cell = document.createElement(index === 0 ? 'th' : 'td');
+                if (index === 0) cell.setAttribute('scope','row');
+                cell.textContent = value;
+                row.appendChild(cell);
+              });
+              fragment.appendChild(row);
+            });
+            tableBody.replaceChildren(fragment);
+          } catch (error) {
+            document.getElementById('export-svg').disabled = true;
+            document.getElementById('print-chart').disabled = true;
+            document.getElementById('preview-state').dataset.state = 'error';
+            document.getElementById('preview-state').textContent = 'Preview could not update. Try changing a setting or reopening the page in a modern browser.';
+            console.error(error);
+          }
+        ">Update chart</button>
+      </form>
+
+      <p id="privacy-note" class="privacy-note">Your values stay in this browser tab. This page does not upload or save your chart data. Refreshing the page restores the sample chart.</p>
+      <details class="delivery-note">
+        <summary>Before publishing</summary>
+        <p id="testing-note">This generated page has not been browser-tested here. Check long labels, 0% and 100% values, mobile layout, and downloads in your target browsers before publishing. SVG and print/PDF are included; direct PNG export is not.</p>
+      </details>
     </aside>
 
-    <main class="preview">
-      <div class="preview-header">
-        <span>Live output / 1200 × 675</span>
-
-        <span class="transparent-label">
-          <span class="transparent-swatch"></span>
-          Transparent background
-        </span>
+    <main id="preview" class="preview" aria-labelledby="preview-title" tabindex="-1">
+      <div class="preview-toolbar">
+        <div>
+          <h2 id="preview-title">Live output</h2>
+          <span id="preview-state" class="preview-state" role="status" aria-live="polite">Preparing chart…</span>
+        </div>
+        <div class="preview-tools">
+          <div>
+            <label for="preview-background">Preview backdrop</label>
+            <select id="preview-background" oninput="document.getElementById('preview-stage').dataset.backdrop = this.value;">
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+              <option value="checker">Checkerboard</option>
+            </select>
+          </div>
+          <div>
+            <label for="preview-zoom">Zoom</label>
+            <select id="preview-zoom" oninput="document.getElementById('chart-frame').classList.toggle('actual-size', this.value === 'actual');">
+              <option value="fit">Fit to window</option>
+              <option value="actual">100% · scroll</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div class="diagram-frame">
-        <svg id="butterfly-svg" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Category comparison butterfly chart">
-          <g id="chart-root"></g>
-        </svg>
+      <div id="preview-stage" class="preview-stage" data-backdrop="light">
+        <div id="chart-frame" class="chart-frame">
+          <svg id="butterfly-svg" viewBox="0 0 1200 675" width="1200" height="675" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="chart-svg-title" aria-describedby="chart-svg-description">
+            <title id="chart-svg-title">Category comparison butterfly chart</title>
+            <desc id="chart-svg-description">The chart is generated from the editable controls when this page opens.</desc>
+            <text x="600" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#333333">Preparing your chart…</text>
+          </svg>
+        </div>
       </div>
+
+      <details class="data-table-details">
+        <summary>View chart data as a table</summary>
+        <div class="data-table-wrap">
+          <table>
+            <caption>Values from the current valid chart. Invalid edits are not applied until corrected.</caption>
+            <thead>
+              <tr><th scope="col">Category</th><th id="table-left-heading" scope="col">Brand A</th><th id="table-right-heading" scope="col">Brand B</th></tr>
+            </thead>
+            <tbody id="chart-data-body"></tbody>
+          </table>
+        </div>
+      </details>
     </main>
   </div>
 
-  <script>
-    const SVG_WIDTH = 1200;
-    const SVG_HEIGHT = 675;
-
-    const LEFT_AXIS_X = 535;
-    const RIGHT_AXIS_X = 665;
-    const CATEGORY_LABEL_X = 600;
-
-    const MAX_BAR_WIDTH = 410;
-    const BAR_HEIGHT = 46;
-    const FIRST_ROW_Y = 144;
-    const ROW_GAP = 82;
-
-    const SVG_NS =
-      "http://www.w3.org/2000/svg";
-
-    const leftSeriesNameInput =
-      document.getElementById(
-        "left-series-name"
-      );
-
-    const rightSeriesNameInput =
-      document.getElementById(
-        "right-series-name"
-      );
-
-    const headingSubtitleInput =
-      document.getElementById(
-        "heading-subtitle"
-      );
-
-    const chartMaximumInput =
-      document.getElementById(
-        "chart-maximum"
-      );
-
-    const leftColourInput =
-      document.getElementById(
-        "left-colour"
-      );
-
-    const rightColourInput =
-      document.getElementById(
-        "right-colour"
-      );
-
-    const outlineColourInput =
-      document.getElementById(
-        "outline-colour"
-      );
-
-    const textColourInput =
-      document.getElementById(
-        "text-colour"
-      );
-
-    const labelBackgroundColourInput =
-      document.getElementById(
-        "label-background-colour"
-      );
-
-    const labelTextColourInput =
-      document.getElementById(
-        "label-text-colour"
-      );
-
-    const showHeadingsInput =
-      document.getElementById(
-        "show-headings"
-      );
-
-    const showValuesInput =
-      document.getElementById(
-        "show-values"
-      );
-
-    const showGridlinesInput =
-      document.getElementById(
-        "show-gridlines"
-      );
-
-    const showOutlinesInput =
-      document.getElementById(
-        "show-outlines"
-      );
-
-    const categoryLabelInputs =
-      Array.from(
-        document.querySelectorAll(
-          ".category-label-input"
-        )
-      );
-
-    const leftValueInputs =
-      Array.from(
-        document.querySelectorAll(
-          ".left-value-input"
-        )
-      );
-
-    const rightValueInputs =
-      Array.from(
-        document.querySelectorAll(
-          ".right-value-input"
-        )
-      );
-
-    const valueError =
-      document.getElementById(
-        "value-error"
-      );
-
-    const svg =
-      document.getElementById(
-        "butterfly-svg"
-      );
-
-    const chartRoot =
-      document.getElementById(
-        "chart-root"
-      );
-
-    const exportSvgButton =
-      document.getElementById(
-        "export-svg"
-      );
-
-    const exportPngButton =
-      document.getElementById(
-        "export-png"
-      );
-
-    function createSvgElement(
-      elementName,
-      attributes = {}
-    ) {
-      const element =
-        document.createElementNS(
-          SVG_NS,
-          elementName
-        );
-
-      Object.entries(attributes).forEach(
-        ([attribute, value]) => {
-          element.setAttribute(
-            attribute,
-            value
-          );
-        }
-      );
-
-      return element;
-    }
-
-    function readNumber(input) {
-      const value =
-        Number(input.value);
-
-      return Number.isFinite(value)
-        ? value
-        : 0;
-    }
-
-    function formatPercentage(value) {
-      if (value === 0) {
-        return "0%";
-      }
-
-      if (Number.isInteger(value)) {
-        return `${value}%`;
-      }
-
-      return `${value.toFixed(1)}%`;
-    }
-
-    function validateData() {
-      const values = [
-        ...leftValueInputs.map(readNumber),
-        ...rightValueInputs.map(readNumber)
-      ];
-
-      const chartMaximum =
-        readNumber(chartMaximumInput);
-
-      const valuesValid =
-        values.every(
-          value =>
-            value >= 0 &&
-            value <= 100
-        );
-
-      const maximumValid =
-        chartMaximum > 0 &&
-        chartMaximum <= 100;
-
-      const allValuesFit =
-        values.every(
-          value =>
-            value <= chartMaximum
-        );
-
-      const valid =
-        valuesValid &&
-        maximumValid &&
-        allValuesFit;
-
-      if (!valuesValid) {
-        valueError.textContent =
-          "Each value must be between 0% and 100%.";
-      } else if (!maximumValid) {
-        valueError.textContent =
-          "The maximum axis value must be between 1% and 100%.";
-      } else if (!allValuesFit) {
-        valueError.textContent =
-          "The maximum axis value must be at least as high as the largest category value.";
-      }
-
-      valueError.classList.toggle(
-        "visible",
-        !valid
-      );
-
-      exportSvgButton.disabled =
-        !valid;
-
-      exportPngButton.disabled =
-        !valid;
-
-      return valid;
-    }
-
-    function addText({
-      x,
-      y,
-      text,
-      anchor = "middle",
-      size = 18,
-      weight = 700,
-      fill = "#080808",
-      opacity = 1,
-      letterSpacing = 0
-    }) {
-      const textElement =
-        createSvgElement(
-          "text",
-          {
-            x,
-            y,
-            "text-anchor": anchor,
-            "font-family":
-              "Arial, Helvetica, sans-serif",
-            "font-size": size,
-            "font-weight": weight,
-            fill,
-            opacity,
-            "letter-spacing":
-              letterSpacing
-          }
-        );
-
-      textElement.textContent =
-        text;
-
-      chartRoot.appendChild(
-        textElement
-      );
-
-      return textElement;
-    }
-
-    function updateChart() {
-      if (!validateData()) {
-        return;
-      }
-
-      chartRoot.replaceChildren();
-
-      const leftSeriesName =
-        leftSeriesNameInput.value.trim() ||
-        "Left";
-
-      const rightSeriesName =
-        rightSeriesNameInput.value.trim() ||
-        "Right";
-
-      const headingSubtitle =
-        headingSubtitleInput.value.trim();
-
-      const categoryLabels =
-        categoryLabelInputs.map(
-          (input, index) =>
-            input.value.trim() ||
-            `Category ${index + 1}`
-        );
-
-      const leftValues =
-        leftValueInputs.map(
-          readNumber
-        );
-
-      const rightValues =
-        rightValueInputs.map(
-          readNumber
-        );
-
-      const chartMaximum =
-        readNumber(
-          chartMaximumInput
-        );
-
-      const leftColour =
-        leftColourInput.value;
-
-      const rightColour =
-        rightColourInput.value;
-
-      const outlineColour =
-        outlineColourInput.value;
-
-      const textColour =
-        textColourInput.value;
-
-      const labelBackgroundColour =
-        labelBackgroundColourInput.value;
-
-      const labelTextColour =
-        labelTextColourInput.value;
-
-      const showHeadings =
-        showHeadingsInput.checked;
-
-      const showValues =
-        showValuesInput.checked;
-
-      const showGridlines =
-        showGridlinesInput.checked;
-
-      const showOutlines =
-        showOutlinesInput.checked;
-
-      const outlineWidth =
-        showOutlines ? 3 : 0;
-
-      if (showHeadings) {
-        addText({
-          x: 315,
-          y: 58,
-          text: leftSeriesName,
-          size: 25,
-          weight: 800,
-          fill: textColour
-        });
-
-        addText({
-          x: 885,
-          y: 58,
-          text: rightSeriesName,
-          size: 25,
-          weight: 800,
-          fill: textColour
-        });
-
-        if (headingSubtitle) {
-          addText({
-            x: 315,
-            y: 84,
-            text:
-              headingSubtitle.toUpperCase(),
-            size: 12,
-            weight: 700,
-            fill: textColour,
-            opacity: 0.62,
-            letterSpacing: 2
-          });
-
-          addText({
-            x: 885,
-            y: 84,
-            text:
-              headingSubtitle.toUpperCase(),
-            size: 12,
-            weight: 700,
-            fill: textColour,
-            opacity: 0.62,
-            letterSpacing: 2
-          });
-        }
-      }
-
-      if (showGridlines) {
-        const numberOfIntervals = 5;
-
-        for (
-          let index = 0;
-          index <= numberOfIntervals;
-          index++
-        ) {
-          const ratio =
-            index /
-            numberOfIntervals;
-
-          const distance =
-            MAX_BAR_WIDTH *
-            ratio;
-
-          const scaleValue =
-            chartMaximum *
-            ratio;
-
-          const leftX =
-            LEFT_AXIS_X -
-            distance;
-
-          const rightX =
-            RIGHT_AXIS_X +
-            distance;
-
-          const gridTop = 109;
-          const gridBottom = 608;
-
-          if (index > 0) {
-            const leftLine =
-              createSvgElement(
-                "line",
-                {
-                  x1: leftX,
-                  y1: gridTop,
-                  x2: leftX,
-                  y2: gridBottom,
-                  stroke: textColour,
-                  "stroke-width": 1,
-                  "stroke-opacity": 0.15,
-                  "stroke-dasharray":
-                    "5 6"
-                }
-              );
-
-            const rightLine =
-              createSvgElement(
-                "line",
-                {
-                  x1: rightX,
-                  y1: gridTop,
-                  x2: rightX,
-                  y2: gridBottom,
-                  stroke: textColour,
-                  "stroke-width": 1,
-                  "stroke-opacity": 0.15,
-                  "stroke-dasharray":
-                    "5 6"
-                }
-              );
-
-            chartRoot.appendChild(
-              leftLine
-            );
-
-            chartRoot.appendChild(
-              rightLine
-            );
-          }
-
-          addText({
-            x: leftX,
-            y: 632,
-            text:
-              `${scaleValue.toFixed(0)}%`,
-            size: 11,
-            weight: 600,
-            fill: textColour,
-            opacity: 0.65
-          });
-
-          addText({
-            x: rightX,
-            y: 632,
-            text:
-              `${scaleValue.toFixed(0)}%`,
-            size: 11,
-            weight: 600,
-            fill: textColour,
-            opacity: 0.65
-          });
-        }
-      }
-
-      const leftAxis =
-        createSvgElement(
-          "line",
-          {
-            x1: LEFT_AXIS_X,
-            y1: 109,
-            x2: LEFT_AXIS_X,
-            y2: 608,
-            stroke: textColour,
-            "stroke-width": 2,
-            "stroke-opacity": 0.65
-          }
-        );
-
-      const rightAxis =
-        createSvgElement(
-          "line",
-          {
-            x1: RIGHT_AXIS_X,
-            y1: 109,
-            x2: RIGHT_AXIS_X,
-            y2: 608,
-            stroke: textColour,
-            "stroke-width": 2,
-            "stroke-opacity": 0.65
-          }
-        );
-
-      chartRoot.appendChild(
-        leftAxis
-      );
-
-      chartRoot.appendChild(
-        rightAxis
-      );
-
-      categoryLabels.forEach(
-        (categoryLabel, index) => {
-          const centreY =
-            FIRST_ROW_Y +
-            index * ROW_GAP;
-
-          const leftValue =
-            leftValues[index];
-
-          const rightValue =
-            rightValues[index];
-
-          const leftWidth =
-            Math.max(
-              0,
-              (
-                leftValue /
-                chartMaximum
-              ) *
-              MAX_BAR_WIDTH
-            );
-
-          const rightWidth =
-            Math.max(
-              0,
-              (
-                rightValue /
-                chartMaximum
-              ) *
-              MAX_BAR_WIDTH
-            );
-
-          const leftBar =
-            createSvgElement(
-              "rect",
-              {
-                x:
-                  LEFT_AXIS_X -
-                  leftWidth,
-                y:
-                  centreY -
-                  BAR_HEIGHT / 2,
-                width: leftWidth,
-                height: BAR_HEIGHT,
-                fill: leftColour,
-                stroke:
-                  outlineColour,
-                "stroke-width":
-                  outlineWidth
-              }
-            );
-
-          const rightBar =
-            createSvgElement(
-              "rect",
-              {
-                x: RIGHT_AXIS_X,
-                y:
-                  centreY -
-                  BAR_HEIGHT / 2,
-                width: rightWidth,
-                height: BAR_HEIGHT,
-                fill: rightColour,
-                stroke:
-                  outlineColour,
-                "stroke-width":
-                  outlineWidth
-              }
-            );
-
-          chartRoot.appendChild(
-            leftBar
-          );
-
-          chartRoot.appendChild(
-            rightBar
-          );
-
-          const labelBackground =
-            createSvgElement(
-              "rect",
-              {
-                x: 544,
-                y: centreY - 23,
-                width: 112,
-                height: 46,
-                fill:
-                  labelBackgroundColour,
-                "fill-opacity": 0.98,
-                stroke:
-                  outlineColour,
-                "stroke-width": 2
-              }
-            );
-
-          chartRoot.appendChild(
-            labelBackground
-          );
-
-          /*
-           * Long category names are reduced
-           * slightly to remain inside the
-           * centre label box.
-           */
-          let categoryFontSize = 18;
-
-          if (
-            categoryLabel.length > 14
-          ) {
-            categoryFontSize = 13;
-          } else if (
-            categoryLabel.length > 10
-          ) {
-            categoryFontSize = 15;
-          }
-
-          addText({
-            x: CATEGORY_LABEL_X,
-            y: centreY + 6,
-            text: categoryLabel,
-            size: categoryFontSize,
-            weight: 800,
-            fill: labelTextColour
-          });
-
-          if (showValues) {
-            const leftLabelInside =
-              leftWidth > 85;
-
-            const rightLabelInside =
-              rightWidth > 85;
-
-            const leftLabelX =
-              leftLabelInside
-                ? LEFT_AXIS_X -
-                  leftWidth +
-                  15
-                : LEFT_AXIS_X -
-                  leftWidth -
-                  10;
-
-            const rightLabelX =
-              rightLabelInside
-                ? RIGHT_AXIS_X +
-                  rightWidth -
-                  15
-                : RIGHT_AXIS_X +
-                  rightWidth +
-                  10;
-
-            addText({
-              x: leftLabelX,
-              y: centreY + 7,
-              text:
-                formatPercentage(
-                  leftValue
-                ),
-              anchor:
-                leftLabelInside
-                  ? "start"
-                  : "end",
-              size: 15,
-              weight: 800,
-              fill: textColour
-            });
-
-            addText({
-              x: rightLabelX,
-              y: centreY + 7,
-              text:
-                formatPercentage(
-                  rightValue
-                ),
-              anchor:
-                rightLabelInside
-                  ? "end"
-                  : "start",
-              size: 15,
-              weight: 800,
-              fill: textColour
-            });
-          }
-        }
-      );
-    }
-
-    function createStandaloneSVG() {
-      const clone =
-        svg.cloneNode(true);
-
-      clone.setAttribute(
-        "width",
-        SVG_WIDTH
-      );
-
-      clone.setAttribute(
-        "height",
-        SVG_HEIGHT
-      );
-
-      clone.setAttribute(
-        "xmlns",
-        SVG_NS
-      );
-
-      return new XMLSerializer()
-        .serializeToString(clone);
-    }
-
-    function downloadBlob(
-      blob,
-      filename
-    ) {
-      const url =
-        URL.createObjectURL(blob);
-
-      const link =
-        document.createElement("a");
-
-      link.href = url;
-      link.download = filename;
-
-      document.body.appendChild(
-        link
-      );
-
-      link.click();
-      link.remove();
-
-      window.setTimeout(() => {
-        URL.revokeObjectURL(url);
-      }, 1000);
-    }
-
-    function exportSVG() {
-      if (!validateData()) {
-        return;
-      }
-
-      const markup =
-        createStandaloneSVG();
-
-      const blob =
-        new Blob(
-          [markup],
-          {
-            type:
-              "image/svg+xml;charset=utf-8"
-          }
-        );
-
-      downloadBlob(
-        blob,
-        "Comparison_Butterfly_Chart.svg"
-      );
-    }
-
-    function exportPNG() {
-      if (!validateData()) {
-        return;
-      }
-
-      const markup =
-        createStandaloneSVG();
-
-      const blob =
-        new Blob(
-          [markup],
-          {
-            type:
-              "image/svg+xml;charset=utf-8"
-          }
-        );
-
-      const url =
-        URL.createObjectURL(blob);
-
-      const image =
-        new Image();
-
-      image.onload = () => {
-        const scale = 2;
-
-        const canvas =
-          document.createElement(
-            "canvas"
-          );
-
-        canvas.width =
-          SVG_WIDTH * scale;
-
-        canvas.height =
-          SVG_HEIGHT * scale;
-
-        const context =
-          canvas.getContext("2d");
-
-        context.clearRect(
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-
-        context.drawImage(
-          image,
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-
-        URL.revokeObjectURL(url);
-
-        canvas.toBlob(
-          pngBlob => {
-            if (!pngBlob) {
-              alert(
-                "The PNG could not be generated."
-              );
-
-              return;
-            }
-
-            downloadBlob(
-              pngBlob,
-              "Comparison_Butterfly_Chart.png"
-            );
-          },
-          "image/png"
-        );
-      };
-
-      image.onerror = () => {
-        URL.revokeObjectURL(url);
-
-        alert(
-          "The PNG could not be generated."
-        );
-      };
-
-      image.src = url;
-    }
-
-    const allInputs = [
-      leftSeriesNameInput,
-      rightSeriesNameInput,
-      headingSubtitleInput,
-      chartMaximumInput,
-      leftColourInput,
-      rightColourInput,
-      outlineColourInput,
-      textColourInput,
-      labelBackgroundColourInput,
-      labelTextColourInput,
-      showHeadingsInput,
-      showValuesInput,
-      showGridlinesInput,
-      showOutlinesInput,
-      ...categoryLabelInputs,
-      ...leftValueInputs,
-      ...rightValueInputs
-    ];
-
-    allInputs.forEach(input => {
-      input.addEventListener(
-        "input",
-        updateChart
-      );
-
-      input.addEventListener(
-        "change",
-        updateChart
-      );
-    });
-
-    exportSvgButton.addEventListener(
-      "click",
-      exportSVG
-    );
-
-    exportPngButton.addEventListener(
-      "click",
-      exportPNG
-    );
-
-    updateChart();
-  </script>
+  <template id="category-row-template">
+    <div class="category-input-row">
+      <input class="category-label-input" type="text" maxlength="100" autocomplete="off" aria-label="Category name" aria-describedby="category-help value-error">
+      <input class="left-value-input" type="number" min="0" max="100" step="0.01" inputmode="decimal" aria-label="Left percentage" aria-describedby="category-help value-error">
+      <input class="right-value-input" type="number" min="0" max="100" step="0.01" inputmode="decimal" aria-label="Right percentage" aria-describedby="category-help value-error">
+      <button class="remove-row" type="button" aria-label="Remove category" title="Remove category" onclick="
+        const container = document.getElementById('category-input-container');
+        if (container.children.length &lt;= 1) return;
+        const row = this.closest('.category-input-row');
+        const neighbour = row.nextElementSibling || row.previousElementSibling;
+        row.remove();
+        document.getElementById('refresh-chart').click();
+        if (neighbour) neighbour.querySelector('.category-label-input').focus();
+      ">×</button>
+    </div>
+  </template>
 
 </body></html>
