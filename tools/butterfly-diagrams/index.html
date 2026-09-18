@@ -1,7 +1,7 @@
-<html lang="en" data-type="html" data-identifier="98b49dfd-fe4b-4c76-b6e7-821dfb3e56fa" data-title="Customizable Butterfly Chart Maker" data-version="1" width="1200" height="600"><head>
+<html lang="en" data-type="html" data-identifier="98b49dfd-fe4b-4c76-b6e7-821dfb3e56fa" data-title="Butterfly Chart Maker — SVG and PNG Export" data-version="2" width="1200" height="600"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Create, customize, and export comparison butterfly charts locally in your browser.">
+  <meta name="description" content="Create customizable butterfly comparison charts and download SVG or PNG images for presentations.">
   <title>Butterfly Chart Maker — Visual Intelligence Lab</title>
   <style>
     :root {
@@ -10,58 +10,124 @@
       --panel: #191917;
       --white: #f7f7f2;
       --grey: #b9b9b2;
-      --muted: #93938b;
+      --muted: #96968e;
       --orange: #ff3d0a;
       --lime: #a8ff37;
       --error: #ff9999;
       --line: rgba(255,255,255,.16);
       --nav-height: 72px;
     }
+
     * { box-sizing: border-box; }
     html { height: 100%; color-scheme: dark; }
-    body { margin: 0; padding-top: var(--nav-height); background: var(--black); color: var(--white); font-family: Inter, Arial, sans-serif; }
+    body {
+      margin: 0;
+      padding-top: var(--nav-height);
+      background: var(--black);
+      color: var(--white);
+      font-family: Inter, Arial, sans-serif;
+    }
+
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; }
     button, summary, select, input[type="color"], input[type="checkbox"] { cursor: pointer; }
-    button:disabled { cursor: not-allowed; opacity: .38; }
-    input:disabled, select:disabled { opacity: .45; cursor: not-allowed; }
+    button:disabled, input:disabled, select:disabled { cursor: not-allowed; opacity: .4; }
     button, a, input, select, summary { -webkit-tap-highlight-color: transparent; }
     :focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; }
     [hidden] { display: none !important; }
-    .skip-link { position: fixed; top: -60px; left: 16px; z-index: 200; padding: 12px 18px; background: var(--lime); color: var(--black); }
+
+    .skip-link {
+      position: fixed; top: -80px; left: 16px; z-index: 200;
+      padding: 12px 18px; color: var(--black); background: var(--lime);
+    }
     .skip-link:focus { top: 12px; }
 
-    .nav { position: fixed; inset: 0 0 auto; height: var(--nav-height); z-index: 100; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 28px; background: rgba(8,8,8,.96); border-bottom: 1px solid var(--line); }
+    .nav {
+      position: fixed; inset: 0 0 auto; z-index: 100;
+      height: var(--nav-height); padding: 0 28px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      background: rgba(8,8,8,.97); border-bottom: 1px solid var(--line);
+    }
     .brand { display: flex; align-items: center; gap: 13px; }
-    .brand-mark { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; background: var(--lime); color: var(--black); border-radius: 50%; font-size: 22px; font-weight: 900; }
-    .brand-name { font-family: "Arial Black", Arial, sans-serif; font-size: 20px; font-weight: 900; letter-spacing: -.05em; }
-    .brand-name span { margin-left: 5px; font-family: Arial, sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .12em; color: var(--grey); text-transform: uppercase; }
+    .brand-mark {
+      display: grid; place-items: center; flex-shrink: 0;
+      width: 40px; height: 40px; border-radius: 50%;
+      color: var(--black); background: var(--lime); font-size: 22px; font-weight: 900;
+    }
+    .brand-name {
+      font-family: "Arial Black", Arial, sans-serif;
+      font-size: 20px; font-weight: 900; letter-spacing: -.05em;
+    }
+    .brand-name span {
+      margin-left: 5px; font-family: Arial, sans-serif;
+      color: var(--grey); font-size: 10px; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+    }
     .nav-meta { display: flex; align-items: center; gap: 24px; }
-    .tool-status { display: flex; align-items: center; gap: 8px; color: var(--grey); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
+    .tool-status {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--grey); font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em;
+    }
     .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
-    .home-link { padding: 13px 18px; border-radius: 999px; background: var(--orange); color: var(--black); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+    .home-link {
+      padding: 13px 18px; border-radius: 999px;
+      color: var(--black); background: var(--orange);
+      font-size: 11px; font-weight: 800; text-transform: uppercase;
+    }
     .home-link:hover { background: var(--lime); }
 
-    .application { display: grid; grid-template-columns: 390px minmax(0,1fr); height: calc(100vh - var(--nav-height)); height: calc(100dvh - var(--nav-height)); }
-    .controls { padding: 28px 24px 32px; overflow-y: auto; background: var(--soft-black); border-right: 1px solid var(--line); scrollbar-color: var(--orange) var(--soft-black); scrollbar-width: thin; }
-    .tool-number { display: block; margin-bottom: 14px; color: var(--orange); font-size: 10px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
-    .controls h1 { margin: 0; font-family: "Arial Black", Impact, Arial, sans-serif; font-size: 32px; font-weight: 900; line-height: .98; letter-spacing: -.055em; text-transform: uppercase; }
+    .application {
+      display: grid; grid-template-columns: 390px minmax(0,1fr);
+      height: calc(100vh - var(--nav-height));
+      height: calc(100dvh - var(--nav-height));
+    }
+    .controls {
+      padding: 28px 24px 32px; overflow-y: auto;
+      background: var(--soft-black); border-right: 1px solid var(--line);
+      scrollbar-color: var(--orange) var(--soft-black); scrollbar-width: thin;
+    }
+    .tool-number {
+      display: block; margin-bottom: 14px; color: var(--orange);
+      font-size: 10px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase;
+    }
+    .controls h1 {
+      margin: 0; font-family: "Arial Black", Impact, Arial, sans-serif;
+      font-size: 32px; font-weight: 900; line-height: .98;
+      letter-spacing: -.055em; text-transform: uppercase;
+    }
     .controls-intro { margin: 17px 0 24px; color: var(--grey); font-size: 12px; line-height: 1.65; }
+    .mobile-jump { display: none; margin: 0 0 22px; color: var(--lime); font-size: 12px; font-weight: 700; }
 
-    .control-section { margin-bottom: 11px; padding: 0 16px; background: var(--panel); border: 1px solid var(--line); }
+    .control-section {
+      margin-bottom: 11px; padding: 0 16px;
+      background: var(--panel); border: 1px solid var(--line);
+    }
     .control-section:first-of-type { border-top: 3px solid var(--orange); }
-    .control-section > summary { padding: 17px 0; color: var(--lime); font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .control-section > summary {
+      padding: 17px 0; color: var(--lime);
+      font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    }
     .control-section[open] > summary { margin-bottom: 3px; }
     .section-body { padding-bottom: 18px; }
     .section-description { margin: 0 0 15px; color: var(--muted); font-size: 11px; line-height: 1.55; }
     .field { margin-bottom: 16px; }
     .field:last-child { margin-bottom: 0; }
     label { display: block; margin-bottom: 7px; color: var(--grey); font-size: 11px; font-weight: 600; }
-    input[type="text"], input[type="number"], select { width: 100%; min-width: 0; min-height: 42px; padding: 9px 10px; border: 1px solid rgba(255,255,255,.25); border-radius: 4px; color: var(--white); background: var(--soft-black); font-size: 12px; }
+    .optional { font-weight: 400; }
+
+    input[type="text"], input[type="number"], select {
+      width: 100%; min-width: 0; min-height: 42px; padding: 9px 10px;
+      color: var(--white); background: var(--soft-black);
+      border: 1px solid rgba(255,255,255,.25); border-radius: 4px; font-size: 12px;
+    }
     input:hover, select:hover { border-color: rgba(255,255,255,.5); }
     input:focus, select:focus { border-color: var(--lime); }
     input[aria-invalid="true"] { border-color: var(--error); background: #301b1b; }
-    input[type="color"] { display: block; width: 100%; height: 42px; padding: 4px; background: var(--soft-black); border: 1px solid rgba(255,255,255,.25); border-radius: 4px; }
+    input[type="color"] {
+      display: block; width: 100%; height: 42px; padding: 4px;
+      background: var(--soft-black); border: 1px solid rgba(255,255,255,.25); border-radius: 4px;
+    }
     input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
     input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 2px; }
     input[type="color"]::-moz-color-swatch { border: 0; border-radius: 2px; }
@@ -77,38 +143,64 @@
     .option-row label { margin: 0; line-height: 1.5; cursor: pointer; }
     .small-note { margin: 9px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
 
-    .category-inputs-header, .category-input-row { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,.8fr) minmax(0,.8fr) 28px; gap: 6px; align-items: center; }
+    .category-inputs-header, .category-input-row {
+      display: grid;
+      grid-template-columns: minmax(0,1.4fr) minmax(0,.8fr) minmax(0,.8fr) 28px;
+      gap: 6px; align-items: center;
+    }
     .category-inputs-header { margin-bottom: 8px; color: var(--muted); font-size: 10px; font-weight: 700; }
     .category-inputs-header span:nth-child(2), .category-inputs-header span:nth-child(3) { text-align: center; }
     .category-input-row { margin-bottom: 8px; }
     .category-input-row input { height: 38px; min-height: 38px; padding: 6px; font-size: 11px; }
     .category-input-row input[type="number"] { text-align: right; appearance: textfield; -moz-appearance: textfield; }
-    .category-input-row input[type="number"]::-webkit-inner-spin-button, .category-input-row input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-    .remove-row { width: 28px; height: 38px; padding: 0; border: 1px solid transparent; border-radius: 4px; background: transparent; color: var(--grey); font-size: 21px; }
+    .category-input-row input[type="number"]::-webkit-inner-spin-button,
+    .category-input-row input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .remove-row {
+      width: 28px; height: 38px; padding: 0;
+      color: var(--grey); background: transparent;
+      border: 1px solid transparent; border-radius: 4px; font-size: 21px;
+    }
     .remove-row:hover:not(:disabled) { color: var(--error); background: rgba(255,119,119,.1); border-color: rgba(255,119,119,.3); }
     .data-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
-    .add-row { min-height: 36px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 5px; background: transparent; color: var(--lime); font-size: 11px; font-weight: 700; }
+    .add-row {
+      min-height: 36px; padding: 7px 12px;
+      color: var(--lime); background: transparent;
+      border: 1px solid var(--line); border-radius: 5px; font-size: 11px; font-weight: 700;
+    }
     .add-row:hover:not(:disabled) { background: rgba(168,255,55,.07); border-color: var(--lime); }
     .row-count { font-size: 10px; color: var(--muted); }
-    .error { margin: 12px 0; padding: 12px; border-left: 3px solid var(--error); background: rgba(255,119,119,.09); color: var(--error); font-size: 11px; line-height: 1.6; }
+    .error {
+      margin: 12px 0; padding: 12px; border-left: 3px solid var(--error);
+      color: var(--error); background: rgba(255,119,119,.09); font-size: 11px; line-height: 1.6;
+    }
 
     .export-panel { margin-top: 22px; padding-top: 19px; border-top: 1px solid var(--line); }
-    .export-panel h2 { margin: 0 0 8px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
-    .export-dimensions { color: var(--grey); font-size: 11px; font-variant-numeric: tabular-nums; }
+    .export-panel h2 { margin: 0 0 9px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+    .export-dimensions { display: block; color: var(--grey); font-size: 11px; line-height: 1.6; font-variant-numeric: tabular-nums; }
+    .export-resolution { margin-top: 15px; }
     .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 14px; }
-    .export-button { min-height: 45px; padding: 10px; border: 1px solid var(--lime); border-radius: 999px; background: var(--lime); color: var(--black); font-size: 11px; font-weight: 800; }
+    .export-button {
+      min-height: 46px; padding: 10px; border: 1px solid var(--lime); border-radius: 999px;
+      color: var(--black); background: var(--lime); font-size: 11px; font-weight: 800;
+    }
     .export-button:hover:not(:disabled) { background: var(--orange); border-color: var(--orange); }
     .secondary-button { background: transparent; color: var(--white); border-color: rgba(255,255,255,.35); }
-    .secondary-button:hover:not(:disabled) { background: var(--white); border-color: var(--white); color: var(--black); }
-    .export-status { min-height: 16px; margin: 10px 0 0; color: var(--lime); font-size: 11px; line-height: 1.5; }
+    .secondary-button:hover:not(:disabled) { color: var(--black); background: var(--white); border-color: var(--white); }
+    .export-status { min-height: 16px; margin: 10px 0 0; color: var(--lime); font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
+    .export-status[data-error="true"] { color: var(--error); }
     .export-note { margin: 10px 0 0; color: var(--grey); font-size: 11px; line-height: 1.6; }
     .privacy-note { margin: 20px 0 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
-    .delivery-note { margin-top: 14px; color: #c6b78e; font-size: 10px; line-height: 1.6; }
-    .delivery-note summary { font-weight: 700; }
-    .delivery-note p { margin: 7px 0 0; }
+    .build-note { margin-top: 14px; color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .build-note summary { font-weight: 700; }
+    .build-note p { margin: 7px 0 0; }
 
-    .preview { min-width: 0; overflow: auto; background: #20201d; }
-    .preview-toolbar { position: sticky; top: 0; left: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding: 18px 24px; border-bottom: 1px solid var(--line); background: #141412; }
+    .preview { min-width: 0; overflow: auto; background: #20201d; scroll-margin-top: var(--nav-height); }
+    .preview-toolbar {
+      position: sticky; top: 0; left: 0; z-index: 5;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+      gap: 14px; padding: 18px 24px;
+      border-bottom: 1px solid var(--line); background: #141412;
+    }
     .preview-toolbar h2 { margin: 0 0 5px; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; }
     .preview-state { color: var(--grey); font-size: 11px; }
     .preview-state[data-state="error"] { color: var(--error); }
@@ -117,21 +209,30 @@
     .preview-tools select { min-height: 33px; width: auto; max-width: 150px; padding: 5px 8px; font-size: 11px; }
     .preview-stage { min-height: calc(100% - 89px); padding: 42px 28px; background-color: #e9e9e3; }
     .preview-stage[data-backdrop="dark"] { background-color: #252522; }
-    .preview-stage[data-backdrop="checker"] { background-color: #ededeb; background-image: linear-gradient(45deg,#d9d9d5 25%,transparent 25%),linear-gradient(-45deg,#d9d9d5 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d9d9d5 75%),linear-gradient(-45deg,transparent 75%,#d9d9d5 75%); background-size: 24px 24px; background-position: 0 0,0 12px,12px -12px,-12px 0; }
-    .chart-frame { width: 100%; max-width: 1200px; margin: 0 auto; transition: opacity .15s ease; }
+    .preview-stage[data-backdrop="checker"] {
+      background-color: #ededeb;
+      background-image:
+        linear-gradient(45deg,#d9d9d5 25%,transparent 25%),
+        linear-gradient(-45deg,#d9d9d5 25%,transparent 25%),
+        linear-gradient(45deg,transparent 75%,#d9d9d5 75%),
+        linear-gradient(-45deg,transparent 75%,#d9d9d5 75%);
+      background-size: 24px 24px;
+      background-position: 0 0,0 12px,12px -12px,-12px 0;
+    }
+    .chart-frame { width: 100%; max-width: 1200px; margin: 0 auto; }
     .chart-frame.actual-size { width: 1200px; min-width: 1200px; max-width: none; }
-    .chart-frame.is-stale { opacity: .45; }
+    .chart-frame.is-stale { opacity: .4; }
     #butterfly-svg { display: block; width: 100%; height: auto; overflow: hidden; }
-    .data-table-details { margin: 0; padding: 18px 24px 24px; border-top: 1px solid var(--line); background: #141412; }
+    .data-table-details { padding: 18px 24px 24px; border-top: 1px solid var(--line); background: #141412; }
     .data-table-details summary { font-size: 12px; color: var(--grey); }
     .data-table-wrap { margin-top: 15px; overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
     caption { padding: 0 0 12px; text-align: left; color: var(--muted); font-size: 11px; }
     th, td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: right; }
     th:first-child, td:first-child { text-align: left; overflow-wrap: anywhere; }
-    th { color: var(--lime); font-size: 11px; }
-    td { color: var(--grey); font-variant-numeric: tabular-nums; }
-    .noscript-note { padding: 16px; background: #3b2420; color: var(--white); }
+    thead th { color: var(--lime); font-size: 11px; }
+    tbody th, td { color: var(--grey); font-weight: 400; font-variant-numeric: tabular-nums; }
+    .no-js-note { padding: 18px; background: #3b2420; color: var(--white); }
 
     @media (max-width: 1000px) {
       .application { grid-template-columns: 360px minmax(0,1fr); }
@@ -141,12 +242,11 @@
     @media (max-width: 900px) {
       .application { display: block; height: auto; }
       .controls { height: auto; overflow: visible; border-right: 0; border-bottom: 1px solid var(--line); padding: 26px 22px; }
-      .preview { overflow: auto; }
       .preview-toolbar { position: relative; }
       .preview-stage { min-height: 360px; }
-      .control-section { max-width: none; }
       .controls h1 br { display: none; }
       .controls h1 { font-size: 30px; }
+      .mobile-jump { display: inline-block; }
     }
     @media (max-width: 580px) {
       :root { --nav-height: 66px; }
@@ -163,30 +263,20 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
     }
-    @media print {
-      @page { size: landscape; margin: 10mm; }
-      html, body { height: auto; margin: 0; padding: 0; background: white; }
-      .nav, .controls, .preview-toolbar, .data-table-details, .skip-link, .noscript-note { display: none !important; }
-      .application, .preview { display: block; height: auto; overflow: visible; background: transparent; }
-      .preview-stage { min-height: 0; padding: 0; background: transparent !important; }
-      .chart-frame, .chart-frame.actual-size { width: 100%; min-width: 0; max-width: none; margin: 0; opacity: 1; }
-      #butterfly-svg { width: 100%; height: auto; max-height: 180mm; }
-    }
   </style>
 </head>
 
 <body onload="
-  const defaults = [
-    ['Awareness',32,26],
-    ['Consideration',24,37],
-    ['Preference',46,41],
-    ['Purchase intent',29,35],
-    ['Loyalty',18,23],
-    ['Advocacy',12,15]
-  ];
   const container = document.getElementById('category-input-container');
   if (!container.children.length) {
-    defaults.forEach(item =&gt; {
+    [
+      ['Awareness',32,26],
+      ['Consideration',24,37],
+      ['Preference',46,41],
+      ['Purchase intent',29,35],
+      ['Loyalty',18,23],
+      ['Advocacy',12,15]
+    ].forEach(item =&gt; {
       const fragment = document.getElementById('category-row-template').content.cloneNode(true);
       fragment.querySelector('.category-label-input').value = item[0];
       fragment.querySelector('.left-value-input').value = item[1];
@@ -204,31 +294,32 @@
       <span class="brand-name">goat <span>/ Visual Intelligence Lab</span></span>
     </a>
     <div class="nav-meta">
-      <span class="tool-status"><span class="status-dot" aria-hidden="true"></span>Browser tool</span>
+      <span class="tool-status"><span class="status-dot" aria-hidden="true"></span>SVG + PNG</span>
       <a class="home-link" href="../../">← Back home</a>
     </div>
   </nav>
 
   <noscript>
-    <div class="noscript-note">JavaScript must be enabled to edit and export charts. Open this HTML file in a modern browser or publish it on GitHub Pages.</div>
+    <div class="no-js-note">Enable JavaScript to edit and download charts. This page runs locally in your browser.</div>
   </noscript>
 
   <div class="application">
     <aside class="controls" aria-labelledby="tool-title">
       <span class="tool-number">Tool 02 / Comparison</span>
       <h1 id="tool-title">Comparison<br> butterfly chart</h1>
-      <p id="controls-intro" class="controls-intro">Your data. Your styling. Compare two sides, fine-tune the chart, and download an editable SVG.</p>
+      <p id="controls-intro" class="controls-intro">Compare two sides, make it your own, and download a slide-ready PNG or editable SVG.</p>
+      <a class="mobile-jump" href="#preview">Jump to preview ↓</a>
 
-      <form id="chart-controls" novalidate="" onsubmit="event.preventDefault();" oninput="document.getElementById('refresh-chart').click();">
+      <form id="chart-controls" data-valid="false" novalidate="" onsubmit="event.preventDefault();" oninput="document.getElementById('refresh-chart').click();">
         <details class="control-section" open="">
           <summary>Chart text</summary>
           <div class="section-body">
             <div class="field">
-              <label for="chart-title">Chart title <span style="font-weight:400;">· optional</span></label>
+              <label for="chart-title">Chart title <span class="optional">· optional</span></label>
               <input id="chart-title" type="text" value="Brand comparison" maxlength="100" autocomplete="off">
             </div>
             <div class="field">
-              <label for="heading-subtitle">Subtitle <span style="font-weight:400;">· optional</span></label>
+              <label for="heading-subtitle">Subtitle <span class="optional">· optional</span></label>
               <input id="heading-subtitle" type="text" value="CATEGORY SHARE" maxlength="140" autocomplete="off">
             </div>
             <div class="two-columns">
@@ -247,7 +338,7 @@
         <details class="control-section" open="">
           <summary>Category values</summary>
           <div class="section-body">
-            <p id="category-help" class="section-description">Use percentages from 0–100, with up to two decimal places. The two sides do not need to total 100%.</p>
+            <p id="category-help" class="section-description">Enter percentages from 0–100, with up to two decimal places. Values do not need to total 100%.</p>
             <div class="category-inputs-header" aria-hidden="true">
               <span>Category</span><span>Left %</span><span>Right %</span><span></span>
             </div>
@@ -283,25 +374,33 @@
             <div class="field">
               <label for="chart-maximum">Manual axis maximum (%)</label>
               <input id="chart-maximum" type="number" min="1" max="100" step="1" value="50" disabled="" aria-describedby="axis-help value-error">
-              <p id="axis-help" class="small-note">Both sides always use the same scale. <span id="axis-readout">Automatic: 50%.</span></p>
+              <p id="axis-help" class="small-note">Both sides use the same scale. <span id="axis-readout">Automatic: 50%.</span></p>
             </div>
             <div class="field">
-              <label class="range-label" for="bar-thickness"><span>Bar thickness</span><output id="bar-thickness-output" for="bar-thickness">34 px</output></label>
+              <label class="range-label" for="bar-thickness">
+                <span>Bar thickness</span><output id="bar-thickness-output" for="bar-thickness">34 px</output>
+              </label>
               <input id="bar-thickness" type="range" min="16" max="64" value="34">
             </div>
             <div class="field">
-              <label class="range-label" for="row-spacing"><span>Space between rows</span><output id="row-spacing-output" for="row-spacing">22 px</output></label>
+              <label class="range-label" for="row-spacing">
+                <span>Space between rows</span><output id="row-spacing-output" for="row-spacing">22 px</output>
+              </label>
               <input id="row-spacing" type="range" min="8" max="48" value="22">
             </div>
             <div class="field">
-              <label class="range-label" for="label-width"><span>Centre label width</span><output id="label-width-output" for="label-width">208 px</output></label>
+              <label class="range-label" for="label-width">
+                <span>Centre label width</span><output id="label-width-output" for="label-width">208 px</output>
+              </label>
               <input id="label-width" type="range" min="160" max="340" step="4" value="208">
             </div>
             <div class="field">
-              <label class="range-label" for="bar-radius"><span>Rounded bar corners</span><output id="bar-radius-output" for="bar-radius">3 px</output></label>
+              <label class="range-label" for="bar-radius">
+                <span>Rounded bar corners</span><output id="bar-radius-output" for="bar-radius">3 px</output>
+              </label>
               <input id="bar-radius" type="range" min="0" max="24" value="3">
             </div>
-            <p id="layout-help" class="small-note">Output width stays at 1200 px. Height adapts to your rows and wrapped labels.</p>
+            <p id="layout-help" class="small-note">Chart height adapts to your rows and wrapped labels. Base width is 1200 px.</p>
           </div>
         </details>
 
@@ -318,15 +417,21 @@
               </select>
             </div>
             <div class="field">
-              <label class="range-label" for="title-size"><span>Title size</span><output id="title-size-output" for="title-size">32 px</output></label>
+              <label class="range-label" for="title-size">
+                <span>Title size</span><output id="title-size-output" for="title-size">32 px</output>
+              </label>
               <input id="title-size" type="range" min="20" max="48" value="32">
             </div>
             <div class="field">
-              <label class="range-label" for="category-font-size"><span>Category label size</span><output id="category-font-size-output" for="category-font-size">16 px</output></label>
+              <label class="range-label" for="category-font-size">
+                <span>Category label size</span><output id="category-font-size-output" for="category-font-size">16 px</output>
+              </label>
               <input id="category-font-size" type="range" min="12" max="26" value="16">
             </div>
             <div class="field">
-              <label class="range-label" for="value-font-size"><span>Percentage label size</span><output id="value-font-size-output" for="value-font-size">16 px</output></label>
+              <label class="range-label" for="value-font-size">
+                <span>Percentage label size</span><output id="value-font-size-output" for="value-font-size">16 px</output>
+              </label>
               <input id="value-font-size" type="range" min="12" max="26" value="16">
             </div>
             <div class="field">
@@ -336,7 +441,7 @@
                 <option value="outside">Outside bars</option>
               </select>
             </div>
-            <p id="typography-help" class="small-note">Inside-bar values automatically use black or white for contrast. Font sizes are measured at export size.</p>
+            <p id="typography-help" class="small-note">Inside-bar values automatically use black or white for contrast. All fonts are local system fonts.</p>
           </div>
         </details>
 
@@ -344,12 +449,30 @@
           <summary>Colours</summary>
           <div class="section-body">
             <div class="colour-grid">
-              <div class="field"><label for="left-colour">Left bars</label><input id="left-colour" type="color" value="#ff3d0a"></div>
-              <div class="field"><label for="right-colour">Right bars</label><input id="right-colour" type="color" value="#f7f7f2"></div>
-              <div class="field"><label for="text-colour">Headings, axes &amp; values</label><input id="text-colour" type="color" value="#080808"></div>
-              <div class="field"><label for="outline-colour">Bar outlines</label><input id="outline-colour" type="color" value="#080808"></div>
-              <div class="field"><label for="label-background-colour">Category backgrounds</label><input id="label-background-colour" type="color" value="#f7f7f2"></div>
-              <div class="field"><label for="label-text-colour">Category text</label><input id="label-text-colour" type="color" value="#080808"></div>
+              <div class="field">
+                <label for="left-colour">Left bars</label>
+                <input id="left-colour" type="color" value="#ff3d0a">
+              </div>
+              <div class="field">
+                <label for="right-colour">Right bars</label>
+                <input id="right-colour" type="color" value="#f7f7f2">
+              </div>
+              <div class="field">
+                <label for="text-colour">Headings, axes &amp; values</label>
+                <input id="text-colour" type="color" value="#080808">
+              </div>
+              <div class="field">
+                <label for="outline-colour">Bar outlines</label>
+                <input id="outline-colour" type="color" value="#080808">
+              </div>
+              <div class="field">
+                <label for="label-background-colour">Category backgrounds</label>
+                <input id="label-background-colour" type="color" value="#f7f7f2">
+              </div>
+              <div class="field">
+                <label for="label-text-colour">Category text</label>
+                <input id="label-text-colour" type="color" value="#080808">
+              </div>
             </div>
           </div>
         </details>
@@ -357,399 +480,72 @@
         <details class="control-section">
           <summary>Display &amp; background</summary>
           <div class="section-body">
-            <div class="option-row"><input id="show-headings" type="checkbox" checked=""><label for="show-headings">Show comparison headings</label></div>
-            <div class="option-row"><input id="show-values" type="checkbox" checked=""><label for="show-values">Show percentage labels</label></div>
-            <div class="option-row"><input id="show-gridlines" type="checkbox" checked=""><label for="show-gridlines">Show gridlines</label></div>
-            <div class="option-row"><input id="show-outlines" type="checkbox" checked=""><label for="show-outlines">Show bar outlines</label></div>
-            <div class="option-row"><input id="transparent-background" type="checkbox" checked=""><label for="transparent-background">Export with a transparent background</label></div>
+            <div class="option-row">
+              <input id="show-headings" type="checkbox" checked="">
+              <label for="show-headings">Show comparison headings</label>
+            </div>
+            <div class="option-row">
+              <input id="show-values" type="checkbox" checked="">
+              <label for="show-values">Show percentage labels</label>
+            </div>
+            <div class="option-row">
+              <input id="show-gridlines" type="checkbox" checked="">
+              <label for="show-gridlines">Show gridlines</label>
+            </div>
+            <div class="option-row">
+              <input id="show-outlines" type="checkbox" checked="">
+              <label for="show-outlines">Show bar outlines</label>
+            </div>
+            <div class="option-row">
+              <input id="transparent-background" type="checkbox" checked="">
+              <label for="transparent-background">Transparent background in SVG and PNG</label>
+            </div>
             <div class="field">
               <label for="chart-background">Solid chart background</label>
               <input id="chart-background" type="color" value="#ffffff" disabled="">
             </div>
-            <p id="background-help" class="small-note">The preview backdrop is separate from your chart. It is never included in the SVG.</p>
+            <p id="background-help" class="small-note">Uncheck transparency to include the solid background. The preview backdrop is never exported.</p>
           </div>
         </details>
 
         <p id="value-error" class="error" role="alert" hidden=""></p>
-
-        <section class="export-panel" aria-labelledby="export-title">
-          <h2 id="export-title">Take your chart with you</h2>
-          <span id="export-dimensions" class="export-dimensions">Preparing chart…</span>
-          <div class="buttons">
-            <button id="export-svg" class="export-button" type="button" disabled="" onclick="
-              try {
-                const svg = document.getElementById('butterfly-svg');
-                const copy = svg.cloneNode(true);
-                copy.removeAttribute('id');
-                copy.removeAttribute('class');
-                copy.removeAttribute('style');
-                copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-                const source = new XMLSerializer().serializeToString(copy);
-                const blob = new Blob([source], {type: 'image/svg+xml;charset=utf-8'});
-const previous = this.dataset.downloadUrl;
-if (previous) window.URL.revokeObjectURL(previous);
-const url = window.URL.createObjectURL(blob);
-                this.dataset.downloadUrl = url;
-                const link = document.createElement('a');
-                const name = document.getElementById('chart-title').value.trim() || 'butterfly-chart';
-                link.href = url;
-                link.download = (name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'butterfly-chart') + '.svg';
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-                document.getElementById('export-status').textContent = 'SVG download requested — ' + svg.getAttribute('width') + ' × ' + svg.getAttribute('height') + ' px.';
-                } catch (error) {
-               console.error('SVG export failed:', error);
-               document.getElementById('export-status').textContent =
-              'SVG export failed: ' + error.name + ' — ' + error.message;
-              }
-            ">Download SVG ↓</button>
-            <button id="print-chart" class="export-button secondary-button" type="button" disabled="" onclick="window.print();">Print / PDF</button>
-          </div>
-          <p id="export-status" class="export-status" role="status" aria-live="polite"></p>
-          <p id="export-note" class="export-note">SVG is editable and scales without losing quality. <strong>Direct PNG export is not included in this version</strong>; export SVG and convert it in your design app.</p>
-        </section>
-
-        <button id="refresh-chart" type="button" hidden="" aria-hidden="true" tabindex="-1" onclick="
-          try {
-            const get = id =&gt; document.getElementById(id);
-            const rows = Array.from(get('category-input-container').children);
-            const errors = [];
-            const format = value =&gt; new Intl.NumberFormat('en', {maximumFractionDigits: 2}).format(value);
-            const percent = value =&gt; format(value) + '%';
-            const fail = (input, message) =&gt; {
-              input.setAttribute('aria-invalid', 'true');
-              input.setAttribute('aria-errormessage', 'value-error');
-              errors.push(message);
-            };
-
-            get('chart-controls').querySelectorAll('[aria-invalid]').forEach(input =&gt; {
-              input.removeAttribute('aria-invalid');
-              input.removeAttribute('aria-errormessage');
-            });
-
-            ['bar-thickness','row-spacing','label-width','bar-radius','title-size','category-font-size','value-font-size'].forEach(id =&gt; {
-              get(id + '-output').value = get(id).value + ' px';
-            });
-
-            const automatic = get('auto-scale').checked;
-            const transparent = get('transparent-background').checked;
-            get('chart-maximum').disabled = automatic;
-            get('chart-background').disabled = transparent;
-            get('value-position').disabled = !get('show-values').checked;
-            get('add-category').disabled = rows.length &gt;= 30;
-            get('category-count').value = rows.length + ' / 30 categories';
-            get('export-status').textContent = '';
-
-            const data = rows.map((row, index) =&gt; {
-              const labelInput = row.querySelector('.category-label-input');
-              const leftInput = row.querySelector('.left-value-input');
-              const rightInput = row.querySelector('.right-value-input');
-              const label = labelInput.value.trim();
-              const labelForError = label || 'Category ' + (index + 1);
-              labelInput.setAttribute('aria-label', 'Category ' + (index + 1) + ' name');
-              leftInput.setAttribute('aria-label', 'Left percentage for ' + labelForError);
-              rightInput.setAttribute('aria-label', 'Right percentage for ' + labelForError);
-              const remove = row.querySelector('.remove-row');
-              remove.disabled = rows.length === 1;
-              remove.setAttribute('aria-label', 'Remove ' + labelForError);
-              if (!label) fail(labelInput, 'Category ' + (index + 1) + ' needs a name.');
-              [leftInput,rightInput].forEach((input, side) =&gt; {
-                const value = input.valueAsNumber;
-                const prefix = labelForError + ' (' + (side ? 'right' : 'left') + '): ';
-                if (input.value.trim() === '' || !Number.isFinite(value)) {
-                  fail(input, prefix + 'enter a percentage; use 0 for zero.');
-                } else if (value &lt; 0 || value &gt; 100) {
-                  fail(input, prefix + 'use a value from 0 to 100.');
-                } else if (input.validity.stepMismatch) {
-                  fail(input, prefix + 'use no more than two decimal places.');
-                }
-              });
-              return {label, left: leftInput.valueAsNumber, right: rightInput.valueAsNumber};
-            });
-
-            if (!rows.length) errors.push('Add at least one category.');
-
-            const validNumbers = data.flatMap(item =&gt; [item.left,item.right]).filter(Number.isFinite);
-            const largest = Math.max(0,...validNumbers);
-            let maximum;
-            if (automatic) {
-              maximum = largest === 0 ? 10 : ([1,2,5,10,20,25,50,75,100].find(value =&gt; value &gt;= largest) || 100);
-            } else {
-              maximum = get('chart-maximum').valueAsNumber;
-              if (!Number.isInteger(maximum) || maximum &lt; 1 || maximum &gt; 100) {
-                fail(get('chart-maximum'), 'Axis maximum must be a whole number from 1 to 100.');
-              } else if (maximum &lt; largest) {
-                fail(get('chart-maximum'), 'Axis maximum must be at least ' + percent(largest) + ', or enable automatic scaling.');
-              }
-            }
-
-            const invalid = errors.length &gt; 0;
-            get('value-error').hidden = !invalid;
-            get('value-error').textContent = errors.slice(0,3).join(' ') + (errors.length &gt; 3 ? ' Plus ' + (errors.length - 3) + ' more highlighted fields.' : '');
-            get('export-svg').disabled = invalid;
-            get('print-chart').disabled = invalid;
-            get('chart-frame').classList.toggle('is-stale', invalid);
-
-            const state = get('preview-state');
-            const statusMessage = invalid ? 'Fix highlighted fields · previous valid chart shown' : 'Up to date · ' + (transparent ? 'transparent export' : 'solid background');
-            if (state.textContent !== statusMessage) state.textContent = statusMessage;
-            state.dataset.state = invalid ? 'error' : 'ready';
-            if (invalid) return;
-
-            get('axis-readout').textContent = (automatic ? 'Automatic: ' : 'Manual: ') + percent(maximum) + '.';
-
-            const svg = get('butterfly-svg');
-            const ns = 'http://www.w3.org/2000/svg';
-            const family = get('chart-font').value;
-            const colours = {
-              left: get('left-colour').value,
-              right: get('right-colour').value,
-              text: get('text-colour').value,
-              outline: get('outline-colour').value,
-              label: get('label-background-colour').value,
-              labelText: get('label-text-colour').value,
-              background: get('chart-background').value
-            };
-            const width = 1200;
-            const outer = 96;
-            const centreWidth = Number(get('label-width').value);
-            const leftOrigin = width / 2 - centreWidth / 2 - 18;
-            const rightOrigin = width / 2 + centreWidth / 2 + 18;
-            const plotWidth = leftOrigin - outer;
-            const thickness = Number(get('bar-thickness').value);
-            const gap = Number(get('row-spacing').value);
-            const radius = Number(get('bar-radius').value);
-            const labelSize = Number(get('category-font-size').value);
-            const valueSize = Number(get('value-font-size').value);
-            const titleSize = Number(get('title-size').value);
-            const labelLineHeight = labelSize * 1.25;
-            const title = get('chart-title').value.trim();
-            const subtitle = get('heading-subtitle').value.trim();
-            const leftName = get('left-series-name').value.trim() || 'Left series';
-            const rightName = get('right-series-name').value.trim() || 'Right series';
-
-            svg.replaceChildren();
-
-            const make = (tag, attributes = {}, parent = svg) =&gt; {
-              const element = document.createElementNS(ns, tag);
-              Object.entries(attributes).forEach(([key,value]) =&gt; element.setAttribute(key, String(value)));
-              parent.appendChild(element);
-              return element;
-            };
-            const text = (content, x, y, size, colour, weight = 400, anchor = 'start', parent = svg) =&gt; {
-              const element = make('text', {
-                x, y, fill: colour, 'font-family': family,
-                'font-size': size, 'font-weight': weight,
-                'text-anchor': anchor
-              }, parent);
-              element.textContent = content;
-              return element;
-            };
-
-            make('title', {id: 'chart-svg-title'}).textContent = title || leftName + ' versus ' + rightName;
-            make('desc', {id: 'chart-svg-description'}).textContent =
-              'Butterfly chart comparing ' + leftName + ' and ' + rightName +
-              '. Both sides use a scale from 0 to ' + maximum + ' percent. ' +
-              data.map(item =&gt; item.label + ': ' + leftName + ' ' + percent(item.left) + ', ' + rightName + ' ' + percent(item.right) + '.').join(' ');
-
-            const probe = text('', 0, 0, labelSize, colours.text);
-            probe.setAttribute('visibility', 'hidden');
-            probe.setAttribute('aria-hidden', 'true');
-            const measure = (content, size, weight = 400) =&gt; {
-              probe.setAttribute('font-size', size);
-              probe.setAttribute('font-weight', weight);
-              probe.textContent = content;
-              return probe.getComputedTextLength() || content.length * size * .62;
-            };
-            const wrap = (content, available, size, weight = 400) =&gt; {
-              if (!content) return [];
-              const lines = [];
-              let current = '';
-              content.split(/\s+/).forEach(word =&gt; {
-                if (measure(word, size, weight) &gt; available) {
-                  if (current) { lines.push(current); current = ''; }
-                  let part = '';
-                  Array.from(word).forEach(character =&gt; {
-                    if (part &amp;&amp; measure(part + character, size, weight) &gt; available) {
-                      lines.push(part);
-                      part = character;
-                    } else {
-                      part += character;
-                    }
-                  });
-                  current = part;
-                } else {
-                  const candidate = current ? current + ' ' + word : word;
-                  if (current &amp;&amp; measure(candidate, size, weight) &gt; available) {
-                    lines.push(current);
-                    current = word;
-                  } else {
-                    current = candidate;
-                  }
-                }
-              });
-              if (current) lines.push(current);
-              return lines;
-            };
-            const contrastText = hex =&gt; {
-              const channels = [1,3,5].map(index =&gt; parseInt(hex.slice(index,index + 2),16) / 255).map(value =&gt; value &lt;= .04045 ? value / 12.92 : Math.pow((value + .055) / 1.055,2.4));
-              const luminance = channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
-              return (luminance + .05) / .05 &gt;= 1.05 / (luminance + .05) ? '#000000' : '#ffffff';
-            };
-
-            let cursor = 38;
-            const titleLines = wrap(title,width - outer * 2,titleSize,700);
-            const titleY = cursor;
-            if (titleLines.length) cursor += titleLines.length * titleSize * 1.2 + 12;
-            const subtitleLines = wrap(subtitle,width - outer * 2,15,400);
-            const subtitleY = cursor;
-            if (subtitleLines.length) cursor += subtitleLines.length * 20 + 16;
-
-            const headingSize = 24;
-            const leftHeadingLines = wrap(leftName,plotWidth - 16,headingSize,700);
-            const rightHeadingLines = wrap(rightName,plotWidth - 16,headingSize,700);
-            const headingsY = cursor;
-            let headingHeight = 0;
-            if (get('show-headings').checked) {
-              headingHeight = Math.max(leftHeadingLines.length,rightHeadingLines.length) * 29;
-              cursor += headingHeight + 35;
-            } else {
-              cursor += 12;
-            }
-
-            const plotTop = cursor;
-            data.forEach(item =&gt; {
-              item.lines = wrap(item.label,centreWidth - 24,labelSize,600);
-              item.labelHeight = item.lines.length * labelLineHeight + 16;
-              item.rowHeight = Math.max(thickness,item.labelHeight);
-              item.cy = cursor + item.rowHeight / 2;
-              cursor += item.rowHeight + gap;
-            });
-            const plotBottom = cursor - gap;
-            const height = Math.ceil(Math.max(280,plotBottom + 76));
-
-            svg.setAttribute('viewBox','0 0 ' + width + ' ' + height);
-            svg.setAttribute('width',width);
-            svg.setAttribute('height',height);
-
-            if (!transparent) make('rect',{x:0,y:0,width,height,fill:colours.background});
-
-            if (get('show-gridlines').checked) {
-              const grid = make('g',{'aria-hidden':'true'});
-              for (let index = 0; index &lt;= 5; index++) {
-                const offset = plotWidth * index / 5;
-                [leftOrigin - offset,rightOrigin + offset].forEach(x =&gt; {
-                  make('line',{
-                    x1:x,x2:x,y1:plotTop - 9,y2:plotBottom + 10,
-                    stroke:colours.text,'stroke-opacity':index === 0 ? .4 : .2,
-                    'stroke-width':1,'stroke-dasharray':index === 0 ? 'none' : '3 6'
-                  },grid);
-                });
-              }
-            }
-
-            titleLines.forEach((line,index) =&gt; text(line,width / 2,titleY + titleSize + index * titleSize * 1.2,titleSize,colours.text,700,'middle'));
-            subtitleLines.forEach((line,index) =&gt; text(line,width / 2,subtitleY + 15 + index * 20,15,colours.text,400,'middle'));
-
-            if (get('show-headings').checked) {
-              [
-                {lines:leftHeadingLines,x:leftOrigin - plotWidth / 2,colour:colours.left},
-                {lines:rightHeadingLines,x:rightOrigin + plotWidth / 2,colour:colours.right}
-              ].forEach(side =&gt; {
-                side.lines.forEach((line,index) =&gt; text(line,side.x,headingsY + headingSize + index * 29,headingSize,colours.text,700,'middle'));
-                make('rect',{
-                  x:side.x - 24,y:headingsY + headingHeight + 11,width:48,height:5,rx:2.5,
-                  fill:side.colour,stroke:get('show-outlines').checked ? colours.outline : 'none','stroke-width':.7
-                });
-              });
-            }
-
-            const showValues = get('show-values').checked;
-            const showOutlines = get('show-outlines').checked;
-            const automaticPlacement = get('value-position').value === 'auto';
-            const bars = make('g');
-            const labels = make('g');
-
-            data.forEach(item =&gt; {
-              ['left','right'].forEach(side =&gt; {
-                const isLeft = side === 'left';
-                const value = item[side];
-                const barWidth = value / maximum * plotWidth;
-                const origin = isLeft ? leftOrigin : rightOrigin;
-                const barX = isLeft ? origin - barWidth : origin;
-                if (barWidth &gt; 0) {
-                  const bar = make('rect',{
-                    x:barX,y:item.cy - thickness / 2,width:barWidth,height:thickness,
-                    rx:Math.min(radius,thickness / 2,barWidth / 2),
-                    fill:colours[side],stroke:showOutlines ? colours.outline : 'none','stroke-width':1.25
-                  },bars);
-                  make('title',{},bar).textContent = item.label + ' — ' + (isLeft ? leftName : rightName) + ': ' + percent(value);
-                }
-                if (showValues) {
-                  const valueText = percent(value);
-                  const fits = automaticPlacement &amp;&amp; barWidth &gt;= measure(valueText,valueSize,700) + 22 &amp;&amp; thickness &gt;= valueSize + 8;
-                  const x = isLeft
-                    ? (fits ? origin - barWidth + 10 : origin - barWidth - 10)
-                    : (fits ? origin + barWidth - 10 : origin + barWidth + 10);
-                  const anchor = isLeft ? (fits ? 'start' : 'end') : (fits ? 'end' : 'start');
-                  text(valueText,x,item.cy + valueSize * .35,valueSize,fits ? contrastText(colours[side]) : colours.text,700,anchor,labels);
-                }
-              });
-
-              make('rect',{
-                x:width / 2 - centreWidth / 2,
-                y:item.cy - item.labelHeight / 2,
-                width:centreWidth,height:item.labelHeight,
-                rx:4,fill:colours.label
-              },labels);
-
-              item.lines.forEach((line,index) =&gt; {
-                const y = item.cy - (item.lines.length - 1) * labelLineHeight / 2 + index * labelLineHeight + labelSize * .35;
-                text(line,width / 2,y,labelSize,colours.labelText,600,'middle',labels);
-              });
-            });
-
-            for (let index = 0; index &lt;= 5; index++) {
-              const offset = plotWidth * index / 5;
-              const tick = percent(maximum * index / 5);
-              [leftOrigin - offset,rightOrigin + offset].forEach(x =&gt; {
-                text(tick,x,plotBottom + 36,12,colours.text,400,'middle');
-              });
-            }
-
-            probe.remove();
-
-            get('export-dimensions').textContent = width + ' × ' + height + ' px · ' + data.length + (data.length === 1 ? ' category' : ' categories');
-            get('table-left-heading').textContent = leftName;
-            get('table-right-heading').textContent = rightName;
-            const tableBody = get('chart-data-body');
-            const fragment = document.createDocumentFragment();
-            data.forEach(item =&gt; {
-              const row = document.createElement('tr');
-              [item.label,percent(item.left),percent(item.right)].forEach((value,index) =&gt; {
-                const cell = document.createElement(index === 0 ? 'th' : 'td');
-                if (index === 0) cell.setAttribute('scope','row');
-                cell.textContent = value;
-                row.appendChild(cell);
-              });
-              fragment.appendChild(row);
-            });
-            tableBody.replaceChildren(fragment);
-          } catch (error) {
-            document.getElementById('export-svg').disabled = true;
-            document.getElementById('print-chart').disabled = true;
-            document.getElementById('preview-state').dataset.state = 'error';
-            document.getElementById('preview-state').textContent = 'Preview could not update. Try changing a setting or reopening the page in a modern browser.';
-            console.error(error);
-          }
-        ">Update chart</button>
       </form>
 
-      <p id="privacy-note" class="privacy-note">Your values stay in this browser tab. This page does not upload or save your chart data. Refreshing the page restores the sample chart.</p>
-      <details class="delivery-note">
-        <summary>Before publishing</summary>
-        <p id="testing-note">This generated page has not been browser-tested here. Check long labels, 0% and 100% values, mobile layout, and downloads in your target browsers before publishing. SVG and print/PDF are included; direct PNG export is not.</p>
+      <section class="export-panel" aria-labelledby="export-title">
+        <h2 id="export-title">Download your chart</h2>
+        <span id="export-dimensions" class="export-dimensions">Preparing chart…</span>
+
+        <div class="field export-resolution">
+          <label for="png-scale">PNG resolution</label>
+          <select id="png-scale" oninput="document.getElementById('update-export-size').click();">
+            <option value="1">1× — standard</option>
+            <option value="2" selected="">2× — recommended for slides</option>
+            <option value="3">3× — extra sharp</option>
+          </select>
+          <p id="png-dimensions" class="small-note">Preparing PNG dimensions…</p>
+        </div>
+
+        <div class="buttons">
+          <button id="export-svg" class="export-button secondary-button" type="button" disabled="" onclick="
+            const action = document.getElementById('export-chart');
+            action.dataset.format = 'svg';
+            action.click();
+          ">Download SVG ↓</button>
+          <button id="export-png" class="export-button" type="button" disabled="" onclick="
+            const action = document.getElementById('export-chart');
+            action.dataset.format = 'png';
+            action.click();
+          ">Download PNG ↓</button>
+        </div>
+
+        <p id="export-status" class="export-status" role="status" aria-live="polite"></p>
+        <p id="export-note" class="export-note"><strong>For slides: choose PNG.</strong> Insert the downloaded image into Google Slides or PowerPoint. Choose SVG for editable vector graphics.</p>
+      </section>
+
+      <p id="privacy-note" class="privacy-note">Your data stays in this browser tab. No uploads, accounts, or external libraries. Refreshing restores the sample chart.</p>
+      <details class="build-note">
+        <summary>Build &amp; testing note</summary>
+        <p id="build-note-text">Version 2 includes PNG and SVG export. This generated file has not been browser-tested here; check the downloads in your target browser before wider use.</p>
       </details>
     </aside>
 
@@ -782,7 +578,7 @@ const url = window.URL.createObjectURL(blob);
         <div id="chart-frame" class="chart-frame">
           <svg id="butterfly-svg" viewBox="0 0 1200 675" width="1200" height="675" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="chart-svg-title" aria-describedby="chart-svg-description">
             <title id="chart-svg-title">Category comparison butterfly chart</title>
-            <desc id="chart-svg-description">The chart is generated from the editable controls when this page opens.</desc>
+            <desc id="chart-svg-description">This chart updates from the controls when the page opens.</desc>
             <text x="600" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#333333">Preparing your chart…</text>
           </svg>
         </div>
@@ -792,9 +588,13 @@ const url = window.URL.createObjectURL(blob);
         <summary>View chart data as a table</summary>
         <div class="data-table-wrap">
           <table>
-            <caption>Values from the current valid chart. Invalid edits are not applied until corrected.</caption>
+            <caption>Values from the current valid chart. Invalid edits are applied only after correction.</caption>
             <thead>
-              <tr><th scope="col">Category</th><th id="table-left-heading" scope="col">Brand A</th><th id="table-right-heading" scope="col">Brand B</th></tr>
+              <tr>
+                <th scope="col">Category</th>
+                <th id="table-left-heading" scope="col">Brand A</th>
+                <th id="table-right-heading" scope="col">Brand B</th>
+              </tr>
             </thead>
             <tbody id="chart-data-body"></tbody>
           </table>
@@ -819,5 +619,572 @@ const url = window.URL.createObjectURL(blob);
       ">×</button>
     </div>
   </template>
+
+  <button id="update-export-size" type="button" hidden="" aria-hidden="true" tabindex="-1" onclick="
+    const svg = document.getElementById('butterfly-svg');
+    const width = Number(svg.getAttribute('width'));
+    const height = Number(svg.getAttribute('height'));
+    const requested = Number(document.getElementById('png-scale').value);
+    const scale = Math.min(requested, Math.sqrt(16000000 / (width * height)), 16000 / width, 16000 / height);
+    const pngWidth = Math.max(1, Math.floor(width * scale));
+    const pngHeight = Math.max(1, Math.floor(height * scale));
+    document.getElementById('png-dimensions').textContent =
+      'PNG: ' + pngWidth + ' × ' + pngHeight + ' px' +
+      (scale &lt; requested ? ' · reduced to keep this tall chart manageable.' : '.');
+  ">Update export dimensions</button>
+
+  <button id="refresh-chart" type="button" hidden="" aria-hidden="true" tabindex="-1" onclick="
+    try {
+      const get = id =&gt; document.getElementById(id);
+      const form = get('chart-controls');
+      const rows = Array.from(get('category-input-container').children);
+      const errors = [];
+      const formatter = new Intl.NumberFormat('en', {maximumFractionDigits: 2});
+      const percent = value =&gt; formatter.format(value) + '%';
+      const busy = get('export-chart').dataset.busy === 'true';
+
+      form.dataset.valid = 'false';
+
+      const fail = (input, message) =&gt; {
+        input.setAttribute('aria-invalid','true');
+        input.setAttribute('aria-errormessage','value-error');
+        errors.push(message);
+      };
+
+      form.querySelectorAll('[aria-invalid]').forEach(input =&gt; {
+        input.removeAttribute('aria-invalid');
+        input.removeAttribute('aria-errormessage');
+      });
+
+      ['bar-thickness','row-spacing','label-width','bar-radius','title-size','category-font-size','value-font-size'].forEach(id =&gt; {
+        get(id + '-output').value = get(id).value + ' px';
+      });
+
+      const automatic = get('auto-scale').checked;
+      const transparent = get('transparent-background').checked;
+      get('chart-maximum').disabled = automatic;
+      get('chart-background').disabled = transparent;
+      get('value-position').disabled = !get('show-values').checked;
+      get('add-category').disabled = rows.length &gt;= 30;
+      get('category-count').value = rows.length + ' / 30 categories';
+
+      if (!busy) {
+        get('export-status').textContent = '';
+        get('export-status').dataset.error = 'false';
+      }
+
+      const data = rows.map((row,index) =&gt; {
+        const nameInput = row.querySelector('.category-label-input');
+        const leftInput = row.querySelector('.left-value-input');
+        const rightInput = row.querySelector('.right-value-input');
+        const label = nameInput.value.trim();
+        const reference = label || 'Category ' + (index + 1);
+
+        nameInput.setAttribute('aria-label','Category ' + (index + 1) + ' name');
+        leftInput.setAttribute('aria-label','Left percentage for ' + reference);
+        rightInput.setAttribute('aria-label','Right percentage for ' + reference);
+
+        const remove = row.querySelector('.remove-row');
+        remove.disabled = rows.length === 1;
+        remove.setAttribute('aria-label','Remove ' + reference);
+
+        if (!label) fail(nameInput,'Category ' + (index + 1) + ' needs a name.');
+
+        [leftInput,rightInput].forEach((input,side) =&gt; {
+          const value = input.valueAsNumber;
+          const prefix = reference + ' (' + (side ? 'right' : 'left') + '): ';
+          if (input.value.trim() === '' || !Number.isFinite(value)) {
+            fail(input,prefix + 'enter a percentage; use 0 for zero.');
+          } else if (value &lt; 0 || value &gt; 100) {
+            fail(input,prefix + 'use a value from 0 to 100.');
+          } else if (input.validity.stepMismatch) {
+            fail(input,prefix + 'use no more than two decimal places.');
+          }
+        });
+
+        return {label,left:leftInput.valueAsNumber,right:rightInput.valueAsNumber};
+      });
+
+      if (!rows.length) errors.push('Add at least one category.');
+
+      const numbers = data.flatMap(item =&gt; [item.left,item.right]).filter(Number.isFinite);
+      const largest = Math.max(0,...numbers);
+      let maximum;
+
+      if (automatic) {
+        maximum = largest === 0 ? 10 : ([1,2,5,10,20,25,50,75,100].find(value =&gt; value &gt;= largest) || 100);
+      } else {
+        maximum = get('chart-maximum').valueAsNumber;
+        if (!Number.isInteger(maximum) || maximum &lt; 1 || maximum &gt; 100) {
+          fail(get('chart-maximum'),'Axis maximum must be a whole number from 1 to 100.');
+        } else if (maximum &lt; largest) {
+          fail(get('chart-maximum'),'Axis maximum must be at least ' + percent(largest) + ', or enable automatic scaling.');
+        }
+      }
+
+      const invalid = errors.length &gt; 0;
+      get('value-error').hidden = !invalid;
+      get('value-error').textContent =
+        errors.slice(0,3).join(' ') +
+        (errors.length &gt; 3 ? ' Plus ' + (errors.length - 3) + ' more highlighted fields.' : '');
+
+      get('export-svg').disabled = invalid || busy;
+      get('export-png').disabled = invalid || busy;
+      get('chart-frame').classList.toggle('is-stale',invalid);
+
+      const state = get('preview-state');
+      const stateText = invalid
+        ? 'Fix highlighted fields · previous valid chart shown'
+        : 'Up to date · ' + (transparent ? 'transparent export' : 'solid background');
+
+      if (state.textContent !== stateText) state.textContent = stateText;
+      state.dataset.state = invalid ? 'error' : 'ready';
+      if (invalid) return;
+
+      get('axis-readout').textContent = (automatic ? 'Automatic: ' : 'Manual: ') + percent(maximum) + '.';
+
+      const svg = get('butterfly-svg');
+      const ns = 'http://www.w3.org/2000/svg';
+      const family = get('chart-font').value;
+      const colours = {
+        left:get('left-colour').value,
+        right:get('right-colour').value,
+        text:get('text-colour').value,
+        outline:get('outline-colour').value,
+        label:get('label-background-colour').value,
+        labelText:get('label-text-colour').value,
+        background:get('chart-background').value
+      };
+
+      const width = 1200;
+      const outer = 120;
+      const centreWidth = Number(get('label-width').value);
+      const leftOrigin = width / 2 - centreWidth / 2 - 18;
+      const rightOrigin = width / 2 + centreWidth / 2 + 18;
+      const plotWidth = leftOrigin - outer;
+      const thickness = Number(get('bar-thickness').value);
+      const gap = Number(get('row-spacing').value);
+      const radius = Number(get('bar-radius').value);
+      const labelSize = Number(get('category-font-size').value);
+      const valueSize = Number(get('value-font-size').value);
+      const titleSize = Number(get('title-size').value);
+      const labelLineHeight = labelSize * 1.25;
+      const title = get('chart-title').value.trim();
+      const subtitle = get('heading-subtitle').value.trim();
+      const leftName = get('left-series-name').value.trim() || 'Left series';
+      const rightName = get('right-series-name').value.trim() || 'Right series';
+
+      svg.replaceChildren();
+
+      const make = (tag,attributes = {},parent = svg) =&gt; {
+        const element = document.createElementNS(ns,tag);
+        Object.entries(attributes).forEach(([key,value]) =&gt; element.setAttribute(key,String(value)));
+        parent.appendChild(element);
+        return element;
+      };
+
+      const text = (content,x,y,size,colour,weight = 400,anchor = 'start',parent = svg) =&gt; {
+        const element = make('text',{
+          x,y,fill:colour,'font-family':family,
+          'font-size':size,'font-weight':weight,'text-anchor':anchor
+        },parent);
+        element.textContent = content;
+        return element;
+      };
+
+      make('title',{id:'chart-svg-title'}).textContent = title || leftName + ' versus ' + rightName;
+      make('desc',{id:'chart-svg-description'}).textContent =
+        'Butterfly chart comparing ' + leftName + ' and ' + rightName +
+        '. Both sides use a scale from 0 to ' + maximum + ' percent. ' +
+        data.map(item =&gt; item.label + ': ' + leftName + ' ' + percent(item.left) + ', ' + rightName + ' ' + percent(item.right) + '.').join(' ');
+
+      const probe = text('',0,0,labelSize,colours.text);
+      probe.setAttribute('visibility','hidden');
+      probe.setAttribute('aria-hidden','true');
+
+      const measure = (content,size,weight = 400) =&gt; {
+        probe.setAttribute('font-size',size);
+        probe.setAttribute('font-weight',weight);
+        probe.textContent = content;
+        return probe.getComputedTextLength() || content.length * size * .62;
+      };
+
+      const wrap = (content,available,size,weight = 400) =&gt; {
+        if (!content) return [];
+        const lines = [];
+        let current = '';
+
+        content.split(/\s+/).forEach(word =&gt; {
+          if (measure(word,size,weight) &gt; available) {
+            if (current) {
+              lines.push(current);
+              current = '';
+            }
+            let part = '';
+            Array.from(word).forEach(character =&gt; {
+              if (part &amp;&amp; measure(part + character,size,weight) &gt; available) {
+                lines.push(part);
+                part = character;
+              } else {
+                part += character;
+              }
+            });
+            current = part;
+          } else {
+            const candidate = current ? current + ' ' + word : word;
+            if (current &amp;&amp; measure(candidate,size,weight) &gt; available) {
+              lines.push(current);
+              current = word;
+            } else {
+              current = candidate;
+            }
+          }
+        });
+
+        if (current) lines.push(current);
+        return lines;
+      };
+
+      const contrastText = hex =&gt; {
+        const channels = [1,3,5]
+          .map(index =&gt; parseInt(hex.slice(index,index + 2),16) / 255)
+          .map(value =&gt; value &lt;= .04045 ? value / 12.92 : Math.pow((value + .055) / 1.055,2.4));
+        const luminance = channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
+        return (luminance + .05) / .05 &gt;= 1.05 / (luminance + .05) ? '#000000' : '#ffffff';
+      };
+
+      let cursor = 38;
+      const titleLines = wrap(title,width - outer * 2,titleSize,700);
+      const titleY = cursor;
+      if (titleLines.length) cursor += titleLines.length * titleSize * 1.2 + 12;
+
+      const subtitleLines = wrap(subtitle,width - outer * 2,15);
+      const subtitleY = cursor;
+      if (subtitleLines.length) cursor += subtitleLines.length * 20 + 16;
+
+      const headingSize = 24;
+      const leftHeadingLines = wrap(leftName,plotWidth - 16,headingSize,700);
+      const rightHeadingLines = wrap(rightName,plotWidth - 16,headingSize,700);
+      const headingsY = cursor;
+      let headingHeight = 0;
+
+      if (get('show-headings').checked) {
+        headingHeight = Math.max(leftHeadingLines.length,rightHeadingLines.length) * 29;
+        cursor += headingHeight + 35;
+      } else {
+        cursor += 12;
+      }
+
+      const plotTop = cursor;
+
+      data.forEach(item =&gt; {
+        item.lines = wrap(item.label,centreWidth - 24,labelSize,600);
+        item.labelHeight = item.lines.length * labelLineHeight + 16;
+        item.rowHeight = Math.max(thickness,item.labelHeight);
+        item.cy = cursor + item.rowHeight / 2;
+        cursor += item.rowHeight + gap;
+      });
+
+      const plotBottom = cursor - gap;
+      const height = Math.ceil(Math.max(280,plotBottom + 76));
+
+      svg.setAttribute('viewBox','0 0 ' + width + ' ' + height);
+      svg.setAttribute('width',width);
+      svg.setAttribute('height',height);
+
+      if (!transparent) {
+        make('rect',{x:0,y:0,width,height,fill:colours.background});
+      }
+
+      if (get('show-gridlines').checked) {
+        const grid = make('g',{'aria-hidden':'true'});
+        for (let index = 0; index &lt;= 5; index++) {
+          const offset = plotWidth * index / 5;
+          [leftOrigin - offset,rightOrigin + offset].forEach(x =&gt; {
+            make('line',{
+              x1:x,x2:x,y1:plotTop - 9,y2:plotBottom + 10,
+              stroke:colours.text,'stroke-opacity':index === 0 ? .4 : .2,
+              'stroke-width':1,'stroke-dasharray':index === 0 ? 'none' : '3 6'
+            },grid);
+          });
+        }
+      }
+
+      titleLines.forEach((line,index) =&gt; {
+        text(line,width / 2,titleY + titleSize + index * titleSize * 1.2,titleSize,colours.text,700,'middle');
+      });
+
+      subtitleLines.forEach((line,index) =&gt; {
+        text(line,width / 2,subtitleY + 15 + index * 20,15,colours.text,400,'middle');
+      });
+
+      if (get('show-headings').checked) {
+        [
+          {lines:leftHeadingLines,x:leftOrigin - plotWidth / 2,colour:colours.left},
+          {lines:rightHeadingLines,x:rightOrigin + plotWidth / 2,colour:colours.right}
+        ].forEach(side =&gt; {
+          side.lines.forEach((line,index) =&gt; {
+            text(line,side.x,headingsY + headingSize + index * 29,headingSize,colours.text,700,'middle');
+          });
+          make('rect',{
+            x:side.x - 24,y:headingsY + headingHeight + 11,width:48,height:5,rx:2.5,
+            fill:side.colour,stroke:get('show-outlines').checked ? colours.outline : 'none','stroke-width':.7
+          });
+        });
+      }
+
+      const showValues = get('show-values').checked;
+      const showOutlines = get('show-outlines').checked;
+      const automaticPlacement = get('value-position').value === 'auto';
+      const bars = make('g');
+      const labels = make('g');
+
+      data.forEach(item =&gt; {
+        ['left','right'].forEach(side =&gt; {
+          const isLeft = side === 'left';
+          const value = item[side];
+          const barWidth = value / maximum * plotWidth;
+          const origin = isLeft ? leftOrigin : rightOrigin;
+          const barX = isLeft ? origin - barWidth : origin;
+
+          if (barWidth &gt; 0) {
+            const bar = make('rect',{
+              x:barX,y:item.cy - thickness / 2,width:barWidth,height:thickness,
+              rx:Math.min(radius,thickness / 2,barWidth / 2),
+              fill:colours[side],stroke:showOutlines ? colours.outline : 'none','stroke-width':1.25
+            },bars);
+            make('title',{},bar).textContent =
+              item.label + ' — ' + (isLeft ? leftName : rightName) + ': ' + percent(value);
+          }
+
+          if (showValues) {
+            const valueText = percent(value);
+            const fits =
+              automaticPlacement &amp;&amp;
+              barWidth &gt;= measure(valueText,valueSize,700) + 22 &amp;&amp;
+              thickness &gt;= valueSize + 8;
+
+            const x = isLeft
+              ? (fits ? origin - barWidth + 10 : origin - barWidth - 10)
+              : (fits ? origin + barWidth - 10 : origin + barWidth + 10);
+
+            const anchor = isLeft ? (fits ? 'start' : 'end') : (fits ? 'end' : 'start');
+
+            text(
+              valueText,x,item.cy + valueSize * .35,valueSize,
+              fits ? contrastText(colours[side]) : colours.text,
+              700,anchor,labels
+            );
+          }
+        });
+
+        make('rect',{
+          x:width / 2 - centreWidth / 2,
+          y:item.cy - item.labelHeight / 2,
+          width:centreWidth,height:item.labelHeight,
+          rx:4,fill:colours.label
+        },labels);
+
+        item.lines.forEach((line,index) =&gt; {
+          const y =
+            item.cy - (item.lines.length - 1) * labelLineHeight / 2 +
+            index * labelLineHeight + labelSize * .35;
+          text(line,width / 2,y,labelSize,colours.labelText,600,'middle',labels);
+        });
+      });
+
+      for (let index = 0; index &lt;= 5; index++) {
+        const offset = plotWidth * index / 5;
+        const tick = percent(maximum * index / 5);
+        [leftOrigin - offset,rightOrigin + offset].forEach(x =&gt; {
+          text(tick,x,plotBottom + 36,12,colours.text,400,'middle');
+        });
+      }
+
+      probe.remove();
+
+      get('export-dimensions').textContent =
+        'SVG: ' + width + ' × ' + height + ' px · ' +
+        data.length + (data.length === 1 ? ' category' : ' categories');
+
+      get('update-export-size').click();
+      get('table-left-heading').textContent = leftName;
+      get('table-right-heading').textContent = rightName;
+
+      const tableFragment = document.createDocumentFragment();
+      data.forEach(item =&gt; {
+        const row = document.createElement('tr');
+        [item.label,percent(item.left),percent(item.right)].forEach((value,index) =&gt; {
+          const cell = document.createElement(index === 0 ? 'th' : 'td');
+          if (index === 0) cell.setAttribute('scope','row');
+          cell.textContent = value;
+          row.appendChild(cell);
+        });
+        tableFragment.appendChild(row);
+      });
+      get('chart-data-body').replaceChildren(tableFragment);
+
+      form.dataset.valid = 'true';
+      get('export-svg').disabled = busy;
+      get('export-png').disabled = busy;
+    } catch (error) {
+      document.getElementById('chart-controls').dataset.valid = 'false';
+      document.getElementById('export-svg').disabled = true;
+      document.getElementById('export-png').disabled = true;
+      document.getElementById('chart-frame').classList.add('is-stale');
+      document.getElementById('preview-state').dataset.state = 'error';
+      document.getElementById('preview-state').textContent = 'Chart update failed: ' + error.message;
+      console.error('Chart update failed:',error);
+    }
+  ">Update chart</button>
+
+  <button id="export-chart" type="button" hidden="" aria-hidden="true" tabindex="-1" data-format="png" onclick="
+    const action = this;
+    const doc = window.document;
+    const form = doc.getElementById('chart-controls');
+
+    if (action.dataset.busy === 'true' || form.dataset.valid !== 'true') return;
+
+    const format = action.dataset.format === 'svg' ? 'svg' : 'png';
+    const svgButton = doc.getElementById('export-svg');
+    const pngButton = doc.getElementById('export-png');
+    const status = doc.getElementById('export-status');
+
+    action.dataset.busy = 'true';
+    svgButton.disabled = true;
+    pngButton.disabled = true;
+    status.dataset.error = 'false';
+    status.textContent = format === 'png' ? 'Preparing PNG…' : 'Preparing SVG…';
+
+    (async () =&gt; {
+      let sourceUrl = null;
+      let conversionSurface = null;
+
+      try {
+        const original = doc.getElementById('butterfly-svg');
+        const copy = original.cloneNode(true);
+        const width = Number(original.getAttribute('width'));
+        const height = Number(original.getAttribute('height'));
+
+        if (!(width &gt; 0) || !(height &gt; 0)) {
+          throw new Error('The chart dimensions are invalid.');
+        }
+
+        const chartName = doc.getElementById('chart-title').value.trim() || 'butterfly-chart';
+        const filename =
+          chartName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') ||
+          'butterfly-chart';
+
+        copy.removeAttribute('id');
+        copy.removeAttribute('class');
+        copy.removeAttribute('style');
+        copy.removeAttribute('xmlns');
+        copy.setAttribute('width',width);
+        copy.setAttribute('height',height);
+
+        const source = new window.XMLSerializer().serializeToString(copy);
+        const svgBlob = new window.Blob([source],{type:'image/svg+xml;charset=utf-8'});
+
+        const download = (blob,extension,dimensions) =&gt; {
+          const key = extension + 'DownloadUrl';
+          const previous = action.dataset[key];
+          if (previous) window.URL.revokeObjectURL(previous);
+
+          const url = window.URL.createObjectURL(blob);
+          action.dataset[key] = url;
+
+          const link = doc.createElement('a');
+          link.href = url;
+          link.download = filename + '.' + extension;
+          doc.body.appendChild(link);
+          link.click();
+          link.remove();
+
+          status.replaceChildren(
+            doc.createTextNode(extension.toUpperCase() + ' ready — ' + dimensions + ' px. ')
+          );
+
+          const fallback = doc.createElement('a');
+          fallback.href = url;
+          fallback.download = filename + '.' + extension;
+          fallback.textContent = 'Download again';
+          fallback.style.textDecoration = 'underline';
+          status.appendChild(fallback);
+        };
+
+        if (format === 'svg') {
+          download(svgBlob,'svg',width + ' × ' + height);
+          return;
+        }
+
+        const requestedScale = Number(doc.getElementById('png-scale').value);
+        const scale = Math.min(
+          requestedScale,
+          Math.sqrt(16000000 / (width * height)),
+          16000 / width,
+          16000 / height
+        );
+
+        const pngWidth = Math.max(1,Math.floor(width * scale));
+        const pngHeight = Math.max(1,Math.floor(height * scale));
+
+        sourceUrl = window.URL.createObjectURL(svgBlob);
+        const image = new window.Image();
+
+        await new Promise((resolve,reject) =&gt; {
+          image.onload = () =&gt; resolve();
+          image.onerror = () =&gt; reject(
+            new Error('The browser could not read the chart image for PNG conversion.')
+          );
+          image.src = sourceUrl;
+        });
+
+        conversionSurface = doc.createElement('canvas');
+        conversionSurface.width = pngWidth;
+        conversionSurface.height = pngHeight;
+
+        const context = conversionSurface.getContext('2d');
+        if (!context) {
+          throw new Error('PNG conversion is unavailable in this browser.');
+        }
+
+        context.drawImage(image,0,0,pngWidth,pngHeight);
+
+        const pngBlob = await new Promise((resolve,reject) =&gt; {
+          conversionSurface.toBlob(blob =&gt; {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error('The browser could not create the PNG. Try a lower resolution.'));
+            }
+          },'image/png');
+        });
+
+        download(pngBlob,'png',pngWidth + ' × ' + pngHeight);
+
+        if (scale &lt; requestedScale) {
+          status.appendChild(doc.createTextNode(' Resolution was limited for this unusually large chart.'));
+        }
+      } catch (error) {
+        console.error(format.toUpperCase() + ' export failed:',error);
+        status.dataset.error = 'true';
+        status.textContent =
+          format.toUpperCase() + ' export failed: ' + error.name + ' — ' + error.message;
+      } finally {
+        if (sourceUrl) window.URL.revokeObjectURL(sourceUrl);
+
+        if (conversionSurface) {
+          conversionSurface.width = 0;
+          conversionSurface.height = 0;
+        }
+
+        delete action.dataset.busy;
+
+        const valid = form.dataset.valid === 'true';
+        svgButton.disabled = !valid;
+        pngButton.disabled = !valid;
+      }
+    })();
+  ">Export chart</button>
 
 </body></html>
